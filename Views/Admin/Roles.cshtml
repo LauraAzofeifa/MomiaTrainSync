@@ -1,0 +1,186 @@
+﻿@{
+    ViewData["Title"] = "Gestión de Roles";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .admin-title {
+        font-weight: 700;
+        color: #264653;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-agregar {
+        background-color: #2a9d8f;
+        color: white;
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+        .btn-agregar:hover {
+            background-color: #21867a;
+        }
+
+    .table thead {
+        background-color: #e0f0f0;
+        color: #264653;
+        font-weight: 600;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+    }
+
+    .filter-row input {
+        width: 100%;
+        padding: 3px;
+        border-radius: 0.3rem;
+        border: 1px solid #ccc;
+        font-size: 0.9rem;
+    }
+
+    .btn-action {
+        margin-right: 0.4rem;
+    }
+</style>
+
+<div class="container-fluid px-3 px-md-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="admin-title">Gestión de Roles</h2>
+        <a href="@Url.Action("CrearRol", "Admin")" class="btn btn-agregar">
+            <i class="fas fa-plus me-2"></i>Agregar Rol
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table id="tablaRoles" class="table table-bordered table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nombre del Rol</th>
+                    <th>Descripción</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+                <tr class="filter-row">
+                    <th></th>
+                    <th><input type="text" placeholder="Filtrar por nombre" /></th>
+                    <th><input type="text" placeholder="Filtrar por descripción" /></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Administrador</td>
+                    <td>Acceso total a todas las funciones del sistema.</td>
+                    <td class="text-center">
+                        <a href="@Url.Action("EditarRol", "Admin", new { id = 1 })" class="btn btn-sm btn-primary btn-action" title="Editar"><i class="fas fa-edit"></i></a>
+                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarRol1"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Entrenador</td>
+                    <td>Gestiona entrenamientos y seguimiento de atletas.</td>
+                    <td class="text-center">
+                        <a href="@Url.Action("EditarRol", "Admin", new { id = 2 })" class="btn btn-sm btn-primary btn-action"><i class="fas fa-edit"></i></a>
+                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarRol2"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Atleta</td>
+                    <td>Accede a su perfil, planes y métricas personales.</td>
+                    <td class="text-center">
+                        <a href="@Url.Action("EditarRol", "Admin", new { id = 3 })" class="btn btn-sm btn-primary btn-action"><i class="fas fa-edit"></i></a>
+                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#modalEliminarRol3"><i class="fas fa-trash-alt"></i></button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modales de confirmación de eliminación -->
+<div class="modal fade" id="modalEliminarRol1" tabindex="-1" aria-labelledby="modalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel1">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar el rol "Administrador"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalEliminarRol2" tabindex="-1" aria-labelledby="modalLabel2" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel2">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar el rol "Entrenador"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modalEliminarRol3" tabindex="-1" aria-labelledby="modalLabel3" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel3">Confirmar Eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                ¿Estás seguro de que deseas eliminar el rol "Atleta"?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var table = $('#tablaRoles').DataTable({
+                orderCellsTop: true,
+                fixedHeader: true,
+                order: [[0, 'asc']],
+                language: {
+                    search: "Buscar:",
+                    lengthMenu: "Mostrar _MENU_ registros por página",
+                    info: "Mostrando _START_ a _END_ de _TOTAL_ roles",
+                    paginate: {
+                        first: "Primero",
+                        last: "Último",
+                        next: "Siguiente",
+                        previous: "Anterior"
+                    },
+                    zeroRecords: "No se encontraron resultados",
+                    infoEmpty: "Mostrando 0 a 0 de 0 roles",
+                    infoFiltered: "(filtrado de _MAX_ roles totales)"
+                }
+            });
+
+            $('#tablaRoles thead tr.filter-row input').on('keyup change', function () {
+                var colIndex = $(this).parent().index();
+                table.column(colIndex).search(this.value).draw();
+            });
+        });
+    </script>
+}

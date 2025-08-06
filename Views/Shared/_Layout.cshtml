@@ -1,0 +1,145 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MomiaTrainSync</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MomiaTrainSync.styles.css" asp-append-version="true" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+
+    <style>
+        body {
+            background-color: #fff8f1;
+        }
+
+        .custom-navbar {
+            background-color: #4a90e2;
+        }
+
+        .navbar-brand,
+        .nav-link {
+            color: #fff !important;
+            transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+        }
+
+        .navbar-nav .nav-link {
+            border-radius: 0.5rem;
+            padding: 0.5rem 1rem;
+        }
+
+            .navbar-nav .nav-link:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+                color: #ffffff !important;
+            }
+
+        .navbar-toggler {
+            border: none;
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='white' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+        }
+
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .card-header {
+            background-color: #6fb1fc;
+            color: white;
+            border-bottom: none;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .card-body {
+            background-color: #fff;
+        }
+
+        .btn-primary {
+            background-color: #2a9d8f;
+            border: none;
+        }
+    </style>
+</head>
+<body id="top" class="d-flex flex-column min-vh-100">
+
+    <!-- Sticky Header -->
+    <header class="sticky-top shadow-sm bg-white">
+        <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-dumbbell me-2"></i> MomiaTrainSync
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Inicio
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" asp-controller="Admin" asp-action="Dashboard">
+                                <i class="fas fa-user-shield me-1"></i>Admin
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" asp-controller="Entrenador" asp-action="Dashboard">
+                                <i class="fas fa-chalkboard-teacher me-1"></i>Entrenador
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" asp-controller="Atleta" asp-action="Dashboard">
+                                <i class="fas fa-running me-1"></i>Atleta
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Contenido principal -->
+    <main role="main" class="flex-fill">
+        @RenderBody()
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white text-center py-3 mt-auto sticky-bottom">
+        <div class="container">
+            <small>&copy; 2025 - MomiaTrainSync. Todos los derechos reservados.</small>
+        </div>
+    </footer>
+
+    <!-- Botón flotante para subir arriba -->
+    <a href="#top"
+       class="btn btn-primary rounded-circle shadow position-fixed"
+       style="bottom: 20px; right: 20px; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; z-index: 1050;"
+       title="Subir al inicio">
+        <i class="fas fa-arrow-up"></i>
+    </a>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

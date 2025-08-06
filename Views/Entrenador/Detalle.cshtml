@@ -1,0 +1,379 @@
+﻿@model MomiaTrainSync.Models.AtletaViewModel
+
+@{
+    ViewData["Title"] = "Detalle del Atleta";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .trainer-title {
+        font-weight: 700;
+        color: #264653;
+        margin-bottom: 2rem;
+    }
+</style>
+
+<div class="container mt-4 px-3 px-md-4">
+    <h2 class="trainer-title" id="inicio">Detalle del Atleta</h2>
+    <a href="@Url.Action("Atleta", "Entrenador")" class="btn btn-outline-secondary btn-sm mb-4">
+        ← Volver a la lista de atletas
+    </a>
+
+
+    <!-- Información General -->
+    <div class="card shadow-sm rounded-3 mb-4">
+        <div class="card-body">
+            <h5 class="mb-3 fw-semibold">Información General</h5>
+            <p><strong>Nombre:</strong> @Model.Nombre</p>
+            <p><strong>Edad:</strong> @Model.Edad años</p>
+            <p><strong>Género:</strong> @Model.Genero</p>
+            <p><strong>Historial médico:</strong> @Model.HistorialMedico</p>
+            <p><strong>Objetivo actual:</strong> @Model.Objetivo</p>
+            <p>
+                <strong>Estado:</strong>
+                @if (Model.Estado == "Activo")
+                {
+                    <span class="badge bg-success">Activo</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Inactivo</span>
+                }
+            </p>
+
+            <!-- Botón simulado de descarga -->
+            <a href="#" class="btn btn-outline-primary mt-3" onclick="alert('Simulación de descarga de archivos')">
+                <i class="fas fa-download me-2"></i>Descargar archivos del atleta
+            </a>
+        </div>
+    </div>
+
+
+    <!-- Historial de Rutinas -->
+    <div class="card shadow-sm rounded-3 mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-semibold mb-0">Historial de Rutinas</h5>
+            </div>
+
+            @if (Model.HistorialRutinas != null && Model.HistorialRutinas.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var rutina in Model.HistorialRutinas)
+                    {
+                        <li class="list-group-item">
+                            <strong>@rutina.Fecha:</strong> @rutina.Descripcion
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-muted">No hay rutinas previas registradas.</p>
+            }
+        </div>
+    </div>
+
+
+    <!-- Rutina Actual -->
+    <div class="card shadow-sm rounded-3 mb-4">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-semibold mb-0">Rutina Actual</h5>
+                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalEditarRutina">
+                    Asignar/Modificar rutina
+                </button>
+            </div>
+
+            @if (Model.Rutina != null && Model.Rutina.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Día</th>
+                                <th>Tipo</th>
+                                <th>Duración</th>
+                                <th>Intensidad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Rutina)
+                            {
+                                <tr>
+                                    <td>@item.Dia</td>
+                                    <td>@item.Tipo</td>
+                                    <td>@item.Duracion</td>
+                                    <td>@item.Intensidad</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <p class="text-muted">No hay rutina asignada.</p>
+            }
+        </div>
+    </div>
+
+    <!-- Comentarios -->
+    <div class="card shadow-sm rounded-3">
+        <div class="card-body">
+            <h5 class="mb-3 fw-semibold">Comentarios del Atleta</h5>
+            @if (Model.Comentarios != null && Model.Comentarios.Any())
+            {
+                <ul class="list-group list-group-flush">
+                    @foreach (var comentario in Model.Comentarios)
+                    {
+                        <li class="list-group-item">
+                            <strong>@comentario.Fecha:</strong> @comentario.Texto
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p class="text-muted">No hay comentarios registrados.</p>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal para editar rutina -->
+<div class="modal fade" id="modalEditarRutina" tabindex="-1" aria-labelledby="modalEditarRutinaLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditarRutinaLabel">Modificar Rutina</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="dia" class="form-label">Día</label>
+                        <select class="form-select" id="dia">
+                            <option value="">Seleccionar día</option>
+                            <option>Lunes</option>
+                            <option>Martes</option>
+                            <option>Miércoles</option>
+                            <option>Jueves</option>
+                            <option>Viernes</option>
+                            <option>Sábado</option>
+                            <option>Domingo</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tipo" class="form-label">Tipo de entrenamiento</label>
+                        <select class="form-select" id="tipo">
+                            <option value="">Seleccionar tipo</option>
+                            <option>Carrera suave</option>
+                            <option>Intervalos</option>
+                            <option>Fondo</option>
+                            <option>Rodillo</option>
+                            <option>Técnica</option>
+                            <option>Fuerza</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="duracion" class="form-label">Duración</label>
+                        <select class="form-select" id="duracion">
+                            <option value="">Seleccionar duración</option>
+                            <option>30 min</option>
+                            <option>40 min</option>
+                            <option>45 min</option>
+                            <option>60 min</option>
+                            <option>75 min</option>
+                            <option>90 min</option>
+                            <option>120 min</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="intensidad" class="form-label">Intensidad</label>
+                        <select class="form-select" id="intensidad">
+                            <option value="">Seleccionar</option>
+                            <option>Baja</option>
+                            <option>Moderada</option>
+                            <option>Alta</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar rutina</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Sección de análisis con tabs -->
+<div class="card shadow-sm rounded-3 mt-4">
+    <div class="card-body">
+        <h5 class="fw-semibold mb-4">Análisis de Entrenamiento</h5>
+
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-3" id="tabGrafico" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active text-dark fw-semibold" id="volumen-tab"
+                        data-bs-toggle="tab" data-bs-target="#volumen" type="button" role="tab">
+                    Volumen
+                </button>
+            </li>
+
+            <li class="nav-item" role="presentation">
+                <button class="nav-link text-dark fw-semibold" id="rendimiento-tab"
+                        data-bs-toggle="tab" data-bs-target="#rendimiento" type="button" role="tab">
+                    Rendimiento
+                </button>
+            </li>
+        </ul>
+
+        <!-- Contenido de cada tab -->
+        <div class="tab-content mt-3">
+            <!-- Tab: Volumen -->
+            <div class="tab-pane fade show active" id="volumen" role="tabpanel">
+                <canvas id="graficoVolumen" height="100"></canvas>
+            </div>
+
+            <!-- Tab: Rendimiento -->
+            <div class="tab-pane fade" id="rendimiento" role="tabpanel">
+                <canvas id="graficoRendimiento" height="120"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts para Chart.js -->
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // === GRÁFICO: Volumen ===
+        new Chart(document.getElementById('graficoVolumen').getContext('2d'), {
+            type: 'bar',
+            data: {
+                labels: ['Mar', 'Abr', 'May', 'Jun', 'Jul'],
+                datasets: [
+                    {
+                        label: 'Programado',
+                        data: [22, 28, 24, 30, 20],
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)'
+                    },
+                    {
+                        label: 'Realizado',
+                        data: [20, 25, 18, 22, 15],
+                        backgroundColor: 'rgba(153, 102, 255, 0.6)'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Duración (horas)' }
+                    }
+                }
+            }
+        });
+
+
+        // === GRÁFICO: Rendimiento ===
+        new Chart(document.getElementById('graficoRendimiento').getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: [
+                    "12 Abr", "15 Abr", "18 Abr", "21 Abr", "24 Abr", "27 Abr",
+                    "30 Abr", "3 May", "6 May", "9 May", "12 May", "15 May"
+                ],
+                datasets: [
+                    {
+                        label: "Fitness",
+                        data: [50, 60, 65, 70, 75, 80, 85, 90, 88, 85, 82, 80],
+                        borderColor: 'rgba(38, 70, 83, 1)',
+                        backgroundColor: 'rgba(38, 70, 83, 0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: "Fatiga",
+                        data: [30, 40, 55, 65, 60, 70, 80, 95, 100, 92, 88, 85],
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y1'
+                    },
+                    {
+                        label: "Forma",
+                        data: [20, 18, 10, 5, 15, 10, 5, -5, -12, -7, -6, -5],
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
+                        fill: true,
+                        tension: 0.3,
+                        yAxisID: 'y2'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                stacked: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return `${context.dataset.label}: ${context.parsed.y}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y1: {
+                        type: 'linear',
+                        position: 'left',
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Carga (Fitness / Fatiga)'
+                        }
+                    },
+                    y2: {
+                        type: 'linear',
+                        position: 'right',
+                        beginAtZero: false,
+                        title: {
+                            display: true,
+                            text: 'Forma'
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
+
+
+
+

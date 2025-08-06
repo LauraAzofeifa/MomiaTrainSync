@@ -1,0 +1,135 @@
+﻿@{
+    ViewData["Title"] = "Métricas del Sistema";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .dashboard-title {
+        font-weight: 700;
+        color: #264653;
+        margin-bottom: 2rem;
+    }
+
+    .card-metric {
+        border-radius: 1rem;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: none;
+        padding: 1.5rem;
+        transition: transform 0.2s;
+    }
+
+        .card-metric:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-title {
+        font-size: 1.2rem;
+        color: #264653;
+        font-weight: 600;
+    }
+
+    .card-value {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #2a9d8f;
+    }
+
+    .chart-container {
+        background-color: #ffffff;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+</style>
+
+<div class="container-fluid px-3 px-md-4">
+    <h2 class="dashboard-title text-center">Métricas del Sistema</h2>
+
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card-metric text-center">
+                <div class="card-title">Usuarios Activos</div>
+                <div class="card-value">342</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-metric text-center">
+                <div class="card-title">Planes Creados</div>
+                <div class="card-value">1287</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-metric text-center">
+                <div class="card-title">Entrenamientos Registrados</div>
+                <div class="card-value">6540</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-metric text-center">
+                <div class="card-title">Promedio de Sesiones x Usuario</div>
+                <div class="card-value">19.1</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5 class="mb-3 text-dark">Actividades por Rol</h5>
+                <canvas id="graficoRoles"></canvas>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="chart-container">
+                <h5 class="mb-3 text-dark">Entrenamientos por Semana</h5>
+                <canvas id="graficoEntrenamientos"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctxRoles = document.getElementById('graficoRoles').getContext('2d');
+        new Chart(ctxRoles, {
+            type: 'doughnut',
+            data: {
+                labels: ['Administrador', 'Entrenador', 'Atleta'],
+                datasets: [{
+                    label: 'Actividades',
+                    data: [50, 120, 320],
+                    backgroundColor: ['#264653', '#2a9d8f', '#e9c46a'],
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        const ctxEntrenamientos = document.getElementById('graficoEntrenamientos').getContext('2d');
+        new Chart(ctxEntrenamientos, {
+            type: 'bar',
+            data: {
+                labels: ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'],
+                datasets: [{
+                    label: 'Sesiones',
+                    data: [120, 145, 132, 160, 170, 200, 180],
+                    backgroundColor: '#2a9d8f'
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+}

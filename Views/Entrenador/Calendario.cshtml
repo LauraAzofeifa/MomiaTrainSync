@@ -1,0 +1,102 @@
+﻿@{
+    ViewData["Title"] = "Calendario del Entrenador";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<!-- FullCalendar CSS -->
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+
+<div class="container mt-4 px-3 px-md-4">
+    <h2 class="trainer-title mb-4">Calendario del Entrenador</h2>
+
+    <div class="alert alert-info small">
+        Haz clic en un día para agregar una sesión de entrenamiento.
+    </div>
+
+    <div id="calendar" style="max-width: 100%; margin: 0 auto;"></div>
+</div>
+
+<!-- Modal para agregar sesión (planificación personal del coach) -->
+<div class="modal fade" id="modalAgregarSesion" tabindex="-1" aria-labelledby="modalSesionLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalSesionLabel">Planificación del Entrenador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formSesion">
+                    <input type="hidden" id="fechaSesion" />
+
+                    <div class="mb-3">
+                        <label for="tituloSesion" class="form-label">Título o tema</label>
+                        <input type="text" class="form-control" id="tituloSesion" placeholder="Ej: Revisar entrenamientos" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notasSesion" class="form-label">Notas</label>
+                        <textarea class="form-control" id="notasSesion" rows="3" placeholder="Ideas, recordatorios o tareas relacionadas con el entrenamiento."></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-end">
+                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <!-- FullCalendar JS -->
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const calendarEl = document.getElementById('calendar');
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                height: 650,
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                dateClick: function (info) {
+                    // Preparar modal
+                    document.getElementById('fechaSesion').value = info.dateStr;
+                    document.getElementById('formSesion').reset();
+                    new bootstrap.Modal(document.getElementById('modalAgregarSesion')).show();
+                },
+                events: []
+            });
+
+            calendar.render();
+
+            // Manejar el formulario de sesión
+            document.getElementById('formSesion').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const fecha = document.getElementById('fechaSesion').value;
+                const titulo = document.getElementById('tituloSesion').value;
+                const notas = document.getElementById('notasSesion').value;
+
+                const descripcion = notas ? `${titulo} - ${notas}` : titulo;
+
+                calendar.addEvent({
+                    title: descripcion,
+                    start: fecha,
+                    backgroundColor: '#2a9d8f',
+                    borderColor: '#2a9d8f'
+                });
+
+                bootstrap.Modal.getInstance(document.getElementById('modalAgregarSesion')).hide();
+            });
+        });
+    </script>
+}
+

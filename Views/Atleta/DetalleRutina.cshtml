@@ -1,0 +1,125 @@
+﻿@model MomiaTrainSync.Models.AtletaViewModel
+
+@{
+    ViewData["Title"] = "Detalle de Rutina";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mt-4 px-3 px-md-4">
+    <h2 class="trainer-title mb-4">Rutina del día - @Model.Nombre</h2>
+
+    <!-- Detalle de rutina -->
+    <div class="card shadow-sm rounded-3 mb-4">
+        <div class="card-body">
+            <h5 class="fw-semibold">
+                <i class="fas fa-running me-2 text-primary"></i>@Model.RutinaDeHoy
+            </h5>
+
+            <p><strong>Objetivo:</strong> Mejorar consumo máximo de oxígeno (VO2Max).</p>
+            <p><strong>Tipo de sesión:</strong> Intervalos</p>
+            <p><strong>Duración estimada:</strong> 40 minutos</p>
+            <p><strong>RPE estimado:</strong> 8/10</p>
+            <p><strong>Ritmo sugerido:</strong> 4:50 min/km</p>
+        </div>
+    </div>
+
+    <!-- Registro del entrenamiento -->
+    <div class="card shadow-sm rounded-3 mb-5">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">
+                <i class="fas fa-pencil-alt me-2 text-success"></i>Registro del entrenamiento
+            </h5>
+
+            <form>
+                <div class="mb-3">
+                    <label for="rpeReal" class="form-label">¿Cómo te sentiste? (RPE real)</label>
+                    <input type="number" min="1" max="10" class="form-control" id="rpeReal" placeholder="Escala de 1 a 10">
+                </div>
+
+                <div class="mb-3">
+                    <label for="fc" class="form-label">Frecuencia cardíaca promedio (opcional)</label>
+                    <input type="number" class="form-control" id="fc" placeholder="Ej. 145">
+                </div>
+
+                <div class="mb-3">
+                    <label for="duracion" class="form-label">Duración real del entrenamiento</label>
+                    <select class="form-select" id="duracion">
+                        <option selected disabled>Selecciona duración</option>
+                        <option>30 min</option>
+                        <option>40 min</option>
+                        <option>45 min</option>
+                        <option>60 min</option>
+                        <option>75 min</option>
+                        <option>90 min</option>
+                        <option>120 min</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="comentarios" class="form-label">Comentarios</label>
+                    <textarea class="form-control" id="comentarios" rows="3" placeholder="Describe cómo te fue, molestias, puntos fuertes, etc."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Guardar registro</button>
+                <a href="@Url.Action("Dashboard", "Atleta")" class="btn btn-outline-secondary ms-2">Volver al Dashboard</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- Gráfico de RPE histórico -->
+    <div class="card shadow-sm rounded-3 mb-5">
+        <div class="card-body">
+            <h5 class="fw-semibold mb-3">
+                <i class="fas fa-chart-line me-2 text-info"></i>Comparativa RPE en sesiones similares
+            </h5>
+            <canvas id="graficoRpe" height="100"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const ctx = document.getElementById('graficoRpe').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ["05 Jul", "12 Jul", "19 Jul", "26 Jul", "2 Ago", "9 Ago"],
+                datasets: [{
+                    label: 'RPE real',
+                    data: [7, 8, 9, 7, 8, 8],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `RPE: ${context.parsed.y}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        min: 1,
+                        max: 10,
+                        title: {
+                            display: true,
+                            text: 'RPE (Escala de Esfuerzo)'
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}

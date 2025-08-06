@@ -1,0 +1,219 @@
+﻿@{
+    ViewData["Title"] = "Gestión de Permisos";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+<style>
+    .admin-title {
+        font-weight: 700;
+        color: #264653;
+        margin-bottom: 2rem;
+    }
+
+    .table thead {
+        background-color: #e0f0f0;
+        color: #264653;
+        font-weight: 600;
+    }
+
+    .table td, .table th {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    .nav-tabs .nav-link {
+        background-color: #264653;
+        color: white;
+        border: none;
+        margin-right: 2px;
+    }
+
+    .nav-tabs .nav-link.active {
+        background-color: #2a9d8f;
+        color: white;
+    }
+</style>
+
+<div class="container-fluid px-3 px-md-4">
+    <h2 class="admin-title text-center">Gestión de Permisos</h2>
+
+    <ul class="nav nav-tabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#rol-tab">Permisos por Rol</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#lista-tab">Lista de Permisos</button>
+        </li>
+    </ul>
+
+    <div class="tab-content pt-4">
+        <!-- Tab Permisos por Rol -->
+        <div class="tab-pane fade show active" id="rol-tab">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Función</th>
+                        <th>Administrador</th>
+                        <th>Entrenador</th>
+                        <th>Atleta</th>
+                        <th>Estado</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var permisos = new[] {
+                                        new { Nombre = "Gestión de Usuarios", Administrador = true, Entrenador = false, Atleta = false, Activo = true },
+                                        new { Nombre = "Gestión de Roles", Administrador = true, Entrenador = false, Atleta = false, Activo = true },
+                                        new { Nombre = "Gestión de Permisos", Administrador = true, Entrenador = false, Atleta = false, Activo = true },
+                                        new { Nombre = "Crear Entrenamientos", Administrador = true, Entrenador = true, Atleta = false, Activo = true },
+                                        new { Nombre = "Ver Planes", Administrador = false, Entrenador = true, Atleta = true, Activo = true },
+                                        new { Nombre = "Editar Perfil", Administrador = true, Entrenador = true, Atleta = true, Activo = true },
+                                        new { Nombre = "Registrar Sesiones", Administrador = false, Entrenador = true, Atleta = true, Activo = true },
+                                        new { Nombre = "Revisar Métricas", Administrador = true, Entrenador = true, Atleta = true, Activo = true },
+                                        new { Nombre = "Notificaciones", Administrador = true, Entrenador = true, Atleta = true, Activo = true },
+                                        new { Nombre = "Acceso Dashboard", Administrador = true, Entrenador = true, Atleta = true, Activo = true }
+                                        };
+                    }
+                    @foreach (var permiso in permisos)
+                    {
+                        <tr>
+                            <td>@permiso.Nombre</td>
+                            <td><input type="checkbox" @(permiso.Administrador ? "checked" : "") /></td>
+                            <td><input type="checkbox" @(permiso.Entrenador ? "checked" : "") /></td>
+                            <td><input type="checkbox" @(permiso.Atleta ? "checked" : "") /></td>
+                            <td>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" @(permiso.Activo ? "checked" : "") />
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="text-end">
+                <button class="btn btn-guardar"><i class="fas fa-save me-1"></i>Guardar Cambios</button>
+            </div>
+        </div>
+
+        <!-- Tab Lista de Permisos -->
+        <div class="tab-pane fade" id="lista-tab">
+            <div class="d-flex justify-content-between mb-3">
+                <h4 class="text-dark">Lista de Permisos</h4>
+                <a class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarPermiso">
+                    <i class="fas fa-plus me-1"></i>Agregar Permiso
+                </a>
+            </div>
+
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>URL</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        var listado = new[]{
+                                        new {Id=1, Nombre="Gestión de Usuarios", Descripcion="Administra usuarios", Url="/Admin/Usuarios"},
+                                        new {Id=2, Nombre="Gestión de Roles", Descripcion="Administra roles", Url="/Admin/Roles"},
+                                        new {Id=3, Nombre="Gestión de Permisos", Descripcion="Administra accesos", Url="/Admin/Permisos"},
+                                        new {Id=4, Nombre="Crear Entrenamientos", Descripcion="Crea sesiones", Url="/Entrenador/Crear"},
+                                        new {Id=5, Nombre="Ver Planes", Descripcion="Consulta planes", Url="/Atleta/Planes"},
+                                        new {Id=6, Nombre="Editar Perfil", Descripcion="Edita su perfil", Url="/Cuenta/Editar"},
+                                        new {Id=7, Nombre="Registrar Sesiones", Descripcion="Añade sesiones", Url="/Atleta/Sesiones"},
+                                        new {Id=8, Nombre="Revisar Métricas", Descripcion="Ve métricas", Url="/Metricas/Resumen"},
+                                        new {Id=9, Nombre="Notificaciones", Descripcion="Configura alertas", Url="/Notificaciones/Index"},
+                                        new {Id=10, Nombre="Acceso Dashboard", Descripcion="Panel principal", Url="/Dashboard/Inicio"}
+                                        };
+                    }
+
+                    @foreach (var item in listado)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Nombre</td>
+                            <td>@item.Descripcion</td>
+                            <td>@item.Url</td>
+                            <td><span class="badge bg-success">Activo</span></td>
+                            <td class="text-center">
+                                <a class="btn btn-sm btn-primary btn-action" data-bs-toggle="modal" data-bs-target="#modalEditarPermiso"><i class="fas fa-edit"></i></a>
+                                <button class="btn btn-sm btn-danger btn-action" data-bs-toggle="modal" data-bs-target="#modalEliminarPermiso"><i class="fas fa-trash-alt"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Agregar Permiso -->
+<div class="modal fade" id="modalAgregarPermiso" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Agregar Permiso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3"><label class="form-label">Nombre</label><input type="text" class="form-control" /></div>
+                    <div class="mb-3"><label class="form-label">Descripción</label><textarea class="form-control"></textarea></div>
+                    <div class="mb-3"><label class="form-label">URL</label><input type="text" class="form-control" /></div>
+                    <div class="form-check form-switch"><input type="checkbox" class="form-check-input" checked /> <label class="form-check-label">Activo</label></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Permiso -->
+<div class="modal fade" id="modalEditarPermiso" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title">Editar Permiso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3"><label class="form-label">Nombre</label><input type="text" class="form-control" value="Gestión de Usuarios" /></div>
+                    <div class="mb-3"><label class="form-label">Descripción</label><textarea class="form-control">Administra usuarios</textarea></div>
+                    <div class="mb-3"><label class="form-label">URL</label><input type="text" class="form-control" value="/Admin/Usuarios" /></div>
+                    <div class="form-check form-switch"><input type="checkbox" class="form-check-input" checked /> <label class="form-check-label">Activo</label></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Confirmar Eliminación -->
+<div class="modal fade" id="modalEliminarPermiso" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title">Eliminar Permiso</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p>¿Está seguro que desea eliminar este permiso?</p>
+                <p class="text-muted small">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,165 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .hero-section {
+        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('@Url.Content("~/img/better-runner.jpg")') center/cover no-repeat;
+        color: white;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+    }
+
+        .hero-section h1 {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        .hero-section p {
+            font-size: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .hero-section .btn-primary {
+            background-color: #2a9d8f;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            margin-top: 2rem;
+            font-size: 1rem;
+            border-radius: 2rem;
+        }
+
+    .section-panel .card {
+        border-radius: 1rem;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        border: none;
+    }
+
+    .section-panel .card-header {
+        background-color: #6fb1fc;
+        color: white;
+        font-weight: 500;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+    }
+
+    .section-panel .btn-success {
+        background-color: #2a9d8f;
+        border: none;
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <h1>Una Plataforma de Entrenamiento Tan Versátil Como Vos</h1>
+    <p>Diseñada para atletas, entrenadores y equipos que buscan mejorar cada día</p>
+    <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+        <a href="#paneles" class="btn btn-primary px-4 py-2">
+            <i class="fas fa-arrow-down me-2"></i>Ver más
+        </a>
+        <a href="@Url.Action("Login", "Account")" class="btn btn-primary px-4 py-2">
+            <i class="fas fa-lock me-2"></i>Iniciar Sesión
+        </a>
+    </div>
+</div>
+
+
+<!-- Paneles informativos -->
+<div class="container-fluid py-5 px-4 section-panel" id="paneles">
+    <div class="text-center mb-5">
+        <br></br>
+        <h2 class="fw-bold text-dark">Explora Tu Panel Personalizado</h2>
+        <p class="text-muted">Toda tu planificación, progreso y metas en un solo lugar</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-flag-checkered me-2"></i>Evento Principal
+                </div>
+                <div class="card-body">
+                    <h4 class="fw-bold">Maratón de Alajuela</h4>
+                    <p>En <strong>4 semanas</strong></p>
+                    <button class="btn btn-sm btn-success">Agregar Evento</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-bullseye me-2"></i>Tus Metas
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item"><i class="fas fa-running me-2"></i>Correr 100 kms esta semana</li>
+                        <li class="list-group-item"><i class="fas fa-stopwatch me-2"></i>Mejorar ritmo 5 km</li>
+                    </ul>
+                    <button class="btn btn-sm btn-success">Agregar Meta</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-dumbbell me-2"></i>Entrenamientos
+                </div>
+                <div class="card-body">
+                    <p><strong>Hoy:</strong> 10 km carrera – Ritmo cómodo</p>
+                    <p><strong>Mañana:</strong> Interválicos bicicleta (5x2 min)</p>
+                    <button class="btn btn-sm btn-success">Agregar Entrenamiento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fas fa-chart-line me-2"></i>Resumen Semanal de Actividad
+                </div>
+                <div class="card-body">
+                    <canvas id="graficoResumen"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('graficoResumen').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
+                datasets: [{
+                    label: 'Km completados',
+                    data: [12, 15, 10, 18, 16, 20, 22],
+                    borderColor: '#2a9d8f',
+                    backgroundColor: 'rgba(42, 157, 143, 0.2)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    });
+</script>

@@ -1,0 +1,84 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .login-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #f4f4f8;
+    }
+
+    .login-card {
+        width: 100%;
+        max-width: 420px;
+        padding: 2rem;
+        border-radius: 1rem;
+        background-color: #ffffff;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+        .login-card .form-control {
+            border-radius: 0.5rem;
+        }
+
+        .login-card .btn-success {
+            background-color: #2a9d8f;
+            border: none;
+            border-radius: 0.5rem;
+        }
+
+            .login-card .btn-success:hover {
+                background-color: #21867a;
+            }
+
+        .login-card h2 {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: #264653;
+        }
+
+    .form-label i {
+        margin-right: 6px;
+    }
+
+    .login-links a {
+        display: block;
+        margin-top: 0.75rem;
+        font-size: 0.9rem;
+        color: #6c757d;
+        text-decoration: none;
+    }
+
+        .login-links a:hover {
+            color: #2a9d8f;
+            text-decoration: underline;
+        }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <h2 class="text-center">Iniciar Sesión</h2>
+        <form>
+            <div class="mb-3">
+                <label class="form-label text-muted"><i class="fas fa-user"></i>Usuario</label>
+                <input type="text" class="form-control" placeholder="Ingrese su usuario" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-muted"><i class="fas fa-lock"></i>Contraseña</label>
+                <input type="password" class="form-control" placeholder="Ingrese su contraseña" />
+            </div>
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success">Ingresar</button>
+            </div>
+
+            <div class="text-center login-links mt-3">
+                <a href="@Url.Action("ForgotPassword", "Account")"><i class="fas fa-unlock-alt me-1"></i>¿Olvidaste tu contraseña?</a>
+                <a href="@Url.Action("Register", "Account")"><i class="fas fa-user-plus me-1"></i>¿No tienes cuenta? Regístrate</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,61 @@
+﻿@{
+    ViewData["Title"] = "Editar Rol";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+        .form-container h2 {
+            font-weight: 700;
+            color: #264653;
+            margin-bottom: 1.5rem;
+        }
+
+    .form-label {
+        color: #264653;
+        font-weight: 500;
+    }
+
+    .btn-success {
+        background-color: #2a9d8f;
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+        .btn-success:hover {
+            background-color: #21867a;
+        }
+</style>
+
+<div class="container-fluid px-3 px-md-4">
+    <div class="form-container mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h2>Editar Rol</h2>
+            <a href="@Url.Action("Roles", "Admin")" class="btn btn-primary btn-sm">Ir a Roles</a>
+        </div>
+        <form>
+            <div class="mb-3">
+                <label for="nombreRol" class="form-label">Nombre del Rol</label>
+                <input type="text" class="form-control" id="nombreRol" value="Administrador">
+            </div>
+
+            <div class="mb-3">
+                <label for="descripcionRol" class="form-label">Descripción</label>
+                <textarea class="form-control" id="descripcionRol" rows="3">Acceso total a todas las funciones del sistema.</textarea>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a href="@Url.Action("Roles", "Admin")" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-success">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>

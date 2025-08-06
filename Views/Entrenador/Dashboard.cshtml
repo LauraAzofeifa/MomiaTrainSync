@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Panel del Entrenador";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .trainer-panel {
+        padding: 4rem 2rem;
+        background-color: #f4f4f8;
+        min-height: 100vh;
+    }
+
+        .trainer-panel h2 {
+            font-weight: 700;
+            margin-bottom: 2rem;
+            color: #264653;
+        }
+
+    .trainer-card {
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        border: none;
+        transition: transform 0.2s ease;
+    }
+
+        .trainer-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .trainer-card .card-header {
+            background-color: #6fb1fc;
+            color: white;
+            font-weight: 600;
+            border-top-left-radius: 1rem;
+            border-top-right-radius: 1rem;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+            .trainer-card .card-header i {
+                margin-right: 0.5rem;
+                font-size: 1.2rem;
+            }
+
+        .trainer-card .card-body {
+            background-color: #ffffff;
+        }
+
+    .btn-primary {
+        background-color: #2a9d8f;
+        border: none;
+    }
+
+        .btn-primary:hover {
+            background-color: #21867a;
+        }
+</style>
+
+<div class="container-fluid trainer-panel">
+    <h2 class="text-center">Panel del Entrenador</h2>
+
+    <div class="row g-4">
+        <!-- Workout Library -->
+        <div class="col-md-6">
+            <div class="card trainer-card h-100">
+                <div class="card-header">
+                    <i class="fas fa-dumbbell"></i><span>Workout Library</span>
+                </div>
+                <div class="card-body">
+                    <p>Accede a entrenamientos reutilizables para asignar a tus atletas con facilidad.</p>
+                    <a href="/Entrenador/Biblioteca" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-right me-1"></i> Ver Biblioteca
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grupos de Atletas -->
+        <div class="col-md-6">
+            <div class="card trainer-card h-100">
+                <div class="card-header">
+                    <i class="fas fa-users"></i><span>Mis Atletas</span>
+                </div>
+                <div class="card-body">
+                    <p>Gestiona tus atletas y realiza un seguimiento personalizado de su progreso y rutinas.</p>
+                    <a asp-controller="Entrenador" asp-action="Atleta" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-right me-1"></i> Gestionar Atletas
+                    </a>
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Calendario -->
+        <div class="col-md-6">
+            <div class="card trainer-card h-100">
+                <div class="card-header">
+                    <i class="fas fa-calendar-alt"></i><span>Calendario del Entrenador</span>
+                </div>
+                <div class="card-body">
+                    <p>Planifica y organiza entrenamientos en una vista semanal para luego asignarlos fácilmente.</p>
+                    <a href="/Entrenador/Calendario" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-right me-1"></i> Ir al Calendario
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

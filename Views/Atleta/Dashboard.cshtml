@@ -1,0 +1,174 @@
+﻿@model MomiaTrainSync.Models.AtletaViewModel
+
+@{
+    ViewData["Title"] = "Dashboard del Atleta";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mt-4 px-3 px-md-4">
+    <h2 class="trainer-title mb-4">Bienvenido, @Model.Nombre</h2>
+
+    <div class="row g-4">
+        <!-- Entrenamiento de hoy + Nota del coach -->
+        <div class="col-12">
+            <div class="card shadow-sm rounded-3 h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-semibold mb-3">
+                        <i class="fas fa-dumbbell me-2 text-primary"></i>Entrenamiento de hoy
+                    </h5>
+
+                    @if (!string.IsNullOrEmpty(Model.RutinaDeHoy))
+                    {
+                        <p><strong>Rutina:</strong> @Model.RutinaDeHoy</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No hay entrenamiento asignado para hoy.</p>
+                    }
+
+                    <hr class="my-3" />
+
+                    <h6 class="fw-semibold">
+                        <i class="fas fa-sticky-note me-2 text-success"></i>Nota del entrenador
+                    </h6>
+                    <p>
+                        @(string.IsNullOrEmpty(Model.NotaDelCoach) ? "Sin notas recientes del entrenador." : Model.NotaDelCoach)
+                    </p>
+
+                    @if (!string.IsNullOrEmpty(Model.RutinaDeHoy))
+                    {
+                        <a href="@Url.Action("DetalleRutina", "Atleta")" class="btn btn-outline-primary mt-3" style="max-width: 180px;">
+                            Ver detalles
+                        </a>
+
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Actividad reciente (rutinas + comentarios) -->
+        <div class="col-12">
+            <div class="card shadow-sm rounded-3 h-100">
+                <div class="card-body d-flex flex-column">
+                    <h5 class="fw-semibold mb-3">
+                        <i class="fas fa-clipboard-check me-2 text-dark"></i>Actividad reciente
+                    </h5>
+
+                    <!-- Historial de rutinas -->
+                    <h6 class="text-muted fw-semibold mt-2 mb-2">
+                        <i class="fas fa-history me-2 text-secondary"></i>Rutinas anteriores
+                    </h6>
+                    @if (Model.HistorialRutinas?.Any() == true)
+                    {
+                        <ul class="list-group list-group-flush mb-3">
+                            @foreach (var r in Model.HistorialRutinas)
+                            {
+                                <li class="list-group-item small border-0 px-0">
+                                    <strong>@r.Fecha:</strong> @r.Descripcion
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No hay rutinas anteriores registradas.</p>
+                    }
+
+                    <!-- Comentarios recientes -->
+                    <h6 class="text-muted fw-semibold mt-3 mb-2">
+                        <i class="fas fa-comments me-2 text-info"></i>Comentarios recientes
+                    </h6>
+                    @if (Model.Comentarios?.Any() == true)
+                    {
+                        <ul class="list-group list-group-flush">
+                            @foreach (var c in Model.Comentarios)
+                            {
+                                <li class="list-group-item small border-0 px-0">
+                                    <strong>@c.Fecha:</strong> @c.Texto
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <p class="text-muted">No has registrado comentarios aún.</p>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Calendario de rutinas -->
+        <div class="col-12">
+            <div class="card shadow-sm rounded-3 h-100 mb-4">
+                <div class="card-body">
+                    <h5 class="fw-semibold mb-4">
+                        <i class="fas fa-calendar-alt me-2 text-primary"></i>Calendario de Rutinas
+                    </h5>
+                    <div id="calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para detalle de rutina -->
+<div class="modal fade" id="rutinaModal" tabindex="-1" aria-labelledby="rutinaModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="rutinaModalLabel">Detalle de la Rutina</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="rutinaDetalleBody">
+                <!-- Contenido dinámico -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                height: 'auto',
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: ''
+                },
+                events: [
+                    {
+                        title: 'VO2Max - 40 min',
+                        date: '2025-08-05',
+                        description: 'Intervalos de alta intensidad con enfoque en respiración.'
+                    },
+                    {
+                        title: 'Rodaje suave - 30 min',
+                        date: '2025-08-07',
+                        description: 'Sesión de recuperación activa.'
+                    },
+                    {
+                        title: 'Técnica de zancada',
+                        date: '2025-08-10',
+                        description: 'Postura, cadencia, contacto del pie.'
+                    }
+                ],
+                eventClick: function (info) {
+                    info.jsEvent.preventDefault();
+                    const desc = info.event.extendedProps.description || 'Sin detalles.';
+                    const title = info.event.title;
+
+                    document.getElementById('rutinaModalLabel').textContent = title;
+                    document.getElementById('rutinaDetalleBody').textContent = desc;
+                    new bootstrap.Modal(document.getElementById('rutinaModal')).show();
+                }
+            });
+
+            calendar.render();
+        });
+    </script>
+}

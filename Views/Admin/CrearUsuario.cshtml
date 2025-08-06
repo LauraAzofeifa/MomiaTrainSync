@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Agregar Usuario";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: auto;
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+        .form-container h2 {
+            font-weight: 700;
+            color: #264653;
+            margin-bottom: 1.5rem;
+        }
+
+    .form-label {
+        color: #264653;
+        font-weight: 500;
+    }
+
+    .btn-success {
+        background-color: #2a9d8f;
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+        .btn-success:hover {
+            background-color: #21867a;
+        }
+
+    .note {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-top: -0.5rem;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="container-fluid px-3 px-md-4">
+    <div class="form-container mt-4">
+        <h2>Agregar Nuevo Usuario</h2>
+        <form>
+            <div class="mb-3">
+                <label for="nombre" class="form-label">Nombre completo</label>
+                <input type="text" class="form-control" id="nombre" placeholder="Ej: Laura Azofeifa">
+            </div>
+            <div class="mb-3">
+                <label for="correo" class="form-label">Correo electrónico</label>
+                <input type="email" class="form-control" id="correo" placeholder="Ej: laura@example.com">
+            </div>
+            <div class="mb-3">
+                <label for="rol" class="form-label">Rol</label>
+                <select class="form-select" id="rol">
+                    <option selected disabled>Seleccione un rol</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Entrenador">Entrenador</option>
+                    <option value="Atleta">Atleta</option>
+                </select>
+                <div class="note">
+                    </br>
+                    <b>La contraseña se generará automáticamente y será enviada al correo proporcionado.</b>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="/Admin/Usuarios" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-success">Guardar Usuario</button>
+            </div>
+        </form>
+    </div>
+</div>

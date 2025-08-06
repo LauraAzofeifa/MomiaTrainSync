@@ -1,0 +1,211 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Admin</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
+
+    <!-- FullCalendar -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
+
+    <style>
+        body {
+            margin: 0;
+            background-color: #f4f4f8;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #264653;
+            color: white;
+            transition: width 0.3s;
+        }
+
+            .sidebar.collapsed {
+                width: 80px;
+            }
+
+            .sidebar .nav-link {
+                color: white;
+                padding: 1rem;
+                display: flex;
+                align-items: center;
+                white-space: nowrap;
+                font-size: 0.95rem;
+            }
+
+                .sidebar .nav-link i {
+                    margin-right: 1rem;
+                }
+
+            .sidebar.collapsed .nav-link span {
+                display: none;
+            }
+
+            .sidebar .collapse .nav-link {
+                padding-left: 2.5rem;
+                font-size: 0.9rem;
+            }
+
+        .toggle-btn {
+            background-color: transparent;
+            border: none;
+            color: white;
+            padding: 1rem;
+            width: 100%;
+            text-align: left;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+        }
+
+        .btn-primary {
+            background-color: #2a9d8f;
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background-color: #21867a;
+            }
+
+        footer {
+            text-align: center;
+            padding: 1rem;
+            background-color: #264653;
+            color: white;
+            margin-top: 2rem;
+        }
+
+        .accordion-header button {
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Sidebar -->
+        <div id="sidebar" class="sidebar">
+            <button class="toggle-btn" onclick="toggleSidebar()">
+                <i class="fas fa-bars"></i>
+                <span>Menú</span>
+            </button>
+
+            <div class="accordion nav flex-column" id="accordionMenu">
+
+                <!-- Admin -->
+                <div class="accordion-item bg-transparent border-0">
+                    <h2 class="accordion-header">
+                        <button class="nav-link collapsed w-100 text-start bg-transparent border-0 text-white px-3" data-bs-toggle="collapse" data-bs-target="#adminMenu" aria-expanded="true" aria-controls="adminMenu">
+                            <i class="fas fa-shield-alt me-2"></i><span>Admin</span>
+                        </button>
+                    </h2>
+                    <div id="adminMenu" class="accordion-collapse collapse show" data-bs-parent="#accordionMenu">
+                        <div class="accordion-body p-0">
+                            <a class="nav-link" href="/Admin/Dashboard"><i class="fas fa-tachometer-alt me-2"></i><span>Dashboard</span></a>
+                            <a class="nav-link" href="/Admin/Usuarios"><i class="fas fa-users me-2"></i><span>Usuarios</span></a>
+                            <a class="nav-link" href="/Admin/Roles"><i class="fas fa-user-tag me-2"></i><span>Roles</span></a>
+                            <a class="nav-link" href="/Admin/Permisos"><i class="fas fa-key me-2"></i><span>Permisos</span></a>
+                            <a class="nav-link" href="/Admin/Metricas"><i class="fas fa-chart-bar me-2"></i><span>Métricas</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entrenador -->
+                <div class="accordion-item bg-transparent border-0">
+                    <h2 class="accordion-header">
+                        <button class="nav-link collapsed w-100 text-start bg-transparent border-0 text-white px-3" data-bs-toggle="collapse" data-bs-target="#entrenadorMenu" aria-expanded="false" aria-controls="entrenadorMenu">
+                            <i class="fas fa-user-cog me-2"></i><span>Entrenador</span>
+                        </button>
+                    </h2>
+                    <div id="entrenadorMenu" class="accordion-collapse collapse" data-bs-parent="#accordionMenu">
+                        <div class="accordion-body p-0">
+                            <a class="nav-link" href="/Entrenador/Dashboard"><i class="fas fa-tachometer-alt me-2"></i><span>Dashboard</span></a>
+                            <a class="nav-link" href="/Entrenador/Biblioteca"><i class="fas fa-book me-2"></i><span>Workout Library</span></a>
+                            <a class="nav-link" href="/Entrenador/Atleta"><i class="fas fa-users-viewfinder me-2"></i><span>Mis Atletas</span></a>
+                            <a class="nav-link" href="/Entrenador/Calendario"><i class="fas fa-calendar-days me-2"></i><span>Calendario</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Atleta -->
+                <div class="accordion-item bg-transparent border-0">
+                    <h2 class="accordion-header">
+                        <button class="nav-link collapsed w-100 text-start bg-transparent border-0 text-white px-3" data-bs-toggle="collapse" data-bs-target="#atletaMenu" aria-expanded="false" aria-controls="atletaMenu">
+                            <i class="fas fa-running me-2"></i><span>Atleta</span>
+                        </button>
+                    </h2>
+                    <div id="atletaMenu" class="accordion-collapse collapse" data-bs-parent="#accordionMenu">
+                        <div class="accordion-body p-0">
+                            <a class="nav-link" href="/Atleta/Dashboard"><i class="fas fa-tachometer-alt me-2"></i><span>Dashboard</span></a>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Volver -->
+                <a class="nav-link" href="/Home/Index"><i class="fas fa-arrow-left me-2"></i><span>Volver al sitio</span></a>
+            </div>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="main-content">
+            @RenderBody()
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+
+    @RenderSection("Scripts", required: false)
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById("sidebar");
+            const isCollapsed = sidebar.classList.toggle("collapsed");
+            localStorage.setItem("sidebar-collapsed", isCollapsed);
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            if (localStorage.getItem("sidebar-collapsed") === "true") {
+                document.getElementById("sidebar").classList.add("collapsed");
+            }
+
+            document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function (el) {
+                el.addEventListener("click", function (e) {
+                    const target = document.querySelector(el.getAttribute("data-bs-target"));
+                    if (target && target.classList.contains("show")) {
+                        e.preventDefault();
+                        const collapse = bootstrap.Collapse.getInstance(target);
+                        collapse.hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
