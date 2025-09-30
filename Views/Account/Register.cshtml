@@ -36,25 +36,37 @@
     .form-label i {
         margin-right: 6px;
     }
+
+    .error-message {
+        color: #e63946;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
 </style>
 
 <div class="account-form-container">
     <div class="account-card">
         <h2 class="text-center">Crear Cuenta</h2>
-        <form>
+        <form asp-action="Register" asp-controller="Account" method="post">
             <div class="mb-3">
                 <label class="form-label text-muted"><i class="fas fa-user"></i>Nombre completo</label>
-                <input type="text" class="form-control" placeholder="Ingrese su nombre" />
+                <input type="text" name="Nombre" class="form-control" placeholder="Ingrese su nombre" required />
             </div>
             <div class="mb-3">
                 <label class="form-label text-muted"><i class="fas fa-envelope"></i>Correo electrónico</label>
-                <input type="email" class="form-control" placeholder="Ingrese su correo" />
+                <input type="email" name="Correo" class="form-control" placeholder="Ingrese su correo" required />
             </div>
             <div class="mb-3">
                 <label class="form-label text-muted"><i class="fas fa-lock"></i>Contraseña</label>
-                <input type="password" class="form-control" placeholder="Ingrese su contraseña" />
+                <input type="password" name="Contrasena" class="form-control" placeholder="Ingrese su contraseña" required />
             </div>
-            <div class="d-grid">
+
+            @if (ViewBag.Error != null)
+            {
+                <p class="error-message text-center">@ViewBag.Error</p>
+            }
+
+            <div class="d-grid mt-3">
                 <button type="submit" class="btn btn-success">Registrarse</button>
             </div>
             <div class="text-center mt-3">

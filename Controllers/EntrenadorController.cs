@@ -19,10 +19,10 @@ namespace MomiaTrainSync.Controllers
         public IActionResult Detalle(int id)
         {
             // Simulación de datos de atletas
-            var atletas = new List<AtletaViewModel>
+            var atletas = new List<Atleta>
             {
-                new AtletaViewModel { Id = 1, Nombre = "Andrea Vargas", Objetivo = "Maratón 42K", Estado = "Activo" },
-                new AtletaViewModel { Id = 2, Nombre = "Marco Jiménez", Objetivo = "Recuperación post-lesión", Estado = "Inactivo" }
+                new Atleta { Id = 1, Nombre = "Andrea Vargas", Objetivo = "Maratón 42K", Estado = "Activo" },
+                new Atleta { Id = 2, Nombre = "Marco Jiménez", Objetivo = "Recuperación post-lesión", Estado = "Inactivo" }
             };
 
             var atleta = atletas.FirstOrDefault(a => a.Id == id);

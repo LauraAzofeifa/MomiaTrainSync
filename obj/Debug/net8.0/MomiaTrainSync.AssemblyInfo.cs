@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MomiaTrainSync")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+025ccc19f9623fc50b3e1c447ccb185da2c3a1a0")]
 [assembly: System.Reflection.AssemblyProductAttribute("MomiaTrainSync")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MomiaTrainSync")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -9,7 +9,7 @@ namespace MomiaTrainSync.Controllers
     {
         public IActionResult Dashboard()
         {
-            var modelo = new AtletaViewModel
+            var modelo = new Atleta
             {
                 Id = 1,
                 Nombre = "Andrea Vargas",
@@ -46,7 +46,7 @@ namespace MomiaTrainSync.Controllers
 
         public IActionResult DetalleRutina()
         {
-            var modelo = new AtletaViewModel
+            var modelo = new Atleta
             {
                 Nombre = "Andrea Vargas",
                 RutinaDeHoy = "Intervalos VO2Max - 40 min",

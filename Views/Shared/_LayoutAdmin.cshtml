@@ -1,6 +1,6 @@
-﻿@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -95,13 +95,63 @@
             color: white;
             margin-top: 2rem;
         }
-
-        .accordion-header button {
-            font-size: 0.875rem;
-        }
     </style>
 </head>
 <body>
+    <!-- 🔹 Header superior -->
+    <header class="sticky-top shadow-sm bg-white">
+        <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#4a90e2;">
+            <div class="container-fluid">
+                <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-dumbbell me-2"></i> MomiaTrainSync
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+                    <ul class="navbar-nav gap-2">
+                        <li class="nav-item">
+                            <a class="nav-link fw-semibold" asp-controller="Home" asp-action="Index">
+                                <i class="fas fa-home me-1"></i>Inicio
+                            </a>
+                        </li>
+
+                        <!-- Usuario logeado -->
+                        @if (HttpContextAccessor.HttpContext.Session.GetString("UsuarioNombre") != null)
+                        {
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle fw-semibold" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user-circle me-1"></i> @HttpContextAccessor.HttpContext.Session.GetString("UsuarioNombre")
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                    <li class="dropdown-item text-muted">
+                                        Rol: @HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol")
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">
+                                            <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link fw-semibold" asp-controller="Account" asp-action="Login">
+                                    <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- 🔹 Layout con sidebar -->
     <div class="admin-layout">
         <!-- Sidebar -->
         <div id="sidebar" class="sidebar">
@@ -111,11 +161,10 @@
             </button>
 
             <div class="accordion nav flex-column" id="accordionMenu">
-
                 <!-- Admin -->
                 <div class="accordion-item bg-transparent border-0">
                     <h2 class="accordion-header">
-                        <button class="nav-link collapsed w-100 text-start bg-transparent border-0 text-white px-3" data-bs-toggle="collapse" data-bs-target="#adminMenu" aria-expanded="true" aria-controls="adminMenu">
+                        <button class="nav-link collapsed w-100 text-start bg-transparent border-0 text-white px-3" data-bs-toggle="collapse" data-bs-target="#adminMenu" aria-expanded="true">
                             <i class="fas fa-shield-alt me-2"></i><span>Admin</span>
                         </button>
                     </h2>
@@ -129,38 +178,6 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Entrenador -->
-                <div class="accordion-item bg-transparent border-0">
-                    <h2 class="accordion-header">
-                        <button class="nav-link collapsed w-100 text-start bg-transparent border-0 text-white px-3" data-bs-toggle="collapse" data-bs-target="#entrenadorMenu" aria-expanded="false" aria-controls="entrenadorMenu">
-                            <i class="fas fa-user-cog me-2"></i><span>Entrenador</span>
-                        </button>
-                    </h2>
-                    <div id="entrenadorMenu" class="accordion-collapse collapse" data-bs-parent="#accordionMenu">
-                        <div class="accordion-body p-0">
-                            <a class="nav-link" href="/Entrenador/Dashboard"><i class="fas fa-tachometer-alt me-2"></i><span>Dashboard</span></a>
-                            <a class="nav-link" href="/Entrenador/Biblioteca"><i class="fas fa-book me-2"></i><span>Workout Library</span></a>
-                            <a class="nav-link" href="/Entrenador/Atleta"><i class="fas fa-users-viewfinder me-2"></i><span>Mis Atletas</span></a>
-                            <a class="nav-link" href="/Entrenador/Calendario"><i class="fas fa-calendar-days me-2"></i><span>Calendario</span></a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Atleta -->
-                <div class="accordion-item bg-transparent border-0">
-                    <h2 class="accordion-header">
-                        <button class="nav-link collapsed w-100 text-start bg-transparent border-0 text-white px-3" data-bs-toggle="collapse" data-bs-target="#atletaMenu" aria-expanded="false" aria-controls="atletaMenu">
-                            <i class="fas fa-running me-2"></i><span>Atleta</span>
-                        </button>
-                    </h2>
-                    <div id="atletaMenu" class="accordion-collapse collapse" data-bs-parent="#accordionMenu">
-                        <div class="accordion-body p-0">
-                            <a class="nav-link" href="/Atleta/Dashboard"><i class="fas fa-tachometer-alt me-2"></i><span>Dashboard</span></a>
-                        </div>
-                    </div>
-                </div>
-
 
                 <!-- Volver -->
                 <a class="nav-link" href="/Home/Index"><i class="fas fa-arrow-left me-2"></i><span>Volver al sitio</span></a>
@@ -180,7 +197,6 @@
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-
     @RenderSection("Scripts", required: false)
 
     <script>
@@ -194,17 +210,6 @@
             if (localStorage.getItem("sidebar-collapsed") === "true") {
                 document.getElementById("sidebar").classList.add("collapsed");
             }
-
-            document.querySelectorAll('[data-bs-toggle="collapse"]').forEach(function (el) {
-                el.addEventListener("click", function (e) {
-                    const target = document.querySelector(el.getAttribute("data-bs-target"));
-                    if (target && target.classList.contains("show")) {
-                        e.preventDefault();
-                        const collapse = bootstrap.Collapse.getInstance(target);
-                        collapse.hide();
-                    }
-                });
-            });
         });
     </script>
 </body>

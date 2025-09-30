@@ -57,21 +57,34 @@
             color: #2a9d8f;
             text-decoration: underline;
         }
+
+    .error-message {
+        color: #e63946;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+    }
 </style>
 
 <div class="login-container">
     <div class="login-card">
         <h2 class="text-center">Iniciar Sesión</h2>
-        <form>
+
+        <form asp-action="Login" method="post">
             <div class="mb-3">
-                <label class="form-label text-muted"><i class="fas fa-user"></i>Usuario</label>
-                <input type="text" class="form-control" placeholder="Ingrese su usuario" />
+                <label class="form-label text-muted"><i class="fas fa-envelope"></i>Correo</label>
+                <input type="email" name="correo" class="form-control" placeholder="Ingrese su correo" required />
             </div>
             <div class="mb-3">
                 <label class="form-label text-muted"><i class="fas fa-lock"></i>Contraseña</label>
-                <input type="password" class="form-control" placeholder="Ingrese su contraseña" />
+                <input type="password" name="contrasena" class="form-control" placeholder="Ingrese su contraseña" required />
             </div>
-            <div class="d-grid">
+
+            @if (ViewBag.Error != null)
+            {
+                <p class="error-message text-center">@ViewBag.Error</p>
+            }
+
+            <div class="d-grid mt-3">
                 <button type="submit" class="btn btn-success">Ingresar</button>
             </div>
 

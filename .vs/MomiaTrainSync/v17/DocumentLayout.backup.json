@@ -3,8 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|c:\\users\\laura\\desktop\\fidelitas\\vi cuatrimestre\\an\u00E1lisis y modelado de requerimientos\\momiatrainsync\\views\\entrenador\\detalle.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|solutionrelative:views\\entrenador\\detalle.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+      "AbsoluteMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|c:\\users\\laura\\desktop\\fidelitas\\vi cuatrimestre\\an\u00E1lisis y modelado de requerimientos\\momiatrainsync\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|c:\\users\\laura\\desktop\\fidelitas\\vi cuatrimestre\\an\u00E1lisis y modelado de requerimientos\\momiatrainsync\\views\\admin\\editarusuario.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|solutionrelative:views\\admin\\editarusuario.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|c:\\users\\laura\\desktop\\fidelitas\\vi cuatrimestre\\an\u00E1lisis y modelado de requerimientos\\momiatrainsync\\views\\admin\\crearusuario.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|solutionrelative:views\\admin\\crearusuario.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|c:\\users\\laura\\desktop\\fidelitas\\vi cuatrimestre\\an\u00E1lisis y modelado de requerimientos\\momiatrainsync\\momiatrainsync.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|solutionrelative:momiatrainsync.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|c:\\users\\laura\\desktop\\fidelitas\\vi cuatrimestre\\an\u00E1lisis y modelado de requerimientos\\momiatrainsync\\models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|solutionrelative:models\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|c:\\users\\laura\\desktop\\fidelitas\\vi cuatrimestre\\an\u00E1lisis y modelado de requerimientos\\momiatrainsync\\views\\admin\\usuarios.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1764C511-B3CB-4373-8143-E77CAEE5EF4D}|MomiaTrainSync.csproj|solutionrelative:views\\admin\\usuarios.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,23 +34,84 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 3,
           "Children": [
             {
-              "$type": "Bookmark",
-              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Models\\Usuario.cs",
+              "RelativeDocumentMoniker": "Models\\Usuario.cs",
+              "ToolTip": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Models\\Usuario.cs",
+              "RelativeToolTip": "Models\\Usuario.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAkwCAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-29T01:00:52.971Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MomiaTrainSync",
+              "DocumentMoniker": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\MomiaTrainSync.csproj",
+              "RelativeDocumentMoniker": "MomiaTrainSync.csproj",
+              "ToolTip": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\MomiaTrainSync.csproj",
+              "RelativeToolTip": "MomiaTrainSync.csproj",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-09-29T00:58:59.516Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CrearUsuario.cshtml",
+              "DocumentMoniker": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Views\\Admin\\CrearUsuario.cshtml",
+              "RelativeDocumentMoniker": "Views\\Admin\\CrearUsuario.cshtml",
+              "ToolTip": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Views\\Admin\\CrearUsuario.cshtml",
+              "RelativeToolTip": "Views\\Admin\\CrearUsuario.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-29T00:47:49.887Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Detalle.cshtml",
-              "DocumentMoniker": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Views\\Entrenador\\Detalle.cshtml",
-              "RelativeDocumentMoniker": "Views\\Entrenador\\Detalle.cshtml",
-              "ToolTip": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Views\\Entrenador\\Detalle.cshtml",
-              "RelativeToolTip": "Views\\Entrenador\\Detalle.cshtml",
-              "ViewState": "AgIAAAsAAAAAAAAAAAAqwDEAAAAAAAAAAAAAAA==",
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "Controllers\\AdminController.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAwwE4AAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-09-29T00:20:30.168Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EditarUsuario.cshtml",
+              "DocumentMoniker": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Views\\Admin\\EditarUsuario.cshtml",
+              "RelativeDocumentMoniker": "Views\\Admin\\EditarUsuario.cshtml",
+              "ToolTip": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Views\\Admin\\EditarUsuario.cshtml",
+              "RelativeToolTip": "Views\\Admin\\EditarUsuario.cshtml",
+              "ViewState": "AgIAAC4AAAAAAAAAAAAswGsAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-06T04:13:56.281Z",
+              "WhenOpened": "2025-09-29T00:15:17.051Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Usuarios.cshtml",
+              "DocumentMoniker": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Views\\Admin\\Usuarios.cshtml",
+              "RelativeDocumentMoniker": "Views\\Admin\\Usuarios.cshtml",
+              "ToolTip": "C:\\Users\\Laura\\Desktop\\Fidelitas\\VI Cuatrimestre\\An\u00E1lisis y Modelado de Requerimientos\\MomiaTrainSync\\Views\\Admin\\Usuarios.cshtml",
+              "RelativeToolTip": "Views\\Admin\\Usuarios.cshtml",
+              "ViewState": "AgIAADMAAAAAAAAAAAAAAEYAAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-29T00:14:56.981Z",
               "EditorCaption": ""
             }
           ]
