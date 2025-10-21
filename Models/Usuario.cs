@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MomiaTrainSync.Models
 {
@@ -28,5 +29,11 @@ namespace MomiaTrainSync.Models
 
         [Required]
         public DateTime FechaRegistro { get; set; } = DateTime.Now;
+
+        [NotMapped]
+        public Usuario? Entrenador { get; set; }
+
+        [NotMapped]
+        public string? ObjetivoTexto { get; set; }
     }
 }

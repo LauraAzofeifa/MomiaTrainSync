@@ -1,16 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MomiaTrainSync.Data;
 using MomiaTrainSync.Models;
+using MomiaTrainSync.Services;
 
 namespace MomiaTrainSync.Controllers
 {
     public class AccountController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly IEmailService _emailService;
 
-        public AccountController(AppDbContext context)
+        public AccountController(AppDbContext context, IEmailService emailService)
         {
             _context = context;
+            _emailService = emailService;
         }
 
         public IActionResult Login()
@@ -72,9 +75,20 @@ namespace MomiaTrainSync.Controllers
 
             _context.Usuarios.Update(usuario);
             _context.SaveChanges();
+            reestablecerContrasena(correo, tempPassword);
 
             ViewBag.Success = "Se ha restablecido su contraseña. Revise su correo para más instrucciones.";
             return View();
+        }
+
+        public async void reestablecerContrasena(string correoDestino, string tempPassword)
+        {
+            await _emailService.SendEmailAsync(
+                correoDestino,
+                "Bienvenido a MomiaTrainSync",
+                "<h3>Tu contrasena ha sido reestablecida exitosamente. tu nueva contrasena de acceso es: <b>"
+                + tempPassword+ "</b>. Recomendamos cambiarla despues de ingresar.</h3>"
+            );         
         }
 
         public IActionResult Register()

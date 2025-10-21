@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MomiaTrainSync.Data;
 using Microsoft.EntityFrameworkCore;
+using MomiaTrainSync.Data;
+using MomiaTrainSync.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
+
+builder.Services.Configure<EmailSettings>(
+    builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<IEmailService, EmailService>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -40,12 +45,6 @@ app.UseSession();
 app.Use(async (context, next) =>
 {
     var path = context.Request.Path.Value ?? "";
-
-    if (string.IsNullOrWhiteSpace(path) || path == "/" || path.Equals("/Home", StringComparison.OrdinalIgnoreCase))
-    {
-        context.Response.Redirect("/Home/Index");
-        return;
-    }
 
     var rutasPublicas = new[]
     {

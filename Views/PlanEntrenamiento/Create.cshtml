@@ -1,0 +1,88 @@
+﻿@model MomiaTrainSync.Models.PlanEntrenamiento
+
+@{
+    ViewData["Title"] = "Crear Plan de Entrenamiento";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+    var clonData = ViewData["CloneModel"] as MomiaTrainSync.Models.PlanEntrenamiento;
+}
+
+<style>
+    .form-container {
+        max-width: 700px;
+        margin: auto;
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+        .form-container h2 {
+            font-weight: 700;
+            color: #264653;
+            margin-bottom: 1.5rem;
+        }
+
+    .form-label {
+        color: #264653;
+        font-weight: 500;
+    }
+
+    .btn-success {
+        background-color: #2a9d8f;
+        border: none;
+        border-radius: 0.5rem;
+    }
+
+        .btn-success:hover {
+            background-color: #21867a;
+        }
+</style>
+
+<div class="container-fluid px-3 px-md-4">
+    <div class="form-container mt-4">
+        <h2>@(clonData != null ? "Clonar Plan de Entrenamiento" : "Crear nuevo plan de entrenamiento")</h2>
+
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+            <div class="mb-3">
+                <label class="form-label">Seleccionar atleta</label>
+                <select name="IdAtleta" class="form-select" required>
+                    <option value="">-- Seleccione un atleta --</option>
+                    @foreach (var atleta in ViewBag.Atletas)
+                    {
+                        <option value="@atleta.Id">@atleta.Nombre</option>
+                    }
+                </select>
+                @Html.ValidationMessage("IdAtleta", "", new { @class = "text-danger" })
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Objetivo" class="form-label">Objetivo</label>
+                <input asp-for="Objetivo" class="form-control" maxlength="200"
+                       value="@(clonData?.Objetivo ?? Model.Objetivo)"
+                       placeholder="Ej: Aumentar fuerza y resistencia general" />
+                <span asp-validation-for="Objetivo" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Detalle" class="form-label">Detalle del plan</label>
+                <textarea asp-for="Detalle" class="form-control" rows="6">@(
+                    clonData?.Detalle ?? Model.Detalle)</textarea>
+                <span asp-validation-for="Detalle" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+                <button type="submit" class="btn btn-success">Guardar Plan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

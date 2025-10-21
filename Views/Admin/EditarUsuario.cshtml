@@ -48,13 +48,7 @@
     <div class="form-container mt-4">
         <h2>Editar Usuario</h2>
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success">
-                @TempData["SuccessMessage"]
-            </div>
-        }
-
+        
         <form asp-action="EditarUsuario" asp-controller="Admin" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" asp-for="Id" />
@@ -75,7 +69,7 @@
 
             <div class="mb-3">
                 <label asp-for="Rol" class="form-label"></label>
-                <select asp-for="Rol" class="form-select">
+                <select asp-for="Rol" class="form-select" id="rolSelect">
                     <option value="Administrador">Administrador</option>
                     <option value="Entrenador">Entrenador</option>
                     <option value="Atleta">Atleta</option>
@@ -92,6 +86,22 @@
                 <span asp-validation-for="Estado" class="text-danger"></span>
             </div>
 
+            <div class="mb-3" id="entrenadorContainer" style="display:none;">
+                <label class="form-label">Entrenador asignado</label>
+                <select name="EntrenadorId" class="form-select">
+                    <option value="">-- Seleccione un entrenador --</option>
+                    @if (ViewBag.Entrenadores != null)
+                    {
+                        foreach (var entrenador in ViewBag.Entrenadores)
+                        {
+                            var isSelected = Model.Entrenador != null && Model.Entrenador.Id == entrenador.Id;
+
+                            @:<option value="@entrenador.Id" @(isSelected ? "selected=\"selected\"" : "")>@entrenador.Nombre</option>
+                        }
+                    }
+                </select>
+            </div>
+
             <div class="d-flex justify-content-between">
                 <a asp-action="Usuarios" asp-controller="Admin" class="btn btn-outline-secondary">Cancelar</a>
                 <button type="submit" class="btn btn-success">Guardar Usuario</button>
@@ -101,7 +111,23 @@
 </div>
 
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        $(document).ready(function () {
+            const rolSelect = $('#rolSelect');
+            const entrenadorContainer = $('#entrenadorContainer');
+
+            function toggleEntrenador() {
+                if (rolSelect.val() === 'Atleta') {
+                    entrenadorContainer.show();
+                } else {
+                    entrenadorContainer.hide();
+                }
+            }
+
+            toggleEntrenador();
+            rolSelect.on('change', toggleEntrenador);
+        });
+    </script>
 }

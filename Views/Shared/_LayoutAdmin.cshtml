@@ -7,19 +7,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - Admin</title>
-
-    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-
-    <!-- DataTables -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css" />
-
-    <!-- FullCalendar -->
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/main.min.css" rel="stylesheet" />
-
     <style>
         body {
             margin: 0;
@@ -98,7 +89,6 @@
     </style>
 </head>
 <body>
-    <!-- 🔹 Header superior -->
     <header class="sticky-top shadow-sm bg-white">
         <nav class="navbar navbar-expand-lg navbar-dark" style="background-color:#4a90e2;">
             <div class="container-fluid">
@@ -108,7 +98,6 @@
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-
                 <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                     <ul class="navbar-nav gap-2">
                         <li class="nav-item">
@@ -116,8 +105,6 @@
                                 <i class="fas fa-home me-1"></i>Inicio
                             </a>
                         </li>
-
-                        <!-- Usuario logeado -->
                         @if (HttpContextAccessor.HttpContext.Session.GetString("UsuarioNombre") != null)
                         {
                             <li class="nav-item dropdown">
@@ -125,10 +112,13 @@
                                     <i class="fas fa-user-circle me-1"></i> @HttpContextAccessor.HttpContext.Session.GetString("UsuarioNombre")
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                                    <li class="dropdown-item text-muted">
-                                        Rol: @HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol")
-                                    </li>
+                                    <li class="dropdown-item text-muted">Rol: @HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol")</li>
                                     <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <a class="dropdown-item" asp-controller="Perfil" asp-action="Index">
+                                            <i class="fas fa-id-card me-1"></i> Mi Perfil
+                                        </a>
+                                    </li>
                                     <li>
                                         <a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">
                                             <i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión
@@ -151,61 +141,72 @@
         </nav>
     </header>
 
-    <!-- 🔹 Layout con sidebar -->
     <div class="admin-layout">
-        <!-- Sidebar -->
         <div id="sidebar" class="sidebar">
             <button class="toggle-btn" onclick="toggleSidebar()">
                 <i class="fas fa-bars"></i>
-                <span>Menú</span>
             </button>
-
             <div class="accordion nav flex-column" id="accordionMenu">
-                <!-- Admin -->
                 <div class="accordion-item bg-transparent border-0">
                     <h2 class="accordion-header">
                         <button class="nav-link collapsed w-100 text-start bg-transparent border-0 text-white px-3" data-bs-toggle="collapse" data-bs-target="#adminMenu" aria-expanded="true">
-                            <i class="fas fa-shield-alt me-2"></i><span>Admin</span>
+                            <i class="fas fa-shield-alt me-2"></i><span>Acciones</span>
                         </button>
                     </h2>
                     <div id="adminMenu" class="accordion-collapse collapse show" data-bs-parent="#accordionMenu">
                         <div class="accordion-body p-0">
-                            <a class="nav-link" href="/Admin/Dashboard"><i class="fas fa-tachometer-alt me-2"></i><span>Dashboard</span></a>
-                            <a class="nav-link" href="/Admin/Usuarios"><i class="fas fa-users me-2"></i><span>Usuarios</span></a>
-                            <a class="nav-link" href="/Admin/Roles"><i class="fas fa-user-tag me-2"></i><span>Roles</span></a>
-                            <a class="nav-link" href="/Admin/Permisos"><i class="fas fa-key me-2"></i><span>Permisos</span></a>
-                            <a class="nav-link" href="/Admin/Metricas"><i class="fas fa-chart-bar me-2"></i><span>Métricas</span></a>
+                            @if (HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol") == "Administrador")
+                            {
+                                <a class="nav-link" href="/Admin/Dashboard"><i class="fas fa-tachometer-alt me-2"></i><span>Dashboard Admin</span></a>
+                                <a class="nav-link" href="/Admin/Usuarios"><i class="fas fa-users me-2"></i><span>Usuarios</span></a>
+                                <a class="nav-link" href="/Admin/Permisos"><i class="fas fa-key me-2"></i><span>Permisos</span></a>
+                                <a class="nav-link" href="/Admin/Metricas"><i class="fas fa-chart-bar me-2"></i><span>Métricas</span></a>
+                            }
+                            @if (HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol") != "Atleta")
+                            {
+                                <a class="nav-link" href="/Entrenador/Dashboard"><i class="fas fa-tachometer-alt me-2"></i><span>Dashboard Entrenador</span></a>
+                                <a class="nav-link" href="/PlanEntrenamiento/Index"><i class="fas fa-users me-2"></i><span>Planes</span></a>
+                                <a class="nav-link" href="/Entrenador/Atleta"><i class="fas fa-users me-2"></i><span>Mis Atletas</span></a>
+                                <a class="nav-link" href="/Entrenador/Calendario"><i class="fas fa-key me-2"></i><span>Calendario</span></a>
+                            }
+                            @if (HttpContextAccessor.HttpContext.Session.GetString("UsuarioRol") == "Atleta")
+                            {
+                                <a class="nav-link" href="#"><i class="fas fa-tachometer-alt me-2"></i><span>Inicio</span></a>
+                                <a class="nav-link" href="#"><i class="fas fa-users me-2"></i><span>Entrenamientos</span></a>
+                            }
                         </div>
                     </div>
                 </div>
-
-                <!-- Volver -->
                 <a class="nav-link" href="/Home/Index"><i class="fas fa-arrow-left me-2"></i><span>Volver al sitio</span></a>
             </div>
         </div>
 
-        <!-- Contenido principal -->
         <div class="main-content">
+
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
             @RenderBody()
         </div>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.4/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
     @RenderSection("Scripts", required: false)
-
     <script>
         function toggleSidebar() {
             const sidebar = document.getElementById("sidebar");
             const isCollapsed = sidebar.classList.toggle("collapsed");
             localStorage.setItem("sidebar-collapsed", isCollapsed);
         }
-
         document.addEventListener("DOMContentLoaded", function () {
             if (localStorage.getItem("sidebar-collapsed") === "true") {
                 document.getElementById("sidebar").classList.add("collapsed");

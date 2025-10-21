@@ -9,11 +9,7 @@
     <div class="form-container mt-4">
         <h2>Agregar Nuevo Usuario</h2>
 
-        @if (TempData["SuccessMessage"] != null)
-        {
-            <div class="alert alert-success">@TempData["SuccessMessage"]</div>
-        }
-
+        
         <form asp-action="CrearUsuario" asp-controller="Admin" method="post">
             <div class="mb-3">
                 <label asp-for="Nombre" class="form-label"></label>

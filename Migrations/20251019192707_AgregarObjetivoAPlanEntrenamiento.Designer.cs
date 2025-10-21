@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MomiaTrainSync.Data;
 
@@ -11,9 +12,11 @@ using MomiaTrainSync.Data;
 namespace MomiaTrainSync.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251019192707_AgregarObjetivoAPlanEntrenamiento")]
+    partial class AgregarObjetivoAPlanEntrenamiento
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,38 +47,6 @@ namespace MomiaTrainSync.Migrations
                         .IsUnique();
 
                     b.ToTable("EntrenadoresAtletas");
-                });
-
-            modelBuilder.Entity("MomiaTrainSync.Models.Objetivo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Estado")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("FechaCreacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("FechaModificacion")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TextoObjetivo")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("IdUsuario");
-
-                    b.ToTable("Objetivos");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Models.PlanEntrenamiento", b =>
@@ -227,17 +198,6 @@ namespace MomiaTrainSync.Migrations
                     b.Navigation("Atleta");
 
                     b.Navigation("Entrenador");
-                });
-
-            modelBuilder.Entity("MomiaTrainSync.Models.Objetivo", b =>
-                {
-                    b.HasOne("MomiaTrainSync.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Models.PlanEntrenamiento", b =>

@@ -1,5 +1,0 @@
-wwwroot\img\better-runner.jpg
-wwwroot\css\site.css
-wwwroot\js\site.js
-wwwroot\favicon.ico
-wwwroot\img\hero-runner.jpg
