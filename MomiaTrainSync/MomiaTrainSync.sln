@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36414.22 d17.14
+VisualStudioVersion = 17.14.36414.22
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MomiaTrainSync_Web", "MomiaTrainSync_Web\MomiaTrainSync_Web.csproj", "{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MomiaTrainSync.Domain", "MomiaTrainSync.Domain\MomiaTrainSync.Domain.csproj", "{CC81A880-494B-45E6-8C3D-2B7B3E159AA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MomiaTrainSync.Core", "MomiaTrainSync.Core\MomiaTrainSync.Core.csproj", "{11C7E53D-4199-4C8B-BD08-37AFF1F7A2FE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MomiaTrainSync.Infrastructure", "MomiaTrainSync.Infrastructure\MomiaTrainSync.Infrastructure.csproj", "{40C15B65-409D-4B60-AC7C-39C69345F7A6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MomiaTrainSync.Composition", "MomiaTrainSync.Composition\MomiaTrainSync.Composition.csproj", "{856B7095-0C7E-4866-B2BE-73E848CD7E82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC81A880-494B-45E6-8C3D-2B7B3E159AA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC81A880-494B-45E6-8C3D-2B7B3E159AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC81A880-494B-45E6-8C3D-2B7B3E159AA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC81A880-494B-45E6-8C3D-2B7B3E159AA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11C7E53D-4199-4C8B-BD08-37AFF1F7A2FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11C7E53D-4199-4C8B-BD08-37AFF1F7A2FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11C7E53D-4199-4C8B-BD08-37AFF1F7A2FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11C7E53D-4199-4C8B-BD08-37AFF1F7A2FE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40C15B65-409D-4B60-AC7C-39C69345F7A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40C15B65-409D-4B60-AC7C-39C69345F7A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40C15B65-409D-4B60-AC7C-39C69345F7A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40C15B65-409D-4B60-AC7C-39C69345F7A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{856B7095-0C7E-4866-B2BE-73E848CD7E82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{856B7095-0C7E-4866-B2BE-73E848CD7E82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{856B7095-0C7E-4866-B2BE-73E848CD7E82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{856B7095-0C7E-4866-B2BE-73E848CD7E82}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
