@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36414.22 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MomiaTrainSync_Web", "MomiaTrainSync_Web\MomiaTrainSync_Web.csproj", "{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3D37BB2-CF09-41F6-B7FE-3CFD45CC9A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2908E71D-4430-4835-9332-5D59B07931EC}
+	EndGlobalSection
+EndGlobal
