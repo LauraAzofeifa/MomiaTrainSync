@@ -1,0 +1,209 @@
+﻿@{
+    ViewData["Title"] = "Inicio";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* === Hero Section === */
+    .hero-section {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7)), url('@Url.Content("~/img/better-runner.jpg")') center center / cover no-repeat;
+        color: #fff;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 0 1rem;
+    }
+
+        .hero-section h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 700;
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .hero-section p {
+            font-size: 1.2rem;
+            margin-top: 1rem;
+            max-width: 600px;
+        }
+
+        .hero-section .btn-primary {
+            background-color: #2a9d8f;
+            border: none;
+            padding: 0.75rem 1.75rem;
+            margin-top: 2rem;
+            font-size: 1rem;
+            border-radius: 2rem;
+            transition: all 0.3s ease;
+        }
+
+            .hero-section .btn-primary:hover {
+                background-color: #21867a;
+                transform: translateY(-2px);
+            }
+
+    /* === Section Panels === */
+    .section-panel .card {
+        border-radius: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: none;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .section-panel .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+    .section-panel .card-header {
+        background-color: #6fb1fc;
+        color: #fff;
+        font-weight: 600;
+        border-top-left-radius: 1rem;
+        border-top-right-radius: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .section-panel .btn-success {
+        background-color: #2a9d8f;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .section-panel .btn-success:hover {
+            background-color: #21867a;
+        }
+
+    .section-panel .list-group-item {
+        border: none;
+        padding-left: 0;
+    }
+
+    /* === Chart Section === */
+    canvas {
+        max-height: 350px;
+    }
+</style>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <h1>Una Plataforma de Entrenamiento Tan Versátil Como Vos</h1>
+    <p>Diseñada para atletas, entrenadores y equipos que buscan mejorar cada día.</p>
+
+    <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+        <a href="#paneles" class="btn btn-primary">
+            <i class="fas fa-arrow-down me-2"></i>Ver más
+        </a>
+        <a href="@Url.Action("Login", "Account")" class="btn btn-primary">
+            <i class="fas fa-lock me-2"></i>Iniciar Sesión
+        </a>
+    </div>
+</section>
+
+<!-- Paneles Informativos -->
+<section class="container py-5 section-panel" id="paneles">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-dark">Explora Tu Panel Personalizado</h2>
+        <p class="text-muted">Toda tu planificación, progreso y metas en un solo lugar</p>
+    </div>
+
+    <div class="row g-4">
+        <!-- Panel Evento -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-flag-checkered"></i> Evento Principal
+                </div>
+                <div class="card-body">
+                    <h4 class="fw-bold">Maratón de Alajuela</h4>
+                    <p>En <strong>4 semanas</strong></p>
+                    <button class="btn btn-sm btn-success">Agregar Evento</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Metas -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-bullseye"></i> Tus Metas
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item"><i class="fas fa-running me-2"></i>Correr 100 km esta semana</li>
+                        <li class="list-group-item"><i class="fas fa-stopwatch me-2"></i>Mejorar ritmo 5 km</li>
+                    </ul>
+                    <button class="btn btn-sm btn-success">Agregar Meta</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Entrenamientos -->
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-header">
+                    <i class="fas fa-dumbbell"></i> Entrenamientos
+                </div>
+                <div class="card-body">
+                    <p><strong>Hoy:</strong> 10 km carrera – Ritmo cómodo</p>
+                    <p><strong>Mañana:</strong> Interválicos bicicleta (5x2 min)</p>
+                    <button class="btn btn-sm btn-success">Agregar Entrenamiento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Resumen Semanal -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <i class="fas fa-chart-line"></i> Resumen Semanal de Actividad
+                </div>
+                <div class="card-body">
+                    <canvas id="graficoResumen"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const ctx = document.getElementById('graficoResumen').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['L', 'M', 'X', 'J', 'V', 'S', 'D'],
+                    datasets: [{
+                        label: 'Km completados',
+                        data: [12, 15, 10, 18, 16, 20, 22],
+                        borderColor: '#2a9d8f',
+                        backgroundColor: 'rgba(42, 157, 143, 0.2)',
+                        tension: 0.4,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#2a9d8f'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    interaction: { mode: 'nearest', intersect: false },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Kilómetros' } },
+                        x: { title: { display: true, text: 'Días' } }
+                    }
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,43 @@
+﻿@model LoginViewModel
+
+@{
+    ViewData["Title"] = "Iniciar Sesión";
+    Layout = "~/Views/Shared/_LayoutAuth.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/auth.css" />
+}
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Iniciar Sesión</h2>
+        <form asp-action="Login" method="post">
+            @* Espacio de mensajes para ver errores *@
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger text-center"></div>
+
+            @* Para mostrar todos es:
+            <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div> *@
+
+            <div class="mb-3">
+                <label asp-for="Correo" class="form-label text-muted"><i class="fas fa-envelope"></i>Correo</label>
+                <input asp-for="Correo" type="email" class="form-control" placeholder="Ingrese su correo"/>
+                <span asp-validation-for="Correo" class="text-danger small"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Contrasenna" class="form-label text-muted"><i class="fas fa-lock"></i>Contraseña</label>
+                <input asp-for="Contrasenna" type="password" class="form-control" placeholder="Ingrese su contraseña"/>
+                <span asp-validation-for="Contrasenna" class="text-danger small"></span>
+            </div>
+            <div class="d-grid mt-3">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-sign-in-alt me-2"></i>Ingresar
+                </button>
+            </div>
+            <div class="text-center auth-links mt-3">
+                <a href="@Url.Action("ForgotPassword", "Authentication")"><i class="fas fa-unlock-alt me-1"></i>¿Olvidaste tu contraseña?</a>
+                <a href="@Url.Action("Register", "Authentication")"><i class="fas fa-user-plus me-1"></i>¿No tienes cuenta? Regístrate</a>
+            </div>
+        </form>
+    </div>
+</div>
