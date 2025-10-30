@@ -12,7 +12,7 @@ using MomiaTrainSync.Infrastructure.Persistence;
 namespace MomiaTrainSync.Infrastructure.Migrations
 {
     [DbContext(typeof(MomiaTrainSyncDbContext))]
-    [Migration("20251026013837_InitialCreate")]
+    [Migration("20251030174539_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -25,6 +25,37 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("MomiaTrainSync.Domain.Entities.LogErrorEnt", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ExcepcionInterna")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Mensaje")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Origen")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrazaError")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogErrores");
+                });
+
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.PermisoEnt", b =>
                 {
                     b.Property<int>("IdPermiso")
@@ -33,15 +64,15 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPermiso"));
 
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
                     b.Property<bool>("Estado")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
-
-                    b.Property<string>("Nombre")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("IdPermiso");
 
@@ -51,32 +82,32 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         new
                         {
                             IdPermiso = -1,
-                            Estado = true,
-                            Nombre = "GestionarUsuarios"
+                            Codigo = "GESTIONAR_USUARIOS",
+                            Estado = true
                         },
                         new
                         {
                             IdPermiso = -2,
-                            Estado = true,
-                            Nombre = "GestionarEntrenamientos"
+                            Codigo = "GESTIONAR_ENTRENAMIENTOS",
+                            Estado = true
                         },
                         new
                         {
                             IdPermiso = -3,
-                            Estado = true,
-                            Nombre = "VerReportes"
+                            Codigo = "GESTIONAR_REPORTES",
+                            Estado = true
                         },
                         new
                         {
                             IdPermiso = -4,
-                            Estado = true,
-                            Nombre = "EditarPerfil"
+                            Codigo = "GESTIONAR_PERFILES",
+                            Estado = true
                         },
                         new
                         {
                             IdPermiso = -5,
-                            Estado = true,
-                            Nombre = "VerRutina"
+                            Codigo = "GESTIONAR_RUTINAS",
+                            Estado = true
                         });
                 });
 
@@ -239,13 +270,13 @@ namespace MomiaTrainSync.Infrastructure.Migrations
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RolPermisoEnt", b =>
                 {
                     b.HasOne("MomiaTrainSync.Domain.Entities.PermisoEnt", "Permiso")
-                        .WithMany("RolesPermisos")
+                        .WithMany("RolPermisos")
                         .HasForeignKey("IdPermiso")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("MomiaTrainSync.Domain.Entities.RolEnt", "Rol")
-                        .WithMany("RolesPermisos")
+                        .WithMany("RolPermisos")
                         .HasForeignKey("IdRol")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -268,12 +299,12 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.PermisoEnt", b =>
                 {
-                    b.Navigation("RolesPermisos");
+                    b.Navigation("RolPermisos");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RolEnt", b =>
                 {
-                    b.Navigation("RolesPermisos");
+                    b.Navigation("RolPermisos");
 
                     b.Navigation("Usuarios");
                 });

@@ -62,7 +62,7 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations
             builder.Property(p => p.IdPermiso)
                 .ValueGeneratedOnAdd();
 
-            builder.Property(p => p.Nombre)
+            builder.Property(p => p.Codigo)
                 .IsRequired()
                 .HasMaxLength(100);
 
@@ -71,11 +71,11 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations
 
             // Seed inicial de Permisos
             builder.HasData(
-                new PermisoEnt { IdPermiso = -1, Nombre = "GestionarUsuarios", Estado = true },
-                new PermisoEnt { IdPermiso = -2, Nombre = "GestionarEntrenamientos", Estado = true },
-                new PermisoEnt { IdPermiso = -3, Nombre = "VerReportes", Estado = true },
-                new PermisoEnt { IdPermiso = -4, Nombre = "EditarPerfil", Estado = true },
-                new PermisoEnt { IdPermiso = -5, Nombre = "VerRutina", Estado = true }
+                new PermisoEnt { IdPermiso = -1, Codigo = "GESTIONAR_USUARIOS", Estado = true },
+                new PermisoEnt { IdPermiso = -2, Codigo = "GESTIONAR_ENTRENAMIENTOS", Estado = true },
+                new PermisoEnt { IdPermiso = -3, Codigo = "GESTIONAR_REPORTES", Estado = true },
+                new PermisoEnt { IdPermiso = -4, Codigo = "GESTIONAR_PERFILES", Estado = true },
+                new PermisoEnt { IdPermiso = -5, Codigo = "GESTIONAR_RUTINAS", Estado = true }
             );
         }
     }
@@ -89,12 +89,12 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations
             builder.HasKey(rp => new { rp.IdRol, rp.IdPermiso });
 
             builder.HasOne(rp => rp.Rol)
-                .WithMany(r => r.RolesPermisos)
+                .WithMany(r => r.RolPermisos)
                 .HasForeignKey(rp => rp.IdRol)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(rp => rp.Permiso)
-                .WithMany(p => p.RolesPermisos)
+                .WithMany(p => p.RolPermisos)
                 .HasForeignKey(rp => rp.IdPermiso)
                 .OnDelete(DeleteBehavior.Cascade);
 

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using MomiaTrainSync.Core.DTOs;
-using MomiaTrainSync.Core.UseCases;
+using MomiaTrainSync.Core.UseCases.Authentication;
 using MomiaTrainSync.Web.ViewModels;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -39,14 +39,15 @@ namespace MomiaTrainSync.Web.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            var usuario = await _loginUseCase.ExecuteAsync(vm.Correo, vm.Contrasenna);
+            var response = await _loginUseCase.ExecuteAsync(vm.Correo, vm.Contrasenna);
 
-            if (usuario == null)
+            if (!response.Exito)
             {
-                ModelState.AddModelError("", "Usuario o contraseña incorrectos.");
+                ModelState.AddModelError("", response.Mensaje);
                 return View();
             }
 
+            var usuario = response.Datos!;
             var claims = GetClaims(usuario);
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -54,7 +55,7 @@ namespace MomiaTrainSync.Web.Controllers
             var authProperties = new AuthenticationProperties
             {
                 IsPersistent = true, // Mantener la sesión iniciada
-                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(1) // Expira en x
+                ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Expira en x
             };
 
             await HttpContext.SignInAsync(
@@ -93,22 +94,33 @@ namespace MomiaTrainSync.Web.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            var usuario = await _registerUseCase.ExecuteAsync(vm.Nombre, vm.Correo, vm.Contrasenna);
+            var response = await _registerUseCase.ExecuteAsync(vm.Nombre, vm.Correo, vm.Contrasenna);
 
-            if (usuario == null)
+            if (!response.Exito)
             {
-                ModelState.AddModelError("", "Error al crear el usuario. Intente nuevamente.");
+                ModelState.AddModelError("", response.Mensaje);
                 return View(vm);
             }
 
             // Guardar un mensaje temporal que se muestra en el login
-            TempData["SuccessMessage"] = "Usuario registrado con éxito. Ahora puede iniciar sesión.";
+            TempData["SuccessMessage"] = response.Mensaje;
 
             // Redirigir al Login enviando solo el correo
             TempData["PreFillCorreo"] = vm.Correo;
+
             return RedirectToAction("Login");
         }
 
+        #endregion
+
+
+        #region Metodo CerrarSesion
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login");
+        }
         #endregion
     }
 }

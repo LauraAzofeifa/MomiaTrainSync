@@ -1,0 +1,71 @@
+﻿using AutoMapper;
+using MomiaTrainSync.Core.Common;
+using MomiaTrainSync.Core.DTOs;
+using MomiaTrainSync.Core.Interfaces.Repositories;
+using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
+using MomiaTrainSync.Core.Interfaces.Services;
+using MomiaTrainSync.Domain.Entities;
+using MomiaTrainSync.Domain.Enums;
+using System;
+using System.Threading.Tasks;
+
+namespace MomiaTrainSync.Core.UseCases.Authentication
+{
+    public class RegisterUseCase
+    {
+        private readonly IUsuarioRepository _usuarioRepository;
+        private readonly IPasswordHasherService _passwordHasherService;
+        private readonly ILogErrorRepository _logErrorRepository;
+        private readonly IMapper _mapper;
+
+        public RegisterUseCase(
+            IUsuarioRepository usuarioRepository,
+            IPasswordHasherService passwordHasherService,
+            ILogErrorRepository logErrorRepository,
+            IMapper mapper)
+        {
+            _usuarioRepository = usuarioRepository;
+            _passwordHasherService = passwordHasherService;
+            _logErrorRepository = logErrorRepository;
+            _mapper = mapper;
+        }
+
+        public async Task<Response<UsuarioDto>> ExecuteAsync(string nombre, string correo, string contrasena)
+        {
+            try
+            {
+                // 1️⃣ Verificar si el correo ya existe
+                var existingUser = await _usuarioRepository.GetByEmailAsync(correo);
+                if (existingUser != null)
+                    return Response<UsuarioDto>.Fail("El correo ya está registrado. Intenta con otro.");
+
+                // 2️⃣ Hashear la contraseña
+                var hash = _passwordHasherService.HashPassword(contrasena);
+
+                // 3️⃣ Crear la entidad
+                var usuario = new UsuarioEnt
+                {
+                    Nombre = nombre,
+                    Correo = correo,
+                    ContrasennaHash = hash,
+                    Estado = true,
+                    FechaIngreso = DateTime.UtcNow,
+                    RolId = (int)SeguridadEnums.Rol.Atleta // Rol por defecto
+                };
+
+                // 4️⃣ Guardar en base de datos
+                var createdUser = await _usuarioRepository.AddAsync(usuario);
+
+                // 5️⃣ Mapear a DTO
+                var usuarioDto = _mapper.Map<UsuarioDto>(createdUser);
+
+                return Response<UsuarioDto>.Success(usuarioDto, "Usuario registrado exitosamente.");
+            }
+            catch (Exception ex)
+            {
+                await _logErrorRepository.AddLogAsync($"{nameof(RegisterUseCase)}.{nameof(ExecuteAsync)}", ex);
+                return Response<UsuarioDto>.Fail("Ocurrió un error al registrar el usuario. Intenta más tarde.");
+            }
+        }
+    }
+}

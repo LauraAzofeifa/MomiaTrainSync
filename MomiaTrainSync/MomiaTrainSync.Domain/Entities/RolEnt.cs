@@ -13,16 +13,16 @@ namespace MomiaTrainSync.Domain.Entities
         public ICollection<UsuarioEnt> Usuarios { get; set; } = new List<UsuarioEnt>();
 
         // Relación N:M con Permisos
-        public ICollection<RolPermisoEnt> RolesPermisos { get; set; } = new List<RolPermisoEnt>();
+        public ICollection<RolPermisoEnt> RolPermisos { get; set; } = new List<RolPermisoEnt>();
     }
 
     public class PermisoEnt
     {
         public int IdPermiso { get; set; }
-        public string Nombre { get; set; } = string.Empty;
+        public string Codigo { get; set; } = string.Empty;
         public bool Estado { get; set; }
 
-        public ICollection<RolPermisoEnt> RolesPermisos { get; set; } = new List<RolPermisoEnt>();
+        public ICollection<RolPermisoEnt> RolPermisos { get; set; } = new List<RolPermisoEnt>();
     }
 
     public class RolPermisoEnt

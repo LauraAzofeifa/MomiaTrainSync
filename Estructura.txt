@@ -65,6 +65,8 @@ MomiaTrainSync.sln
 │   ├─ DTOs
 │   ├─ UseCases
 │   │   ├─ RegistrarAtletaUseCase.cs
+│   │   ├─ RegisterUseCase.cs
+│   │   ├─ LoginUseCase.cs
 │   │   ├─ AsignarRutinaUseCase.cs
 │   │   └─ EnviarInformeProgresoUseCase.cs
 │   └─ referencia → MomiaTrainSync.Domain

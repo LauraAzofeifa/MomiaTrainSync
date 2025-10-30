@@ -1,16 +1,21 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MomiaTrainSync.Composition;
+using MomiaTrainSync.Core.Common;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddMomiaTrainSyncServices(builder.Configuration);
+
+// Configuracion de EmailSettings
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Authentication/Login";
         options.LogoutPath = "/Authentication/Logout";
-        options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
+        options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
         options.AccessDeniedPath = "/Authentication/AccessDenied"; // Opcional
     });
 

@@ -14,5 +14,8 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories
         Task<UsuarioEnt?> AddAsync(UsuarioEnt usuario);
         Task UpdateAsync(UsuarioEnt usuario);
         Task DeleteAsync(int id);
+
+        // Listas
+        Task <List<UsuarioEnt>> GetAllAsync();
     }
 }

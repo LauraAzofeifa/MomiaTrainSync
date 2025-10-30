@@ -52,16 +52,17 @@ body {
     grid-area: sidebar;
     background-color: #212529;
     color: #fff;
-    padding: 1.5rem;
+    padding: 1.5rem 1rem;
     overflow-y: auto;
     height: 100%;
 }
 
+/* === Links principales === */
 .sidebar .nav-link {
     color: #ccc;
     border-radius: 0.5rem;
     margin-bottom: 5px;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, color 0.2s;
 }
 
 .sidebar .nav-link:hover,
@@ -69,6 +70,71 @@ body {
     background-color: rgba(255, 255, 255, 0.2);
     color: #fff;
 }
+
+/* === Dropdown principal === */
+.sidebar .nav-item.dropdown > a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* === Flecha del dropdown === */
+.sidebar .nav-item.dropdown > a .fa-chevron-down {
+    transition: transform 0.2s;
+}
+
+/* Cuando el menú está abierto, rota la flecha */
+.sidebar .nav-item.dropdown.show > a .fa-chevron-down,
+.sidebar .nav-item.dropdown > a[aria-expanded="true"] .fa-chevron-down {
+    transform: rotate(180deg);
+}
+
+/* 🔽 Cuando el dropdown está abierto: resaltar fondo */
+.sidebar .nav-item.dropdown.show > a,
+.sidebar .nav-item.dropdown > a[aria-expanded="true"] {
+    background-color: rgba(255, 255, 255, 0.1); /* un tono más oscuro */
+    color: #fff;
+}
+
+/* === Submenús del dropdown === */
+.sidebar .nav-item .collapse {
+    background-color: rgba(255, 255, 255, 0.05); /* leve fondo para distinguir el submenú */
+    border-radius: 0.5rem;
+    margin-bottom: 5px;
+    transition: background-color 0.2s ease, height 0.25s ease;
+}
+
+.sidebar .nav-item .collapse .nav-link {
+    padding-left: 1rem;
+    font-size: 0.95rem;
+    color: #bbb;
+    border-radius: 0.5rem;
+    transition: color 0.2s, background-color 0.2s;
+}
+
+.sidebar .nav-item .collapse .nav-link:hover {
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* === Scroll personalizado opcional === */
+.sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+
+
 
 /* === Main === */
 .main-content {
@@ -102,4 +168,60 @@ footer a {
     font-size: 1.5rem;
     margin: 0 10px;
     transition: transform 0.2s;
+}
+
+
+/* === Sidebar responsive para grid === */
+@media (max-width: 768px) {
+
+    /* Oculta sidebar inicialmente */
+    .grid-layout {
+        grid-template-columns: 0 1fr;
+        transition: grid-template-columns 0.3s ease;
+    }
+
+    /* Sidebar visible al abrir */
+    .grid-layout.sidebar-open {
+        grid-template-columns: 230px 1fr;
+    }
+
+    .sidebar {
+        position: fixed;
+        top: auto; /* ahora empieza desde arriba, cubriendo toda la altura */
+        left: 0;
+        width: 230px;
+        height: 100%; /* ocupa todo el alto de la pantalla */
+        z-index: 999; /* debajo del header/nav */
+        padding-top: 60px; /* separa el contenido del sidebar del header */
+        background-color: #212529;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+    /*.sidebar {
+        position: fixed;
+        top: 60px;*/ /* ajusta al alto del header */
+        /*left: 0;
+        width: 230px;
+        height: calc(100% - 60px);
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }*/
+
+    /* Cuando se muestra el sidebar */
+    .sidebar.show {
+        transform: translateX(0);
+    }
+
+    /* Evita que el body se desplace cuando el menú está abierto */
+    body.sidebar-active {
+        overflow: hidden;
+    }
+
+    /* Header por encima del sidebar */
+    .header {
+        position: sticky;
+        top: 0;
+        z-index: 1000; /* mayor que el sidebar */
+    }
 }

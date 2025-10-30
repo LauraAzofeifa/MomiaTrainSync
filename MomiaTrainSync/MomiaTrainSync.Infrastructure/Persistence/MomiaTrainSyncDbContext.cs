@@ -15,6 +15,7 @@ namespace MomiaTrainSync.Infrastructure.Persistence
         public DbSet<RolEnt> Roles { get; set; }
         public DbSet<PermisoEnt> Permisos { get; set; }
         public DbSet<RolPermisoEnt> RolesPermisos { get; set; }
+        public DbSet<LogErrorEnt> LogErrores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

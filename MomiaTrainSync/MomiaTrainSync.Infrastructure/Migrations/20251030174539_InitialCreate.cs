@@ -14,12 +14,29 @@ namespace MomiaTrainSync.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
+                name: "LogErrores",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Origen = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Mensaje = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExcepcionInterna = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TrazaError = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FechaRegistro = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LogErrores", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Permiso",
                 columns: table => new
                 {
                     IdPermiso = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Codigo = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Estado = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
@@ -91,14 +108,14 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
             migrationBuilder.InsertData(
                 table: "Permiso",
-                columns: new[] { "IdPermiso", "Estado", "Nombre" },
+                columns: new[] { "IdPermiso", "Codigo", "Estado" },
                 values: new object[,]
                 {
-                    { -5, true, "VerRutina" },
-                    { -4, true, "EditarPerfil" },
-                    { -3, true, "VerReportes" },
-                    { -2, true, "GestionarEntrenamientos" },
-                    { -1, true, "GestionarUsuarios" }
+                    { -5, "GESTIONAR_RUTINAS", true },
+                    { -4, "GESTIONAR_PERFILES", true },
+                    { -3, "GESTIONAR_REPORTES", true },
+                    { -2, "GESTIONAR_ENTRENAMIENTOS", true },
+                    { -1, "GESTIONAR_USUARIOS", true }
                 });
 
             migrationBuilder.InsertData(
@@ -143,6 +160,9 @@ namespace MomiaTrainSync.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "LogErrores");
+
             migrationBuilder.DropTable(
                 name: "RolPermiso");
 
