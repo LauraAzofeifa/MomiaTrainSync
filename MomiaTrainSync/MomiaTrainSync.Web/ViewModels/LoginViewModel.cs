@@ -11,5 +11,7 @@ namespace MomiaTrainSync.Web.ViewModels
 
         [Required(ErrorMessage = "La contraseña es requerida")]
         public string Contrasenna { get; set; } = string.Empty;
+
+        public bool Recordarme { get; set; } = false;
     }
 }

@@ -24,6 +24,10 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(u => u.Apellido)
+                .IsRequired()
+                .HasMaxLength(100);
+
             builder.Property(u => u.Correo)
                .IsRequired()
                .HasMaxLength(150);

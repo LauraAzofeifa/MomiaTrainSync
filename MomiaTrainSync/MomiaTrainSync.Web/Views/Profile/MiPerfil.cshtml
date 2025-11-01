@@ -1,0 +1,224 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model UsuarioDto
+@{
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold">Mi Perfil</h2>
+        <p class="text-muted">Administra tu información personal y preferencias</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Profile Card -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="position-relative d-inline-block mb-3">
+                    <img src="https://avatar.iran.liara.run/public/24" alt="Profile" class="rounded-circle" width="120" height="120">
+                    <button class="btn btn-primary btn-sm rounded-circle position-absolute bottom-0 end-0" style="width: 36px; height: 36px;">
+                        <i class="bi bi-camera"></i>
+                    </button>
+                </div>
+                <h4 class="fw-bold mb-1">@Model.Nombre @Model.Apellido</h4>
+                <p class="text-muted mb-3">@Model.Rol</p>
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    <span class="badge bg-primary-subtle text-primary">Admin</span>
+                    <span class="badge bg-success-subtle text-success">Activo</span>
+                </div>
+                <hr>
+                <div class="text-start">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-envelope text-muted me-2"></i>
+                        <small class="text-muted">@Model.Correo</small>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-telephone text-muted me-2"></i>
+                        <small class="text-muted">+34 612 345 678</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar text-muted me-2"></i>
+                        <small class="text-muted">Miembro desde @Model.FechaIngreso.ToString("MMMM yyyy", new System.Globalization.CultureInfo("es-ES"))</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        <div class="card mt-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-semibold">Estadísticas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted mb-0 small">Atletas Gestionados</p>
+                        <h4 class="fw-bold mb-0">156</h4>
+                    </div>
+                    <div class="stat-icon bg-primary-subtle">
+                        <i class="bi bi-people text-primary"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted mb-0 small">Sesiones Creadas</p>
+                        <h4 class="fw-bold mb-0">342</h4>
+                    </div>
+                    <div class="stat-icon bg-success-subtle">
+                        <i class="bi bi-calendar-check text-success"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-0 small">Rutinas Activas</p>
+                        <h4 class="fw-bold mb-0">89</h4>
+                    </div>
+                    <div class="stat-icon bg-warning-subtle">
+                        <i class="bi bi-clipboard-data text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Information -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">Información Personal</h5>
+                <button class="btn btn-sm btn-primary" id="editProfileBtn">
+                    <i class="bi bi-pencil me-1"></i>Editar
+                </button>
+            </div>
+            <div class="card-body">
+                <form id="profileForm">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="firstName" class="form-label">Nombre</label>
+                            <input asp-for="Nombre" type="text" class="form-control" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lastName" class="form-label">Apellidos</label>
+                            <input asp-for="Apellido" type="text" class="form-control" id="lastName" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="email" class="form-label">Email</label>
+                            <input asp-for="Correo" type="email" class="form-control" id="email" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="phone" class="form-label">Teléfono</label>
+                            <input type="tel" class="form-control" id="phone" value="+34 612 345 678" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="birthdate" class="form-label">Fecha de Nacimiento</label>
+                            <input type="date" class="form-control" id="birthdate" value="1990-05-15" disabled>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="role" class="form-label">Rol</label>
+                            <input asp-for="Rol" type="text" class="form-control" id="role" disabled>
+                        </div>
+                        <div class="col-12">
+                            <label for="bio" class="form-label">Biografía</label>
+                            <textarea class="form-control" id="bio" rows="3" disabled>Entrenador certificado con más de 10 años de experiencia en entrenamiento deportivo y gestión de equipos. Especializado en desarrollo de atletas de alto rendimiento.</textarea>
+                        </div>
+                    </div>
+                    <div class="mt-3 d-none" id="saveButtons">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-check-lg me-1"></i>Guardar Cambios
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelEditBtn">
+                            <i class="bi bi-x-lg me-1"></i>Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-semibold">Seguridad</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Contraseña</h6>
+                        <small class="text-muted">Última actualización hace 3 meses</small>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        Cambiar
+                    </button>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Autenticación de Dos Factores</h6>
+                        <small class="text-muted">Añade una capa extra de seguridad</small>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="twoFactorSwitch">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">Sesiones Activas</h6>
+                        <small class="text-muted">2 dispositivos conectados</small>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm">
+                        Ver Sesiones
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-semibold">Preferencias</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="language" class="form-label">Idioma</label>
+                        <select class="form-select" id="language">
+                            <option value="es" selected>Español</option>
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="timezone" class="form-label">Zona Horaria</label>
+                        <select class="form-select" id="timezone">
+                            <option value="europe/madrid" selected>Europa/Madrid (GMT+1)</option>
+                            <option value="europe/london">Europa/Londres (GMT)</option>
+                            <option value="america/new_york">América/Nueva York (GMT-5)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications">
+                                Recibir notificaciones por email
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                            <label class="form-check-label" for="pushNotifications">
+                                Recibir notificaciones push
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>Guardar Preferencias
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

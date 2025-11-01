@@ -24,5 +24,12 @@ namespace MomiaTrainSync.Web.Controllers
 
             return View(result.Datos);
         }
+
+        [HttpGet]
+        [Authorize]
+        public IActionResult Calendario()
+        {
+            return View();
+        }
     }
 }

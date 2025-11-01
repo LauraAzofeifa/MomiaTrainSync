@@ -54,7 +54,7 @@ namespace MomiaTrainSync.Web.Controllers
 
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = true, // Mantener la sesión iniciada
+                IsPersistent = vm.Recordarme,
                 ExpiresUtc = DateTimeOffset.UtcNow.AddMinutes(30) // Expira en x
             };
 

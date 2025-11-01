@@ -9,9 +9,14 @@
     <link rel="stylesheet" href="~/css/auth.css" />
 }
 
-<div class="auth-container">
-    <div class="auth-card">
-        <h2>Iniciar Sesión</h2>
+<!-- Right side - Login Form -->
+<div class="col-lg-6 d-flex align-items-center justify-content-center">
+    <div class="auth-form-container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold mb-2">Iniciar Sesión</h2>
+            <p class="text-muted">Ingresa tus credenciales para continuar</p>
+        </div>
+
         <form asp-action="Login" method="post">
             @* Espacio de mensajes para ver errores *@
             <div asp-validation-summary="ModelOnly" class="alert alert-danger text-center"></div>
@@ -20,23 +25,43 @@
             <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div> *@
 
             <div class="mb-3">
-                <label asp-for="Correo" class="form-label text-muted"><i class="fas fa-envelope"></i>Correo</label>
-                <input asp-for="Correo" type="email" class="form-control" placeholder="Ingrese su correo"/>
-                <span asp-validation-for="Correo" class="text-danger small"></span>
+                <label asp-for="Correo" class="form-label">Correo Electrónico</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-envelope"></i>
+                    </span>
+                    <input asp-for="Correo" type="email" class="form-control" placeholder="tu@email.com" />
+                </div>
+                <span asp-validation-for="Correo" class="text-danger"></span>
             </div>
+
+
             <div class="mb-3">
-                <label asp-for="Contrasenna" class="form-label text-muted"><i class="fas fa-lock"></i>Contraseña</label>
-                <input asp-for="Contrasenna" type="password" class="form-control" placeholder="Ingrese su contraseña"/>
-                <span asp-validation-for="Contrasenna" class="text-danger small"></span>
+                <label asp-for="Contrasenna" class="form-label">Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input asp-for="Contrasenna" type="password" class="form-control" placeholder="••••••••">
+                </div>
+                <span asp-validation-for="Contrasenna" class="text-danger"></span>
             </div>
-            <div class="d-grid mt-3">
-                <button type="submit" class="btn btn-success">
-                    <i class="fas fa-sign-in-alt me-2"></i>Ingresar
-                </button>
+
+            <div class="mb-3 form-check">
+                <input asp-for="Recordarme" type="checkbox" class="form-check-input">
+                <label class="form-check-label" for="remember">Recordarme</label>
             </div>
-            <div class="text-center auth-links mt-3">
-                <a href="@Url.Action("ForgotPassword", "Authentication")"><i class="fas fa-unlock-alt me-1"></i>¿Olvidaste tu contraseña?</a>
-                <a href="@Url.Action("Register", "Authentication")"><i class="fas fa-user-plus me-1"></i>¿No tienes cuenta? Regístrate</a>
+
+            <button type="submit" class="btn btn-primary w-100 mb-3">Iniciar Sesión</button>
+
+            <div class="text-center">
+                <a href="@Url.Action("ForgotPassword", "Authentication")" class="text-decoration-none">¿Olvidaste tu contraseña?</a>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="text-center">
+                <p class="mb-0">¿No tienes cuenta? <a href="@Url.Action("Register", "Authentication")" class="text-decoration-none fw-semibold">Regístrate</a></p>
             </div>
         </form>
     </div>

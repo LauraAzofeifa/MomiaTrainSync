@@ -1,227 +1,387 @@
-﻿/* === General === */
-html, body {
-    height: 100%;
+﻿:root {
+    --primary-color: #2563eb;
+    --primary-dark: #1e40af;
+    --secondary-color: #64748b;
+    --success-color: #10b981;
+    --warning-color: #f59e0b;
+    --danger-color: #ef4444;
+    --info-color: #06b6d4;
+    --dark-bg: #0f172a;
+    --sidebar-bg: #1e293b;
+    --sidebar-hover: #334155;
+    --text-light: #94a3b8;
+    --border-color: #e2e8f0;
+}
+
+* {
     margin: 0;
-    background-color: #f4f4f8;
-    overflow:hidden;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    grid-template-columns: 100%;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: #f8fafc;
+    min-height: 100vh;
+}
+
+/* Auth Pages */
+.auth-page {
     height: 100vh;
+    overflow: hidden;
+    position: relative;
+    min-height: 100vh;
+    padding-bottom: 60px;
 }
 
-/* === Navbar === */
-.custom-navbar {
-    background-color: #4a90e2;
-}
-
-.navbar-brand, .nav-link {
-    color: #fff !important;
-}
-
-.navbar-nav .nav-link:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 0.5rem;
-}
-
-/* === Header fijo arriba === */
-.header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-}
-
-/* === GRID PRINCIPAL === */
-.grid-layout {
-    display: grid;
-    grid-template-columns: 230px 1fr;   /* Sidebar + contenido */
-    grid-template-rows: 1fr auto;       /* Main + footer */
-    grid-template-areas:
-        "sidebar main"
-        "sidebar footer";
-    /* resta el alto aproximado del header */
-    height: 100%; 
+.auth-hero {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    position: relative;
     overflow: hidden;
 }
 
-/* === Sidebar === */
-.sidebar {
-    grid-area: sidebar;
-    background-color: #212529;
-    color: #fff;
-    padding: 1.5rem 1rem;
-    overflow-y: auto;
-    height: 100%;
-}
+    .auth-hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-image: url("/placeholder.svg?height=1080&width=1920");
+        background-size: cover;
+        background-position: center;
+        opacity: 0.15;
+    }
 
-/* === Links principales === */
-.sidebar .nav-link {
-    color: #ccc;
-    border-radius: 0.5rem;
-    margin-bottom: 5px;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.sidebar .nav-link:hover,
-.sidebar .nav-link.active {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: #fff;
-}
-
-/* === Dropdown principal === */
-.sidebar .nav-item.dropdown > a {
+.auth-hero-content {
+    position: relative;
+    z-index: 1;
+    padding: 3rem;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-radius: 0.5rem;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-/* === Flecha del dropdown === */
-.sidebar .nav-item.dropdown > a .fa-chevron-down {
-    transition: transform 0.2s;
-}
-
-/* Cuando el menú está abierto, rota la flecha */
-.sidebar .nav-item.dropdown.show > a .fa-chevron-down,
-.sidebar .nav-item.dropdown > a[aria-expanded="true"] .fa-chevron-down {
-    transform: rotate(180deg);
-}
-
-/* 🔽 Cuando el dropdown está abierto: resaltar fondo */
-.sidebar .nav-item.dropdown.show > a,
-.sidebar .nav-item.dropdown > a[aria-expanded="true"] {
-    background-color: rgba(255, 255, 255, 0.1); /* un tono más oscuro */
-    color: #fff;
-}
-
-/* === Submenús del dropdown === */
-.sidebar .nav-item .collapse {
-    background-color: rgba(255, 255, 255, 0.05); /* leve fondo para distinguir el submenú */
-    border-radius: 0.5rem;
-    margin-bottom: 5px;
-    transition: background-color 0.2s ease, height 0.25s ease;
-}
-
-.sidebar .nav-item .collapse .nav-link {
-    padding-left: 1rem;
-    font-size: 0.95rem;
-    color: #bbb;
-    border-radius: 0.5rem;
-    transition: color 0.2s, background-color 0.2s;
-}
-
-.sidebar .nav-item .collapse .nav-link:hover {
-    color: #fff;
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* === Scroll personalizado opcional === */
-.sidebar::-webkit-scrollbar {
-    width: 8px;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255, 255, 255, 0.4);
-}
-
-
-
-
-/* === Main === */
-.main-content {
-    grid-area: main;
-    background-color: #f4f4f8;
-    padding: 2rem;
-    overflow-y: auto;
+    flex-direction: column;
+    justify-content: center;
     height: 100%;
 }
 
-/* === Footer === */
-.footer {
-    grid-area: footer;
-    background-color: #2a2a2a;
-    color: #f8f9fa;
-    text-align: center;
+.auth-form-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 2rem;
+}
+
+.input-group-text {
+    background-color: #f1f5f9;
+    border-right: none;
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+    .input-group .form-control:focus {
+        border-color: #cbd5e1;
+        box-shadow: none;
+    }
+
+.input-group-text {
+    border-color: #cbd5e1;
+}
+
+/* Dashboard Layout */
+.wrapper {
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+}
+
+.sidebar {
+    min-width: 260px;
+    max-width: 260px;
+    background: var(--sidebar-bg);
+    color: #fff;
+    transition: all 0.3s;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 999;
+}
+
+    .sidebar.active {
+        margin-left: -260px;
+    }
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+    .sidebar-header h3 {
+        color: #fff;
+        margin: 0;
+        font-size: 1.5rem;
+    }
+
+.sidebar ul.components {
     padding: 1rem 0;
 }
 
-footer a {
-    color: #b3d4fc;
-    text-decoration: none;
+.sidebar ul li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-    footer a:hover {
-        color: #ffffff;
-        text-decoration: underline;
+    .sidebar ul li a {
+        padding: 0.875rem 1.5rem;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        color: var(--text-light);
+        text-decoration: none;
+        transition: all 0.3s;
     }
 
-.footer-social i {
+        .sidebar ul li a i {
+            margin-right: 0.75rem;
+            font-size: 1.1rem;
+        }
+
+        .sidebar ul li a:hover,
+        .sidebar ul li.active > a {
+            color: #fff;
+            background: var(--sidebar-hover);
+        }
+
+.sidebar ul ul a {
+    font-size: 0.875rem;
+    padding-left: 3.5rem;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+#content {
+    width: 100%;
+    min-height: 98vh;
+    transition: all 0.3s;
+    margin-left: 260px;
+}
+
+    #content.active {
+        margin-left: 0;
+    }
+
+/* Stats Cards */
+.stat-card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .stat-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 1.5rem;
-    margin: 0 10px;
-    transition: transform 0.2s;
 }
 
+/* Activity Feed */
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
 
-/* === Sidebar responsive para grid === */
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+.activity-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.activity-content {
+    margin-left: 1rem;
+    flex: 1;
+}
+
+/* Session Items */
+.session-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+    .session-item:last-child {
+        border-bottom: none;
+    }
+
+/* Event Items */
+.event-item {
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+    .event-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+.event-time {
+    min-width: 50px;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 0.75rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem 1.25rem;
+    background-color: #fff;
+    border-radius: 0.75rem 0.75rem 0 0 !important;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+    .btn-primary:hover {
+        background-color: var(--primary-dark);
+        border-color: var(--primary-dark);
+    }
+
+/* DataTables Customization */
+.dataTables_wrapper .dataTables_length select,
+.dataTables_wrapper .dataTables_filter input {
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: white !important;
+}
+
+/* Calendar Customization */
+.fc {
+    font-family: inherit;
+}
+
+.fc-button-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+    .fc-button-primary:hover {
+        background-color: var(--primary-dark) !important;
+        border-color: var(--primary-dark) !important;
+    }
+
+.fc-event {
+    border-radius: 0.25rem;
+    border: none;
+    padding: 2px 4px;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-
-    /* Oculta sidebar inicialmente */
-    .grid-layout {
-        grid-template-columns: 0 1fr;
-        transition: grid-template-columns 0.3s ease;
-    }
-
-    /* Sidebar visible al abrir */
-    .grid-layout.sidebar-open {
-        grid-template-columns: 230px 1fr;
-    }
-
     .sidebar {
-        position: fixed;
-        top: auto; /* ahora empieza desde arriba, cubriendo toda la altura */
-        left: 0;
-        width: 230px;
-        height: 100%; /* ocupa todo el alto de la pantalla */
-        z-index: 999; /* debajo del header/nav */
-        padding-top: 60px; /* separa el contenido del sidebar del header */
-        background-color: #212529;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }
-    /*.sidebar {
-        position: fixed;
-        top: 60px;*/ /* ajusta al alto del header */
-        /*left: 0;
-        width: 230px;
-        height: calc(100% - 60px);
-        z-index: 1000;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }*/
-
-    /* Cuando se muestra el sidebar */
-    .sidebar.show {
-        transform: translateX(0);
+        margin-left: -260px;
     }
 
-    /* Evita que el body se desplace cuando el menú está abierto */
-    body.sidebar-active {
-        overflow: hidden;
+        .sidebar.active {
+            margin-left: 0;
+        }
+
+    #content {
+        margin-left: 0;
     }
 
-    /* Header por encima del sidebar */
-    .header {
-        position: sticky;
-        top: 0;
-        z-index: 1000; /* mayor que el sidebar */
+        #content.active {
+            margin-left: 260px;
+        }
+}
+
+/* Utilities */
+.bg-primary-subtle {
+    background-color: rgba(37, 99, 235, 0.1);
+}
+
+.bg-success-subtle {
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+.bg-warning-subtle {
+    background-color: rgba(245, 158, 11, 0.1);
+}
+
+.bg-danger-subtle {
+    background-color: rgba(239, 68, 68, 0.1);
+}
+
+.bg-info-subtle {
+    background-color: rgba(6, 182, 212, 0.1);
+}
+
+.bg-secondary-subtle {
+    background-color: rgba(100, 116, 139, 0.1);
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-success {
+    color: var(--success-color) !important;
+}
+
+.text-warning {
+    color: var(--warning-color) !important;
+}
+
+.text-danger {
+    color: var(--danger-color) !important;
+}
+
+.text-info {
+    color: var(--info-color) !important;
+}
+
+/* Footer Styles */
+.footer {
+    margin-top: auto;
+}
+
+    .footer a:hover {
+        color: var(--primary-color) !important;
+        transition: color 0.2s ease;
     }
+
+/* Auth Footer */
+.auth-footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: transparent;
 }
