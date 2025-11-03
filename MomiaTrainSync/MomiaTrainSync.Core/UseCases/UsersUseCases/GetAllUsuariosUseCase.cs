@@ -11,7 +11,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MomiaTrainSync.Core.UseCases
+namespace MomiaTrainSync.Core.UseCases.UsersUseCases
 {
     public class GetUsuariosUseCase
     {

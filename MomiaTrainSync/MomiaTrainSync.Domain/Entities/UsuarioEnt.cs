@@ -12,6 +12,8 @@ namespace MomiaTrainSync.Domain.Entities
         public string Nombre { get; set; } = string.Empty;
         public string Apellido { get; set; } = string.Empty;
         public string Correo { get; set; } = string.Empty;
+        public string Telefono { get; set; } = string.Empty;
+        public DateTime FechaCumpleannos { get; set; }
         public string ContrasennaHash { get; set; } = string.Empty;
         public bool Estado { get; set; }
         public DateTime FechaIngreso { get; set; }

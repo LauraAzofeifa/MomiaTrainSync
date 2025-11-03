@@ -32,6 +32,13 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations
                .IsRequired()
                .HasMaxLength(150);
 
+            builder.Property(u => u.Telefono)
+                .IsRequired()
+                .HasMaxLength(20);
+
+            builder.Property(u => u.FechaCumpleannos)
+                .HasColumnType("date");
+
             builder.Property(u => u.ContrasennaHash)
                 .IsRequired()
                 .HasMaxLength(255);

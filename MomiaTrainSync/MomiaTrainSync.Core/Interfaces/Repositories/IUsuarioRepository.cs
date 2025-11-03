@@ -12,7 +12,7 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories
         Task<UsuarioEnt?> GetByEmailAsync(string email);
         Task<UsuarioEnt?> GetByIdAsync(int id);
         Task<UsuarioEnt?> AddAsync(UsuarioEnt usuario);
-        Task UpdateAsync(UsuarioEnt usuario);
+        Task<bool> UpdateAsync(UsuarioEnt usuario);
         Task DeleteAsync(int id);
 
         // Listas

@@ -7,8 +7,8 @@ using MomiaTrainSync.Core.Interfaces.Repositories;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Services;
 using MomiaTrainSync.Core.Mappings;
-using MomiaTrainSync.Core.UseCases;
 using MomiaTrainSync.Core.UseCases.Authentication;
+using MomiaTrainSync.Core.UseCases.UsersUseCases;
 using MomiaTrainSync.Infrastructure.Persistence;
 using MomiaTrainSync.Infrastructure.Repositories;
 using MomiaTrainSync.Infrastructure.Repositories.Logging;
@@ -37,9 +37,14 @@ namespace MomiaTrainSync.Composition
             services.AddTransient<IEmailService, EmailService>();
 
             // Use Cases
+            #region Usuarios
             services.AddScoped<LoginUseCase>();
             services.AddScoped<RegisterUseCase>();
+
             services.AddScoped<GetUsuariosUseCase>();
+            services.AddScoped<UpdateUsuarioUseCase>();
+            
+            #endregion
 
             // AutoMapper
             services.AddAutoMapper(typeof(MappingProfile));

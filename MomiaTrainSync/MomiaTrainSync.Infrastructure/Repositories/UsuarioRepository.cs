@@ -52,12 +52,12 @@ namespace MomiaTrainSync.Infrastructure.Repositories
             }
         }
 
-        public async Task UpdateAsync(UsuarioEnt usuario)
+        public async Task<bool> UpdateAsync(UsuarioEnt usuario)
         {
             try
             {
                 _context.Usuarios.Update(usuario);
-                await _context.SaveChangesAsync();
+                return await _context.SaveChangesAsync() > 0;
             }
             catch (Exception ex)
             {

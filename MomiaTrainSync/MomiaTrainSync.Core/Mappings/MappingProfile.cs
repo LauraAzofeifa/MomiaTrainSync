@@ -9,11 +9,13 @@ namespace MomiaTrainSync.Core.Mappings
     {
         public MappingProfile()
         {
+            // Entidad → DTO
             CreateMap<UsuarioEnt, UsuarioDto>()
                 .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.Rol.Nombre));
 
-            // Podés seguir agregando otros mapeos:
-            // CreateMap<RolEnt, RolDto>();
+            // DTO → Entidad (necesario para Update)
+            CreateMap<UsuarioDto, UsuarioEnt>()
+                .ForMember(dest => dest.Rol, opt => opt.Ignore()); // Ignora navegación para evitar bucles
         }
     }
 }
