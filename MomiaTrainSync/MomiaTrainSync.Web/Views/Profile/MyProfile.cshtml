@@ -118,7 +118,7 @@
                 </button>
             </div>
             <div class="card-body">
-                <form method="post" asp-controller="Profile" asp-action="ActualizarPerfil" id="profileForm">
+                <form method="post" asp-controller="Profile" asp-action="EditProfile" id="profileForm">
                     @Html.AntiForgeryToken()
                     <div class="row g-3">
                         @Html.HiddenFor(up => up.Update.Id)

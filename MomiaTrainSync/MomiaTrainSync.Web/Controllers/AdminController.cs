@@ -6,6 +6,7 @@ using MomiaTrainSync.Web.Security;
 
 namespace MomiaTrainSync.Web.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private readonly GetUsuariosUseCase _getUsuariosUseCase;
@@ -15,10 +16,13 @@ namespace MomiaTrainSync.Web.Controllers
             _getUsuariosUseCase = getUsuariosUseCase;
         }
 
+        public ActionResult Index() {
+            return View();
+        }
+
         [HttpGet]
-        [Authorize]
-        [Permiso("GESTIONAR_USUARIOS")]
-        public async Task<IActionResult> Users()
+        [Permiso]
+        public async Task<IActionResult> ManageUsers()
         {
             var result = await _getUsuariosUseCase.ExecuteAsync();
 
@@ -26,7 +30,6 @@ namespace MomiaTrainSync.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
         public IActionResult Calendario()
         {
             return View();

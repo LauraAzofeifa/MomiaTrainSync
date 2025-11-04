@@ -59,23 +59,73 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations
             builder.Property(p => p.IdPermiso)
                 .ValueGeneratedOnAdd();
 
-            builder.Property(p => p.IdPermiso)
-                .ValueGeneratedOnAdd();
-
             builder.Property(p => p.Codigo)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.Property(p => p.Descripcion)
+                .HasMaxLength(255);
+
+            builder.Property(p => p.Categoria)
+                .HasMaxLength(100);
+
+            builder.Property(p => p.Ruta)
+                .HasMaxLength(200);
 
             builder.Property(p => p.Estado)
                 .HasDefaultValue(true);
 
             // Seed inicial de Permisos
             builder.HasData(
-                new PermisoEnt { IdPermiso = -1, Codigo = "GESTIONAR_USUARIOS", Estado = true },
-                new PermisoEnt { IdPermiso = -2, Codigo = "GESTIONAR_ENTRENAMIENTOS", Estado = true },
-                new PermisoEnt { IdPermiso = -3, Codigo = "GESTIONAR_REPORTES", Estado = true },
-                new PermisoEnt { IdPermiso = -4, Codigo = "GESTIONAR_PERFILES", Estado = true },
-                new PermisoEnt { IdPermiso = -5, Codigo = "GESTIONAR_RUTINAS", Estado = true }
+                // ADMIN PERMISOS
+                new PermisoEnt
+                {
+                    IdPermiso = -1,
+                    Codigo = "GESTIONAR_USUARIOS",
+                    Descripcion = "Permite administrar usuarios del sistema",
+                    Categoria = "Admin",
+                    Ruta = "/Admin/ManageUsers",
+                    Estado = true
+                },
+                // ENTRENADOR PERMISOS
+                new PermisoEnt
+                {
+                    IdPermiso = -2,
+                    Codigo = "GESTIONAR_ATLETAS",
+                    Descripcion = "Permite gestionar atletas",
+                    Categoria = "Trainer",
+                    Ruta = "/Trainer/ManageAthletes",
+                    Estado = true
+                },
+                // PERFIL PERMISOS
+                new PermisoEnt
+                {
+                    IdPermiso = -3,
+                    Codigo = "VER_PERFIL",
+                    Descripcion = "Permite ver el perfil del usuario",
+                    Categoria = "Profile",
+                    Ruta = "/Profile/MyProfile",
+                    Estado = true
+                },
+                new PermisoEnt
+                {
+                    IdPermiso = -4,
+                    Codigo = "EDITAR_PERFIL",
+                    Descripcion = "Permite editar el perfil del usuario",
+                    Categoria = "Profile",
+                    Ruta = "/Profile/EditProfile",
+                    Estado = true
+                },
+                new PermisoEnt
+                {
+                    IdPermiso = -5,
+                    Codigo = "CAMBIAR_CONTRASENNA_PERFIL",
+                    Descripcion = "Permite cambiar la contraseña del usuario",
+                    Categoria = "Profile",
+                    Ruta = "/Profile/ChangePassword",
+                    Estado = true
+                }
+
             );
         }
     }
@@ -100,17 +150,21 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations
 
             // Seed inicial de RolesPermisos
             builder.HasData(
+                // ADMIN: todos los permisos
                 new RolPermisoEnt { IdRol = -1, IdPermiso = -1 },
                 new RolPermisoEnt { IdRol = -1, IdPermiso = -2 },
                 new RolPermisoEnt { IdRol = -1, IdPermiso = -3 },
                 new RolPermisoEnt { IdRol = -1, IdPermiso = -4 },
                 new RolPermisoEnt { IdRol = -1, IdPermiso = -5 },
 
+                // TRAINER: solo los suyos + perfil
                 new RolPermisoEnt { IdRol = -2, IdPermiso = -2 },
                 new RolPermisoEnt { IdRol = -2, IdPermiso = -3 },
                 new RolPermisoEnt { IdRol = -2, IdPermiso = -4 },
                 new RolPermisoEnt { IdRol = -2, IdPermiso = -5 },
 
+                // ATHLETE: solo perfil
+                new RolPermisoEnt { IdRol = -3, IdPermiso = -3 },
                 new RolPermisoEnt { IdRol = -3, IdPermiso = -4 },
                 new RolPermisoEnt { IdRol = -3, IdPermiso = -5 }
             );

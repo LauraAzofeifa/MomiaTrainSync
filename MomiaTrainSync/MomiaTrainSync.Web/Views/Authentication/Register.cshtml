@@ -19,12 +19,21 @@
 
         <form asp-action="Register" method="post">
             <div class="mb-3">
-                <label asp-for="Nombre" class="form-label">Nombre Completo</label>
+                <label asp-for="Nombre" class="form-label">Nombre</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="bi bi-person"></i></span>
-                    <input asp-for="Nombre" type="text" class="form-control" placeholder="Juan Pérez">
+                    <input asp-for="Nombre" type="text" class="form-control" placeholder="Juan">
                 </div>
                 <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Apellido" class="form-label">Apellido</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input asp-for="Apellido" type="text" class="form-control" placeholder="Pérez">
+                </div>
+                <span asp-validation-for="Apellido" class="text-danger"></span>
             </div>
 
             <div class="mb-3">

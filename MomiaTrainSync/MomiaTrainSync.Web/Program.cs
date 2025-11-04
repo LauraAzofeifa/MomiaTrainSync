@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using MomiaTrainSync.Composition;
 using MomiaTrainSync.Core.Common;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,8 +14,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Authentication/Login";
         options.LogoutPath = "/Authentication/Logout";
+        options.AccessDeniedPath = "/Error/403";
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-        options.AccessDeniedPath = "/Authentication/AccessDenied"; // Opcional
+        options.SlidingExpiration = true;
     });
 
 // Add services to the container.
@@ -27,9 +27,15 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    // Captura errores globales (500, excepciones no controladas)
+    app.UseExceptionHandler("/Error");
+
     app.UseHsts();
+}
+else
+{
+    // En desarrollo muestra la página detallada de error
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
@@ -37,7 +43,10 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
 app.MapControllerRoute(
     name: "default",

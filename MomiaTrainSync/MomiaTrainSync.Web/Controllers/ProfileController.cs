@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MomiaTrainSync.Core.DTOs;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
+using MomiaTrainSync.Web.Security;
 using MomiaTrainSync.Web.ViewModels;
 using System.Linq;
 using System.Security.Claims;
@@ -33,7 +34,8 @@ namespace MomiaTrainSync.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> MiPerfil()
+        [Permiso]
+        public async Task<IActionResult> MyProfile()
         {
             var userId = GetCurrentUserId();
             if (userId is null)
@@ -64,43 +66,8 @@ namespace MomiaTrainSync.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CambiarContrasenna(ProfileViewModel vm)
-        {
-            ModelState.Clear();
-            if (!TryValidateModel(vm.ChangePassword, nameof(vm.ChangePassword)))
-            {
-                TempData["ShowModal"] = "changePasswordModal";
-                return View(nameof(MiPerfil), vm);
-            }
-
-            var userId = GetCurrentUserId();
-            if (userId is null)
-                return Unauthorized();
-
-            var response = await _changePasswordUsuarioUseCase.ExecuteAsync(
-                usuarioId: userId.Value,
-                oldPassword: vm.ChangePassword.CurrentPassword,
-                newPassword: vm.ChangePassword.NewPassword
-            );
-
-            if (!response.Exito)
-            {
-                TempData["ErrorMessage"] = response.Mensaje ?? "Error al cambiar la contraseña.";
-                TempData["ShowModal"] = "changePasswordModal"; // <--- vuelve a abrir modal
-                return View(nameof(MiPerfil), vm);
-            }
-
-            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] =
-                response.Mensaje ?? (response.Exito
-                    ? "Contraseña actualizada correctamente."
-                    : "Error al actualizar la contraseña.");
-
-            return RedirectToAction(nameof(MiPerfil));
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ActualizarPerfil(ProfileViewModel vm)
+        [Permiso]
+        public async Task<IActionResult> EditProfile(ProfileViewModel vm)
         {
             var userId = GetCurrentUserId();
             if (userId is null || vm.Update.Id != userId)
@@ -108,7 +75,7 @@ namespace MomiaTrainSync.Web.Controllers
 
             ModelState.Clear();
             if (!TryValidateModel(vm.Update, nameof(vm.Update)))
-                return RedirectToAction(nameof(MiPerfil));
+                return View(nameof(MyProfile), vm);
 
             var dto = new UsuarioDto
             {
@@ -127,7 +94,44 @@ namespace MomiaTrainSync.Web.Controllers
                     ? "Perfil actualizado correctamente."
                     : "Error al actualizar el perfil.");
 
-            return RedirectToAction(nameof(MiPerfil));
+            return RedirectToAction(nameof(MyProfile));
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Permiso]
+        public async Task<IActionResult> ChangePassword(ProfileViewModel vm)
+        {
+            ModelState.Clear();
+            if (!TryValidateModel(vm.ChangePassword, nameof(vm.ChangePassword)))
+            {
+                TempData["ShowModal"] = "changePasswordModal";
+                return View(nameof(MyProfile), vm);
+            }
+
+            var userId = GetCurrentUserId();
+            if (userId is null)
+                return Unauthorized();
+
+            var response = await _changePasswordUsuarioUseCase.ExecuteAsync(
+                usuarioId: userId.Value,
+                oldPassword: vm.ChangePassword.CurrentPassword,
+                newPassword: vm.ChangePassword.NewPassword
+            );
+
+            if (!response.Exito)
+            {
+                TempData["ErrorMessage"] = response.Mensaje ?? "Error al cambiar la contraseña.";
+                TempData["ShowModal"] = "changePasswordModal"; // <--- vuelve a abrir modal
+                return View(nameof(MyProfile), vm);
+            }
+
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] =
+                response.Mensaje ?? (response.Exito
+                    ? "Contraseña actualizada correctamente."
+                    : "Error al actualizar la contraseña.");
+
+            return RedirectToAction(nameof(MyProfile));
         }
     }
 }

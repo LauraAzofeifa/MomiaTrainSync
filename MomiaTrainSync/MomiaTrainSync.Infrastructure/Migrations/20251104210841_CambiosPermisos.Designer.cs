@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MomiaTrainSync.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using MomiaTrainSync.Infrastructure.Persistence;
 namespace MomiaTrainSync.Infrastructure.Migrations
 {
     [DbContext(typeof(MomiaTrainSyncDbContext))]
-    partial class MomiaTrainSyncDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251104210841_CambiosPermisos")]
+    partial class CambiosPermisos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,11 +64,6 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPermiso"));
 
-                    b.Property<string>("Categoria")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<string>("Codigo")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -94,7 +92,6 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         new
                         {
                             IdPermiso = -1,
-                            Categoria = "Admin",
                             Codigo = "GESTIONAR_USUARIOS",
                             Descripcion = "Permite administrar usuarios del sistema",
                             Estado = true,
@@ -103,7 +100,6 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         new
                         {
                             IdPermiso = -2,
-                            Categoria = "Trainer",
                             Codigo = "GESTIONAR_ATLETAS",
                             Descripcion = "Permite gestionar atletas",
                             Estado = true,
@@ -112,7 +108,6 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         new
                         {
                             IdPermiso = -3,
-                            Categoria = "Profile",
                             Codigo = "VER_PERFIL",
                             Descripcion = "Permite ver el perfil del usuario",
                             Estado = true,
@@ -121,7 +116,6 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         new
                         {
                             IdPermiso = -4,
-                            Categoria = "Profile",
                             Codigo = "EDITAR_PERFIL",
                             Descripcion = "Permite editar el perfil del usuario",
                             Estado = true,
@@ -130,7 +124,6 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         new
                         {
                             IdPermiso = -5,
-                            Categoria = "Profile",
                             Codigo = "CAMBIAR_CONTRASENNA_PERFIL",
                             Descripcion = "Permite cambiar la contraseña del usuario",
                             Estado = true,

@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<UsuarioDto>
 
 @{
-    ViewData["Title"] = "Users";
+    ViewData["Title"] = "Administrar Usuarios";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -83,43 +83,45 @@
 </div>
 
 
-<!-- Add Athlete Modal -->
-<div class="modal fade" id="addAthleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Agregar Nuevo Atleta</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="addAthleteForm">
-                    <div class="mb-3">
-                        <label for="athleteName" class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-control" id="athleteName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="athleteEmail" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="athleteEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="athleteCoach" class="form-label">Entrenador</label>
-                        <select class="form-select" id="athleteCoach" required>
-                            <option value="">Seleccionar entrenador</option>
-                            <option value="ana">Ana López</option>
-                            <option value="pedro">Pedro Sánchez</option>
-                            <option value="laura">Laura Díaz</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="athleteSport" class="form-label">Deporte</label>
-                        <input type="text" class="form-control" id="athleteSport" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary">Guardar Atleta</button>
+@section Modals {
+    <!-- Add Athlete Modal -->
+    <div class="modal fade" id="addAthleteModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Nuevo Atleta</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addAthleteForm">
+                        <div class="mb-3">
+                            <label for="athleteName" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="athleteName" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="athleteEmail" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="athleteEmail" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="athleteCoach" class="form-label">Entrenador</label>
+                            <select class="form-select" id="athleteCoach" required>
+                                <option value="">Seleccionar entrenador</option>
+                                <option value="ana">Ana López</option>
+                                <option value="pedro">Pedro Sánchez</option>
+                                <option value="laura">Laura Díaz</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="athleteSport" class="form-label">Deporte</label>
+                            <input type="text" class="form-control" id="athleteSport" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary">Guardar Atleta</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}

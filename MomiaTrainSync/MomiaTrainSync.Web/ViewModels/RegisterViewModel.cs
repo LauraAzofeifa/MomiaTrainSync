@@ -9,6 +9,11 @@ namespace MomiaTrainSync.Web.ViewModels
             ErrorMessage = "El nombre solo puede contener letras y espacios")]
         public string Nombre { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "El apellido es requerido")]
+        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$",
+            ErrorMessage = "El apellido solo puede contener letras y espacios")]
+        public string Apellido { get; set; } = string.Empty;
+
         [Required(ErrorMessage = "El correo es requerido")]
         [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
             ErrorMessage = "Correo no válido. Debe tener el formato usuario@dominio.com")]

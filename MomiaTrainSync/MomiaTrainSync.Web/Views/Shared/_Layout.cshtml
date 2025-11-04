@@ -56,7 +56,7 @@
                             <i class="bi bi-chevron-down ms-auto"></i>
                         </a>
                         <ul class="collapse list-unstyled" id="routinesSubmenu">
-                            <li><a asp-controller="Admin" asp-action="Users"><i class="bi bi-people"></i>Usuarios</a></li>
+                            <li><a asp-controller="Admin" asp-action="ManageUsers"><i class="bi bi-people"></i>Usuarios</a></li>
                             <li><a asp-controller="Admin" asp-action="Permises"><i class="bi bi-key"></i>Permisos</a></li>
                             <li><a asp-controller="Admin" asp-action="Metrics"><i class="bi bi-people"></i>Métricas</a></li>
                         </ul>
@@ -78,15 +78,15 @@
                 @if (User.IsInRole("Entrenador"))
                 {
                     <li class="active">
-                        <a asp-controller="Home" asp-action="Index">
+                        <a asp-controller="Tainer" asp-action="Index">
                             <i class="bi bi-speedometer2"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
                     <li>
-                        <a href="athletes.html">
+                        <a href="@Url.Action("ManageAthletes", "Trainer")">
                             <i class="bi bi-people"></i>
-                            <span>Atletas</span>
+                            <span>Mis Atletas</span>
                         </a>
                     </li>
                     <li>
@@ -159,7 +159,7 @@
                                 <i class="bi bi-chevron-down"></i>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="@Url.Action("MiPerfil","Profile")"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
+                                <li><a class="dropdown-item" href="@Url.Action("MyProfile","Profile")"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
                                 <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>

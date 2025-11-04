@@ -21,23 +21,55 @@ namespace MomiaTrainSync.Infrastructure.Repositories
             _logErrorRepository = logErrorRepository;
         }
 
-        public async Task<bool> HasPermissionAsync(int userId, string permissionName)
+        public async Task<bool> HasPermissionAsync(int userId, string route)
         {
             try
             {
-                return await _context.Usuarios
+                route = NormalizeRoute(route);
+
+                var usuario = await _context.Usuarios
+                    .AsNoTracking()
                     .Include(u => u.Rol)
-                    .ThenInclude(r => r.RolPermisos)
-                    .ThenInclude(rp => rp.Permiso)
-                    .AnyAsync(u =>
-                        u.Id == userId &&
-                        u.Rol.RolPermisos.Any(rp => rp.Permiso.Codigo == permissionName));
+                        .ThenInclude(r => r.RolPermisos)
+                            .ThenInclude(rp => rp.Permiso)
+                    .FirstOrDefaultAsync(u => u.Id == userId);
+
+                if (usuario == null)
+                    return false;
+
+                // 👑 El Administrador tiene acceso a todo
+                if (usuario.Rol.Nombre.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                    return true;
+
+                // 🔐 Validar si la ruta está asociada a su rol
+                return usuario.Rol.RolPermisos.Any(rp =>
+                    rp.Permiso.Estado &&
+                    NormalizeRoute(rp.Permiso.Ruta) == route);
             }
             catch (Exception ex)
             {
                 await _logErrorRepository.AddLogAsync($"{nameof(PermisoRepository)}.{nameof(HasPermissionAsync)}", ex);
                 return false;
             }
+        }
+
+        // === Helper interno ===
+        private static string NormalizeRoute(string? route)
+        {
+            if (string.IsNullOrWhiteSpace(route))
+                return string.Empty;
+
+            route = route.ToLowerInvariant().Trim();
+
+            // Quitar querystring y slash final
+            var qIndex = route.IndexOf('?');
+            if (qIndex > 0)
+                route = route[..qIndex];
+
+            if (route.EndsWith("/"))
+                route = route[..^1];
+
+            return route;
         }
     }
 }
