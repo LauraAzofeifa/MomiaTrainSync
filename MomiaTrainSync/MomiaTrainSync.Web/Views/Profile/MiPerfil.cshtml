@@ -10,6 +10,24 @@
 
 @section Scripts {
     <script src="~/js/Profile.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modalToShow = '@TempData["ShowModal"]';
+            if (modalToShow) {
+                const modalElement = document.getElementById(modalToShow);
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+
+            // Mostrar mensajes si existen
+            const success = '@TempData["SuccessMessage"]';
+            const error = '@TempData["ErrorMessage"]';
+            if (success)
+                toastr.success(success);
+            else if (error)
+                toastr.error(error);
+        });
+    </script>
 }
 <div class="row mb-4">
     <div class="col">
@@ -232,37 +250,47 @@
     </div>
 </div>
 
+@section Modals {
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Cambiar Contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="CambiarContrasenna" asp-controller="Profile" method="post" id="changePasswordForm">
+                        @Html.AntiForgeryToken()
 
-<!-- Change Password Modal -->
-<div class="modal fade" id="changePasswordModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Cambiar Contraseña</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form asp-action="CambiarContrasenna" method="post">
-                    @Html.AntiForgeryToken()
-                    <div class="mb-3">
-                        <label for="currentPassword" class="form-label">Contraseña Actual</label>
-                        <input asp-for="ChangePassword.CurrentPassword" type="password" class="form-control" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="newPassword" class="form-label">Nueva Contraseña</label>
-                        <input asp-for="ChangePassword.NewPassword" type="password" class="form-control" required>
-                        <small class="text-muted">Mínimo 8 caracteres, incluye mayúsculas, minúsculas y números</small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="confirmNewPassword" class="form-label">Confirmar Nueva Contraseña</label>
-                        <input asp-for="ChangePassword.ConfirmPassword" type="password" class="form-control" required>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="submit" form="changePasswordForm" class="btn btn-primary">Cambiar Contraseña</button>
+                        <!-- 🔸 Resumen de validaciones globales -->
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="ChangePassword.CurrentPassword" class="form-label"></label>
+                            <input asp-for="ChangePassword.CurrentPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ChangePassword.CurrentPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ChangePassword.NewPassword" class="form-label"></label>
+                            <input asp-for="ChangePassword.NewPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ChangePassword.ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ChangePassword.ConfirmPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+}

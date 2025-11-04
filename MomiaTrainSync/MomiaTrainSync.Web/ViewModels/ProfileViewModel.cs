@@ -1,4 +1,5 @@
 ﻿using MomiaTrainSync.Core.DTOs;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace MomiaTrainSync.Web.ViewModels
@@ -37,16 +38,19 @@ namespace MomiaTrainSync.Web.ViewModels
     public class ChangePasswordViewModel
     {
         [Required(ErrorMessage = "La contraseña es requerida")]
+        [DisplayName("Contraseña Actual")]
         public string CurrentPassword { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es requerida")]
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).+$",
             ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")]
         [StringLength(100, MinimumLength = 6, ErrorMessage = "La contraseña debe tener entre 6 y 100 caracteres")]
+        [DisplayName("Nueva Contraseña")]
         public string NewPassword { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es requerida")]
         [Compare("NewPassword", ErrorMessage = "Las contraseñas no coinciden")]
+        [DisplayName("Confirmar Nueva Contraseña")]
         public string ConfirmPassword { get; set; } = string.Empty;
     }
 }

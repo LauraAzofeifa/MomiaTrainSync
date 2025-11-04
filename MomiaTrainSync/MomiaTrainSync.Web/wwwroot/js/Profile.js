@@ -62,36 +62,36 @@ document.addEventListener("DOMContentLoaded", () => {
     //})
 
     // Change Password Form
-    const changePasswordForm = document.getElementById("changePasswordForm")
-    changePasswordForm.addEventListener("submit", (e) => {
-        e.preventDefault()
+    //const changePasswordForm = document.getElementById("changePasswordForm")
+    //changePasswordForm.addEventListener("submit", (e) => {
+    //    e.preventDefault()
 
-        const currentPassword = document.getElementById("currentPassword").value
-        const newPassword = document.getElementById("newPassword").value
-        const confirmNewPassword = document.getElementById("confirmNewPassword").value
+    //    const currentPassword = document.getElementById("currentPassword").value
+    //    const newPassword = document.getElementById("newPassword").value
+    //    const confirmNewPassword = document.getElementById("confirmNewPassword").value
 
-        if (newPassword !== confirmNewPassword) {
-            alert("Las contraseñas no coinciden")
-            return
-        }
+    //    if (newPassword !== confirmNewPassword) {
+    //        alert("Las contraseñas no coinciden")
+    //        return
+    //    }
 
-        if (newPassword.length < 8) {
-            alert("La contraseña debe tener al menos 8 caracteres")
-            return
-        }
+    //    if (newPassword.length < 8) {
+    //        alert("La contraseña debe tener al menos 8 caracteres")
+    //        return
+    //    }
 
-        console.log("[v0] Password change requested")
+    //    console.log("[v0] Password change requested")
 
-        // Close modal
-        const modal = window.bootstrap.Modal.getInstance(document.getElementById("changePasswordModal"))
-        modal.hide()
+    //    // Close modal
+    //    const modal = window.bootstrap.Modal.getInstance(document.getElementById("changePasswordModal"))
+    //    modal.hide()
 
-        // Reset form
-        changePasswordForm.reset()
+    //    // Reset form
+    //    changePasswordForm.reset()
 
-        // Show success message
-        alert("Contraseña cambiada correctamente")
-    })
+    //    // Show success message
+    //    alert("Contraseña cambiada correctamente")
+    //})
 
     // Two Factor Authentication Toggle
     const twoFactorSwitch = document.getElementById("twoFactorSwitch")

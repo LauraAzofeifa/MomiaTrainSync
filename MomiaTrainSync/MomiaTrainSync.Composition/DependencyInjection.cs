@@ -43,6 +43,7 @@ namespace MomiaTrainSync.Composition
 
             services.AddScoped<GetUsuariosUseCase>();
             services.AddScoped<UpdateUsuarioUseCase>();
+            services.AddScoped<ChangePasswordUsuarioUseCase>();
             
             #endregion
 

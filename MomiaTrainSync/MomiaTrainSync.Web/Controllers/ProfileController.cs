@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MomiaTrainSync.Core.DTOs;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
 using MomiaTrainSync.Web.ViewModels;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -13,31 +14,35 @@ namespace MomiaTrainSync.Web.Controllers
     {
         private readonly GetUsuariosUseCase _getUsuariosUseCase;
         private readonly UpdateUsuarioUseCase _updateUsuarioUseCase;
+        private readonly ChangePasswordUsuarioUseCase _changePasswordUsuarioUseCase;
 
         public ProfileController(
-            GetUsuariosUseCase getUsuariosUseCase, 
-            UpdateUsuarioUseCase updateUsuarioUseCase)
+            GetUsuariosUseCase getUsuariosUseCase,
+            UpdateUsuarioUseCase updateUsuarioUseCase,
+            ChangePasswordUsuarioUseCase changePasswordUsuarioUseCase)
         {
             _getUsuariosUseCase = getUsuariosUseCase;
             _updateUsuarioUseCase = updateUsuarioUseCase;
+            _changePasswordUsuarioUseCase = changePasswordUsuarioUseCase;
+        }
+
+        private int? GetCurrentUserId()
+        {
+            var idValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(idValue, out var id) ? id : null;
         }
 
         [HttpGet]
         public async Task<IActionResult> MiPerfil()
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (string.IsNullOrEmpty(userId))
+            var userId = GetCurrentUserId();
+            if (userId is null)
                 return Unauthorized();
 
-            var response = await _getUsuariosUseCase.ExecuteAsync(id: int.Parse(userId));
+            var response = await _getUsuariosUseCase.ExecuteAsync(id: userId.Value);
+            var usuario = response.Datos?.FirstOrDefault();
 
-            if (!response.Exito || response.Datos == null)
-                return NotFound();
-
-            var usuario = response.Datos.FirstOrDefault();
-
-            if (usuario == null)
+            if (!response.Exito || usuario is null)
                 return NotFound();
 
             var model = new ProfileViewModel
@@ -51,36 +56,59 @@ namespace MomiaTrainSync.Web.Controllers
                     Correo = usuario.Correo,
                     Telefono = usuario.Telefono,
                     FechaCumpleannos = usuario.FechaCumpleannos
-                },
-                ChangePassword = new ChangePasswordViewModel()
+                }
             };
 
             return View(model);
         }
 
         [HttpPost]
-        public IActionResult CambiarContrasenna()
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CambiarContrasenna(ProfileViewModel vm)
         {
-            return View();
+            ModelState.Clear();
+            if (!TryValidateModel(vm.ChangePassword, nameof(vm.ChangePassword)))
+            {
+                TempData["ShowModal"] = "changePasswordModal";
+                return View(nameof(MiPerfil), vm);
+            }
+
+            var userId = GetCurrentUserId();
+            if (userId is null)
+                return Unauthorized();
+
+            var response = await _changePasswordUsuarioUseCase.ExecuteAsync(
+                usuarioId: userId.Value,
+                oldPassword: vm.ChangePassword.CurrentPassword,
+                newPassword: vm.ChangePassword.NewPassword
+            );
+
+            if (!response.Exito)
+            {
+                TempData["ErrorMessage"] = response.Mensaje ?? "Error al cambiar la contraseña.";
+                TempData["ShowModal"] = "changePasswordModal"; // <--- vuelve a abrir modal
+                return View(nameof(MiPerfil), vm);
+            }
+
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] =
+                response.Mensaje ?? (response.Exito
+                    ? "Contraseña actualizada correctamente."
+                    : "Error al actualizar la contraseña.");
+
+            return RedirectToAction(nameof(MiPerfil));
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> ActualizarPerfil(ProfileViewModel vm)
         {
-            // Limpiar estado previo por si hay datos no relacionados
+            var userId = GetCurrentUserId();
+            if (userId is null || vm.Update.Id != userId)
+                return Unauthorized();
+
             ModelState.Clear();
-
-            // Validar solo la parte UpdateProfileViewModel
-            TryValidateModel(vm.Update, nameof(vm.Update));
-
-            if (!ModelState.IsValid)
-                return View(nameof(MiPerfil), vm);
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (userId == null || vm.Update.Id != int.Parse(userId))
-                return Unauthorized(); // evita que un usuario cambie otro perfil
+            if (!TryValidateModel(vm.Update, nameof(vm.Update)))
+                return RedirectToAction(nameof(MiPerfil));
 
             var dto = new UsuarioDto
             {
@@ -89,18 +117,16 @@ namespace MomiaTrainSync.Web.Controllers
                 Apellido = vm.Update.Apellido,
                 Correo = vm.Update.Correo,
                 Telefono = vm.Update.Telefono,
-                FechaCumpleannos = vm.Update.FechaCumpleannos,
+                FechaCumpleannos = vm.Update.FechaCumpleannos
             };
 
             var response = await _updateUsuarioUseCase.ExecuteAsync(dto);
 
-            if (!response.Exito)
-            {
-                TempData["ErrorMessage"] = response.Mensaje ?? "Error al actualizar el perfil.";
-                return RedirectToAction(nameof(MiPerfil));
-            }
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] =
+                response.Mensaje ?? (response.Exito
+                    ? "Perfil actualizado correctamente."
+                    : "Error al actualizar el perfil.");
 
-            TempData["SuccessMessage"] = response.Mensaje ?? "Perfil actualizado correctamente.";
             return RedirectToAction(nameof(MiPerfil));
         }
     }
