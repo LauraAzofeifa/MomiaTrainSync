@@ -366,6 +366,13 @@ body {
     border-color: var(--primary-color) !important;
     color: white !important;
 }
+/*Responsive*/
+@media (max-width: 576px) {
+    .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+    }
+}
 
 /* ============================================
    CALENDAR CUSTOMIZATION (FullCalendar)

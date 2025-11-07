@@ -5,7 +5,6 @@ using MomiaTrainSync.Core.Interfaces.Repositories;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Services;
 using System;
-using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Core.UseCases.Authentication
 {

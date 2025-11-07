@@ -3,13 +3,8 @@ using MomiaTrainSync.Core.Common;
 using MomiaTrainSync.Core.DTOs;
 using MomiaTrainSync.Core.Interfaces.Repositories;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
-using MomiaTrainSync.Core.UseCases.Authentication;
-using MomiaTrainSync.Domain.Entities;
+using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Core.UseCases.UsersUseCases
 {
@@ -33,25 +28,30 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
             string? filtro = null,
             string? rol = null,
             bool incluirInactivos = false,
-            int? id = null)
+            int? id = null,
+            int? entrenadorId = null)
         {
             try
             {
                 IEnumerable<UsuarioEnt> usuarios;
 
+                // 🔹 1. Buscar usuario por ID (caso individual)
                 if (id.HasValue)
                 {
-                    // Buscar usuario por ID
                     var usuario = await _usuarioRepository.GetByIdAsync(id.Value);
-                    usuarios = usuario != null ? new List<UsuarioEnt> { usuario } : new List<UsuarioEnt>();
+                    usuarios = usuario != null
+                        ? new List<UsuarioEnt> { usuario }
+                        : Enumerable.Empty<UsuarioEnt>();
                 }
+                // 🔹 2. Buscar atletas asignados a un entrenador
+                else if (entrenadorId.HasValue)
+                {
+                    usuarios = await _usuarioRepository.GetAtletasByEntrenadorAsync(entrenadorId.Value, incluirInactivos);
+                }
+                // 🔹 3. Lista general
                 else
                 {
-                    // Obtener lista general
-                    usuarios = await _usuarioRepository.GetAllAsync();
-
-                    if (!incluirInactivos)
-                        usuarios = usuarios.Where(u => u.Estado);
+                    usuarios = await _usuarioRepository.GetAllAsync(incluirInactivos);
 
                     if (!string.IsNullOrEmpty(filtro))
                         usuarios = usuarios.Where(u =>
@@ -59,7 +59,8 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
                             u.Correo.Contains(filtro, StringComparison.OrdinalIgnoreCase));
 
                     if (!string.IsNullOrEmpty(rol))
-                        usuarios = usuarios.Where(u => u.Rol.Nombre.Equals(rol, StringComparison.OrdinalIgnoreCase));
+                        usuarios = usuarios.Where(u =>
+                            u.Rol!.Nombre.Equals(rol, StringComparison.OrdinalIgnoreCase));
                 }
 
                 var usuariosDto = _mapper.Map<IEnumerable<UsuarioDto>>(usuarios);
@@ -71,10 +72,12 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
             }
             catch (Exception ex)
             {
-                await _logErrorRepository.AddLogAsync($"{nameof(GetUsuariosUseCase)}.{nameof(ExecuteAsync)}", ex);
+                await _logErrorRepository.AddLogAsync(
+                    $"{nameof(GetUsuariosUseCase)}.{nameof(ExecuteAsync)}", ex);
                 return Response<IEnumerable<UsuarioDto>>.Fail("Error al obtener los usuarios: " + ex.Message);
             }
         }
+
     }
 
 }

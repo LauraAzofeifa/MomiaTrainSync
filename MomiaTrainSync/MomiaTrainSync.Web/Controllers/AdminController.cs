@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
-using MomiaTrainSync.Domain.Enums;
 using MomiaTrainSync.Web.Security;
 
 namespace MomiaTrainSync.Web.Controllers

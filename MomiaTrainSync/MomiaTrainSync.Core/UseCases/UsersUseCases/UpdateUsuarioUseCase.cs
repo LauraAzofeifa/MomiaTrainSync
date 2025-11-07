@@ -3,7 +3,6 @@ using MomiaTrainSync.Core.Common;
 using MomiaTrainSync.Core.DTOs;
 using MomiaTrainSync.Core.Interfaces.Repositories;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
-using MomiaTrainSync.Domain.Entities;
 using System;
 
 namespace MomiaTrainSync.Core.UseCases.UsersUseCases

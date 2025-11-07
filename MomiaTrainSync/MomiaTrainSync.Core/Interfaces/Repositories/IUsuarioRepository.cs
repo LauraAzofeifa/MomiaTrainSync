@@ -1,9 +1,5 @@
-﻿using MomiaTrainSync.Domain.Entities;
+﻿using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Core.Interfaces.Repositories
 {
@@ -16,6 +12,8 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories
         Task DeleteAsync(int id);
 
         // Listas
-        Task <List<UsuarioEnt>> GetAllAsync();
+        Task<List<UsuarioEnt>> GetAllAsync(bool incluirInactivos = false);
+
+        Task<List<UsuarioEnt>> GetAtletasByEntrenadorAsync(int entrenadorId, bool incluirInactivos = false);
     }
 }

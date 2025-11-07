@@ -74,7 +74,7 @@ namespace MomiaTrainSync.Web.Controllers
             {
                 new Claim(ClaimTypes.Name, dto.Nombre!),
                 new Claim(ClaimTypes.Email, dto.Correo),
-                new Claim(ClaimTypes.Role, dto.Rol!),
+                new Claim(ClaimTypes.Role, dto.Rol!.Nombre),
                 new Claim(ClaimTypes.NameIdentifier, dto.Id.ToString()),
             };
         }
@@ -94,7 +94,7 @@ namespace MomiaTrainSync.Web.Controllers
             if (!ModelState.IsValid)
                 return View(vm);
 
-            var response = await _registerUseCase.ExecuteAsync(vm.Nombre, vm.Correo, vm.Contrasenna);
+            var response = await _registerUseCase.ExecuteAsync(vm.Nombre, vm.Apellido, vm.Correo, vm.Contrasenna);
 
             if (!response.Exito)
             {

@@ -30,7 +30,7 @@ namespace MomiaTrainSync.Infrastructure.Repositories
                 var usuario = await _context.Usuarios
                     .AsNoTracking()
                     .Include(u => u.Rol)
-                        .ThenInclude(r => r.RolPermisos)
+                        .ThenInclude(r => r!.RolPermisos)
                             .ThenInclude(rp => rp.Permiso)
                     .FirstOrDefaultAsync(u => u.Id == userId);
 
@@ -38,12 +38,12 @@ namespace MomiaTrainSync.Infrastructure.Repositories
                     return false;
 
                 // 👑 El Administrador tiene acceso a todo
-                if (usuario.Rol.Nombre.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
+                if (usuario.Rol!.Nombre.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
                     return true;
 
                 // 🔐 Validar si la ruta está asociada a su rol
                 return usuario.Rol.RolPermisos.Any(rp =>
-                    rp.Permiso.Estado &&
+                    rp.Permiso!.Estado &&
                     NormalizeRoute(rp.Permiso.Ruta) == route);
             }
             catch (Exception ex)

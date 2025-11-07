@@ -29,9 +29,49 @@
     </div>
 </div>
 
-<div class="card">
+<!-- 🔹 FILTROS -->
+<div class="card mb-4">
     <div class="card-body">
-        <table id="usersTable" class="table table-hover">
+        <form id="filtersForm" class="row g-3 align-items-center">
+            <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="incluirInactivos" name="incluirInactivos">
+                    <label class="form-check-label" for="incluirInactivos">
+                        Incluir usuarios inactivos
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="soloAdmins" name="soloAdmins">
+                    <label class="form-check-label" for="soloAdmins">
+                        Mostrar solo administradores
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="soloActivos" name="soloActivos">
+                    <label class="form-check-label" for="soloActivos">
+                        Solo usuarios activos
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-3 mt-2">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-funnel me-1"></i>Aplicar filtros
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body table-responsive">
+        <table id="usersTable" class="table table-hover align-middle">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -45,37 +85,48 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var user in Model)
-                {
-                    <tr>
-                        <td>@user.Id</td>
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <img src="/placeholder.svg?height=32&width=32" alt="Atleta" class="rounded-circle me-2" width="32" height="32">
-                                <span>@user.Nombre</span>
-                            </div>
-                        </td>
-                        <td>@user.Correo</td>
-                        <td>@user.Rol</td>
-                        @* <td>Atletismo</td> *@
-                        <td>
-                            <span class="badge @(user.Estado ? "bg-success" : "bg-warning")">
-                                @(user.Estado ? "Activo" : "Inactivo")
-                            </span>
-                        </td>
-                        @* <td>Hoy, 10:30 AM</td> *@
-                        <td>
-                            <button class="btn btn-sm btn-outline-primary" title="Ver perfil">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-secondary" title="Editar">
-                                <i class="bi bi-pencil"></i>
-                            </button>
-                            <button class="btn btn-sm btn-outline-danger" title="Eliminar">
-                                <i class="bi bi-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
+                @{
+                    if (Model != null && Model.Any())
+                    {
+                        foreach (var user in Model)
+                        {
+                            <tr>
+                                <td>@user.Id</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="/placeholder.svg?height=32&width=32" alt="Atleta" class="rounded-circle me-2" width="32" height="32">
+                                        <span>@user.Nombre</span>
+                                    </div>
+                                </td>
+                                <td>@user.Correo</td>
+                                <td>@user.Rol!.Nombre</td>
+                                @* <td>Atletismo</td> *@
+                                <td>
+                                    <span class="badge @(user.Estado ? "bg-success" : "bg-warning")">
+                                        @(user.Estado ? "Activo" : "Inactivo")
+                                    </span>
+                                </td>
+                                @* <td>Hoy, 10:30 AM</td> *@
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary" title="Ver perfil">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary" title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="6" class="text-center">No hay usuarios disponibles.</td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>

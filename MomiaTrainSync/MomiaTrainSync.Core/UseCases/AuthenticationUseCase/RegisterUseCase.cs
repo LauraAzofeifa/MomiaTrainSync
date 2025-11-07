@@ -4,10 +4,8 @@ using MomiaTrainSync.Core.DTOs;
 using MomiaTrainSync.Core.Interfaces.Repositories;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Services;
-using MomiaTrainSync.Domain.Entities;
-using MomiaTrainSync.Domain.Enums;
+using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using System;
-using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Core.UseCases.Authentication
 {
@@ -30,7 +28,7 @@ namespace MomiaTrainSync.Core.UseCases.Authentication
             _mapper = mapper;
         }
 
-        public async Task<Response<UsuarioDto>> ExecuteAsync(string nombre, string correo, string contrasena)
+        public async Task<Response<UsuarioDto>> ExecuteAsync(string nombre, string apellido, string correo, string contrasena)
         {
             try
             {
@@ -46,11 +44,12 @@ namespace MomiaTrainSync.Core.UseCases.Authentication
                 var usuario = new UsuarioEnt
                 {
                     Nombre = nombre,
+                    Apellido = apellido,
                     Correo = correo,
                     ContrasennaHash = hash,
                     Estado = true,
-                    FechaIngreso = DateTime.UtcNow,
-                    RolId = (int)SeguridadEnums.Rol.Atleta // Rol por defecto
+                    FechaCreacion = DateTime.UtcNow,
+                    RolId = -3
                 };
 
                 // 4️⃣ Guardar en base de datos

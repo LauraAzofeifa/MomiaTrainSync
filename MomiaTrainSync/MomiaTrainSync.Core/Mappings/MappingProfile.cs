@@ -1,5 +1,5 @@
 ﻿using MomiaTrainSync.Core.DTOs;
-using MomiaTrainSync.Domain.Entities;
+using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using AutoMapper;
 using System;
 
@@ -9,13 +9,14 @@ namespace MomiaTrainSync.Core.Mappings
     {
         public MappingProfile()
         {
-            // Entidad → DTO
-            CreateMap<UsuarioEnt, UsuarioDto>()
-                .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.Rol.Nombre));
+            // Mapea Rol también
+            CreateMap<RolEnt, RolDto>();
 
-            // DTO → Entidad (necesario para Update)
+            CreateMap<UsuarioEnt, UsuarioDto>();
+
+            // DTO → Entidad
             CreateMap<UsuarioDto, UsuarioEnt>()
-                .ForMember(dest => dest.Rol, opt => opt.Ignore()); // Ignora navegación para evitar bucles
+                .ForMember(dest => dest.Rol, opt => opt.Ignore());
         }
     }
 }

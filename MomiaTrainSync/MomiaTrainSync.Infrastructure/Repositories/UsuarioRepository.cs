@@ -1,13 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MomiaTrainSync.Core.Interfaces.Repositories;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
-using MomiaTrainSync.Domain.Entities;
+using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using MomiaTrainSync.Infrastructure.Persistence;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Infrastructure.Repositories
 {
@@ -83,18 +79,48 @@ namespace MomiaTrainSync.Infrastructure.Repositories
             }
         }
 
-        public async Task<List<UsuarioEnt>> GetAllAsync()
+        public async Task<List<UsuarioEnt>> GetAllAsync(bool incluirInactivos = false)
         {
             try
             {
-                return await _context.Usuarios
+                var query = _context.Usuarios
                                      .Include(u => u.Rol)
-                                     .AsNoTracking()
-                                     .ToListAsync();
+                                     .AsNoTracking();
+
+                query = !incluirInactivos
+                    ? query.Where(u => u.Estado)
+                    : query;
+
+                return await query.ToListAsync();
             }
             catch (Exception ex)
             {
                 await _logErrorRepository.AddLogAsync($"{nameof(UsuarioRepository)}.{nameof(GetAllAsync)}", ex);
+                return new List<UsuarioEnt>();
+            }
+        }
+
+        public async Task<List<UsuarioEnt>> GetAtletasByEntrenadorAsync(int entrenadorId, bool incluirInactivos = false)
+        {
+            try
+            {
+                var query = _context.EntrenadorAtletas
+                    .Where(ea => ea.IdEntrenador == entrenadorId)
+                    .Include(ea => ea.Atleta)
+                        .ThenInclude(a => a!.Rol)
+                    .AsNoTracking()
+                    .Select(ea => ea.Atleta);
+
+                query = !incluirInactivos
+                    ? query.Where(a => a != null && a.Estado)
+                    : query;
+
+                // Filter out nulls to match List<UsuarioEnt> (not List<UsuarioEnt?>)
+                return await query.Where(a => a != null).Select(a => a!).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                await _logErrorRepository.AddLogAsync($"{nameof(UsuarioRepository)}.{nameof(GetAtletasByEntrenadorAsync)}", ex);
                 return new List<UsuarioEnt>();
             }
         }
