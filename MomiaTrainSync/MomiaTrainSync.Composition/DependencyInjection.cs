@@ -7,7 +7,7 @@ using MomiaTrainSync.Core.Interfaces.Repositories;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Services;
 using MomiaTrainSync.Core.Mappings;
-using MomiaTrainSync.Core.UseCases.Authentication;
+using MomiaTrainSync.Core.UseCases.AuthenticationUseCase;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
 using MomiaTrainSync.Infrastructure.Persistence;
 using MomiaTrainSync.Infrastructure.Repositories;
@@ -40,6 +40,7 @@ namespace MomiaTrainSync.Composition
             #region Usuarios
             services.AddScoped<LoginUseCase>();
             services.AddScoped<RegisterUseCase>();
+            services.AddScoped<RecoverPasswordUseCase>();
 
             services.AddScoped<GetUsuariosUseCase>();
             services.AddScoped<UpdateUsuarioUseCase>();

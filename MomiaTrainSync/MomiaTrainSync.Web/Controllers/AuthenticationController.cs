@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using MomiaTrainSync.Core.DTOs;
-using MomiaTrainSync.Core.UseCases.Authentication;
+using MomiaTrainSync.Core.UseCases.AuthenticationUseCase;
 using MomiaTrainSync.Web.ViewModels;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -13,11 +13,16 @@ namespace MomiaTrainSync.Web.Controllers
     {
         private readonly LoginUseCase _loginUseCase;
         private readonly RegisterUseCase _registerUseCase;
-        
-        public AuthenticationController(LoginUseCase loginUseCase, RegisterUseCase registerUseCase)
+        private readonly RecoverPasswordUseCase _recoverPasswordUseCase;
+
+        public AuthenticationController(
+            LoginUseCase loginUseCase, 
+            RegisterUseCase registerUseCase,
+            RecoverPasswordUseCase recoverPasswordUseCase)
         {
             _loginUseCase = loginUseCase;
             _registerUseCase = registerUseCase;
+            _recoverPasswordUseCase = recoverPasswordUseCase;
         }
 
         #region Metodo Login
@@ -113,6 +118,32 @@ namespace MomiaTrainSync.Web.Controllers
 
         #endregion
 
+        #region Metodo RecuperarContrasenna
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(RecoverPasswordViewModel vm)
+        {
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var response = await _recoverPasswordUseCase.ExecuteAsync(vm.Correo);
+
+            if (!response.Exito)
+            {
+                ModelState.AddModelError("", response.Mensaje);
+                return View(vm);
+            }
+
+            TempData["SuccessMessage"] = response.Mensaje;
+
+            return RedirectToAction("Login");
+        }
+        #endregion
 
         #region Metodo CerrarSesion
         [HttpPost]

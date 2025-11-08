@@ -7,7 +7,7 @@ using MomiaTrainSync.Core.Interfaces.Services;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using System;
 
-namespace MomiaTrainSync.Core.UseCases.Authentication
+namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
 {
     public class RegisterUseCase
     {
