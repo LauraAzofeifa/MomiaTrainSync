@@ -1,4 +1,4 @@
-﻿using MomiaTrainSync.Core.DTOs;
+﻿using MomiaTrainSync.Core.DTOs.UsuariosRoles;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 

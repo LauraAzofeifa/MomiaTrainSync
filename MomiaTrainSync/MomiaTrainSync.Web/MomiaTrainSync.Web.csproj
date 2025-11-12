@@ -25,4 +25,8 @@
     <ProjectReference Include="..\MomiaTrainSync.Composition\MomiaTrainSync.Composition.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\Trainer\" />
+  </ItemGroup>
+
 </Project>

@@ -91,10 +91,16 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.Property<int>("DuracionEstimada")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IdEntrenador")
+                    b.Property<DateOnly>("FechaProgramada")
+                        .HasColumnType("date");
+
+                    b.Property<int>("IdRutina")
                         .HasColumnType("int");
 
                     b.Property<byte>("NivelEsfuerzoEsperado")
@@ -115,14 +121,9 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("UsuarioEntId")
-                        .HasColumnType("int");
-
                     b.HasKey("IdEntrenamiento");
 
-                    b.HasIndex("IdEntrenador");
-
-                    b.HasIndex("UsuarioEntId");
+                    b.HasIndex("IdRutina");
 
                     b.ToTable("Entrenamiento", (string)null);
                 });
@@ -184,45 +185,6 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.ToTable("LogErrores");
                 });
 
-            modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.AsignacionRutinaEnt", b =>
-                {
-                    b.Property<int>("IdAsignacion")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdAsignacion"));
-
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.Property<DateTime>("FechaProgramada")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("IdEntrenamiento")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdRelacion")
-                        .HasColumnType("int");
-
-                    b.Property<int>("IdRutina")
-                        .HasColumnType("int");
-
-                    b.Property<string>("NotaEntrenador")
-                        .HasColumnType("text");
-
-                    b.HasKey("IdAsignacion");
-
-                    b.HasIndex("IdEntrenamiento");
-
-                    b.HasIndex("IdRelacion");
-
-                    b.HasIndex("IdRutina");
-
-                    b.ToTable("AsignacionRutina", (string)null);
-                });
-
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.RutinaEnt", b =>
                 {
                     b.Property<int>("IdRutina")
@@ -242,12 +204,17 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.Property<DateTime>("FechaCreacion")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("IdRelacion")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
                     b.HasKey("IdRutina");
+
+                    b.HasIndex("IdRelacion");
 
                     b.ToTable("Rutina", (string)null);
                 });
@@ -295,10 +262,10 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.Property<int>("DuracionReal")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FechaRegistro")
+                    b.Property<DateTime>("FechaEjecucion")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("IdAsignacion")
+                    b.Property<int>("IdEntrenamiento")
                         .HasColumnType("int");
 
                     b.Property<byte>("NivelEsfuerzoPercibido")
@@ -306,7 +273,7 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
                     b.HasKey("IdSesion");
 
-                    b.HasIndex("IdAsignacion");
+                    b.HasIndex("IdEntrenamiento");
 
                     b.ToTable("SesionEntrenamiento", (string)null);
                 });
@@ -350,16 +317,16 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         new
                         {
                             IdPermiso = -1,
-                            Categoria = "Admin",
+                            Categoria = "Users",
                             Codigo = "GESTIONAR_USUARIOS",
                             Descripcion = "Permite administrar usuarios del sistema",
                             Estado = true,
-                            Ruta = "/Admin/ManageUsers"
+                            Ruta = "/Users/ManageUsers"
                         },
                         new
                         {
                             IdPermiso = -2,
-                            Categoria = "Trainer",
+                            Categoria = "Athletes",
                             Codigo = "GESTIONAR_ATLETAS",
                             Descripcion = "Permite gestionar atletas",
                             Estado = true,
@@ -391,6 +358,33 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                             Descripcion = "Permite cambiar la contraseña del usuario",
                             Estado = true,
                             Ruta = "/Profile/ChangePassword"
+                        },
+                        new
+                        {
+                            IdPermiso = -6,
+                            Categoria = "Usuarios",
+                            Codigo = "AGREGAR_ATLETA_ENTRENADOR",
+                            Descripcion = "Permite al entrenador agregar atletas a su lista asignada",
+                            Estado = true,
+                            Ruta = "/Trainer/AddAthlete"
+                        },
+                        new
+                        {
+                            IdPermiso = -7,
+                            Categoria = "Usuarios",
+                            Codigo = "ELIMINAR_ATLETA_ENTRENADOR",
+                            Descripcion = "Permite al entrenador eliminar atletas de su lista",
+                            Estado = true,
+                            Ruta = "/Trainer/DeleteAthlete"
+                        },
+                        new
+                        {
+                            IdPermiso = -8,
+                            Categoria = "Security",
+                            Codigo = "VER_PERMISOS",
+                            Descripcion = "Permite ver la lista de permisos",
+                            Estado = true,
+                            Ruta = "/Permissions/Index"
                         });
                 });
 
@@ -479,6 +473,11 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         },
                         new
                         {
+                            IdRol = -1,
+                            IdPermiso = -8
+                        },
+                        new
+                        {
                             IdRol = -2,
                             IdPermiso = -2
                         },
@@ -496,6 +495,16 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         {
                             IdRol = -2,
                             IdPermiso = -5
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            IdPermiso = -6
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            IdPermiso = -7
                         },
                         new
                         {
@@ -567,6 +576,21 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.HasIndex("RolId");
 
                     b.ToTable("Usuarios", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            Apellido = "Sistema",
+                            ContrasennaHash = "UDd9Jxr59YTGLmp8Dofxlw==.Bf/QH105NwCI9Dt8C+fkRpjRXwOlPSEOjVZKMgqK0pI=",
+                            Correo = "admin@dominio.com",
+                            Estado = true,
+                            FechaCreacion = new DateTime(2025, 11, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FechaCumpleannos = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Nombre = "Admin",
+                            RolId = -1,
+                            Telefono = "60000000"
+                        });
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.EntrenadorAtleta.EntrenadorAtletaEnt", b =>
@@ -611,44 +635,24 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.EntrenamientosZonas.EntrenamientoEnt", b =>
                 {
-                    b.HasOne("MomiaTrainSync.Domain.Entities.UsuariosRoles.UsuarioEnt", "Entrenador")
-                        .WithMany()
-                        .HasForeignKey("IdEntrenador")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MomiaTrainSync.Domain.Entities.UsuariosRoles.UsuarioEnt", null)
-                        .WithMany("EntrenamientosCreados")
-                        .HasForeignKey("UsuarioEntId");
-
-                    b.Navigation("Entrenador");
-                });
-
-            modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.AsignacionRutinaEnt", b =>
-                {
-                    b.HasOne("MomiaTrainSync.Domain.Entities.EntrenamientosZonas.EntrenamientoEnt", "Entrenamiento")
-                        .WithMany("Asignaciones")
-                        .HasForeignKey("IdEntrenamiento")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("MomiaTrainSync.Domain.Entities.EntrenadorAtleta.EntrenadorAtletaEnt", "Relacion")
-                        .WithMany("Asignaciones")
-                        .HasForeignKey("IdRelacion")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.RutinaEnt", "Rutina")
-                        .WithMany("Asignaciones")
+                        .WithMany("Entrenamientos")
                         .HasForeignKey("IdRutina")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Entrenamiento");
+                    b.Navigation("Rutina");
+                });
+
+            modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.RutinaEnt", b =>
+                {
+                    b.HasOne("MomiaTrainSync.Domain.Entities.EntrenadorAtleta.EntrenadorAtletaEnt", "Relacion")
+                        .WithMany("Rutinas")
+                        .HasForeignKey("IdRelacion")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Relacion");
-
-                    b.Navigation("Rutina");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.SesionesEntrenamiento.DetalleZonaSesionEnt", b =>
@@ -672,13 +676,13 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.SesionesEntrenamiento.SesionEntrenamientoEnt", b =>
                 {
-                    b.HasOne("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.AsignacionRutinaEnt", "Asignacion")
+                    b.HasOne("MomiaTrainSync.Domain.Entities.EntrenamientosZonas.EntrenamientoEnt", "Entrenamiento")
                         .WithMany("Sesiones")
-                        .HasForeignKey("IdAsignacion")
+                        .HasForeignKey("IdEntrenamiento")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Asignacion");
+                    b.Navigation("Entrenamiento");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.UsuariosRoles.RolPermisoEnt", b =>
@@ -713,14 +717,14 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.EntrenadorAtleta.EntrenadorAtletaEnt", b =>
                 {
-                    b.Navigation("Asignaciones");
+                    b.Navigation("Rutinas");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.EntrenamientosZonas.EntrenamientoEnt", b =>
                 {
-                    b.Navigation("Asignaciones");
-
                     b.Navigation("DetallesZonaPlan");
+
+                    b.Navigation("Sesiones");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.EntrenamientosZonas.ZonaEntrenamientoEnt", b =>
@@ -730,14 +734,9 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.Navigation("DetalleZonaSesiones");
                 });
 
-            modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.AsignacionRutinaEnt", b =>
-                {
-                    b.Navigation("Sesiones");
-                });
-
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.RutinaEnt", b =>
                 {
-                    b.Navigation("Asignaciones");
+                    b.Navigation("Entrenamientos");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.SesionesEntrenamiento.SesionEntrenamientoEnt", b =>
@@ -762,8 +761,6 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.Navigation("EntrenamientosComoAtleta");
 
                     b.Navigation("EntrenamientosComoEntrenador");
-
-                    b.Navigation("EntrenamientosCreados");
                 });
 #pragma warning restore 612, 618
         }

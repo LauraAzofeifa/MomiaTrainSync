@@ -17,7 +17,7 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.SesionesEntre
                 .ValueGeneratedOnAdd();
 
             // Propiedades
-            builder.Property(s => s.FechaRegistro)
+            builder.Property(s => s.FechaEjecucion)
                 .IsRequired();
 
             builder.Property(s => s.DuracionReal)
@@ -34,9 +34,9 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.SesionesEntre
                 .HasColumnType("text");
 
             // Relaciones
-            builder.HasOne(s => s.Asignacion)
+            builder.HasOne(s => s.Entrenamiento)
                 .WithMany(a => a.Sesiones)
-                .HasForeignKey(s => s.IdAsignacion)
+                .HasForeignKey(s => s.IdEntrenamiento)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(s => s.DetallesZona)

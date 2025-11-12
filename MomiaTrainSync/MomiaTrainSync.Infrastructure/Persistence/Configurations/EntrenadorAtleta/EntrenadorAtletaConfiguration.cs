@@ -36,7 +36,7 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.EntrenadorAtl
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_EntrenadorAtleta_Atleta");
 
-            builder.HasMany(ea => ea.Asignaciones)
+            builder.HasMany(ea => ea.Rutinas)
                 .WithOne(a => a.Relacion)
                 .HasForeignKey(a => a.IdRelacion)
                 .OnDelete(DeleteBehavior.Cascade);

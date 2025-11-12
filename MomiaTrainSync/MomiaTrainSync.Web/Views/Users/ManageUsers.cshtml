@@ -1,0 +1,290 @@
+﻿@model IEnumerable<UsuarioDto>
+
+@{
+    ViewData["Title"] = "Administrar Usuarios";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/custom_style_tables.css" />
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/js/users.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.querySelectorAll("#usersTable tbody tr").forEach(row => {
+                const data = {
+                    id: row.dataset.id,
+                    nombre: row.dataset.nombre,
+                    correo: row.dataset.correo,
+                    rolid: row.dataset.rolid,
+                    rolnombre: row.dataset.rolnombre,
+                    estado: row.dataset.estado === "True",
+                    fecha: row.dataset.fechacreacion
+                };
+
+                // 🔹 Ver Usuario
+                row.querySelector(".btn-view").addEventListener("click", () => {
+                    document.getElementById("viewId").textContent = data.id;
+                    document.getElementById("viewNombre").textContent = data.nombre;
+                    document.getElementById("viewCorreo").textContent = data.correo;
+                    document.getElementById("viewRol").textContent = data.rolnombre;
+                    document.getElementById("viewFecha").textContent = data.fecha;
+                    const estadoEl = document.getElementById("viewEstado");
+                    estadoEl.textContent = data.estado ? "Activo" : "Inactivo";
+                    estadoEl.className = data.estado ? "badge bg-success" : "badge bg-warning text-dark";
+                });
+
+                // 🔹 Editar Usuario
+                row.querySelector(".btn-edit").addEventListener("click", () => {
+                    document.getElementById("editId").value = data.id;
+                    document.getElementById("editNombre").value = data.nombre;
+                    document.getElementById("editCorreo").value = data.correo;
+                    document.getElementById("editRol").value = data.rolid;
+                    document.getElementById("editEstado").checked = data.estado;
+                    document.getElementById("editFecha").textContent = data.fecha;
+                });
+
+                // 🔹 Eliminar Usuario
+                row.querySelector(".btn-delete").addEventListener("click", () => {
+                    document.getElementById("deleteId").value = data.id;
+                    document.getElementById("deleteNombre").textContent = data.nombre;
+                });
+            });
+        });
+    </script>
+
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold">Gestión de Usuarios</h2>
+        <p class="text-muted">Administra y monitorea a todos los usuarios</p>
+    </div>
+    @* <div class="col-auto">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addAthleteModal">
+            <i class="bi bi-plus-circle me-2"></i>Agregar Usuario
+        </button>
+    </div> *@
+</div>
+
+<!-- 🔹 FILTROS -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form id="filtersForm" class="row g-3 align-items-center">
+            <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="incluirInactivos" name="incluirInactivos">
+                    <label class="form-check-label" for="incluirInactivos">
+                        Incluir usuarios inactivos
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="soloAdmins" name="soloAdmins">
+                    <label class="form-check-label" for="soloAdmins">
+                        Mostrar solo administradores
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-md-4 col-sm-6">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="soloActivos" name="soloActivos">
+                    <label class="form-check-label" for="soloActivos">
+                        Solo usuarios activos
+                    </label>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-3 mt-2">
+                <button type="submit" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-funnel me-1"></i>Aplicar filtros
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body table-responsive">
+        <table id="usersTable" class="table-custom table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Usuario</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Fecha Creacion</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var user in Model)
+                    {
+                        <tr data-id="@user.Id"
+                            data-nombre="@($"{user.Nombre} {user.Apellido}")"
+                            data-correo="@user.Correo"
+                            data-rolid="@user.RolId"
+                            data-rolnombre="@user.Rol?.Nombre"
+                            data-estado="@user.Estado"
+                            data-fechacreacion="@user.FechaCreacion.ToString("yyyy-MM-dd")">
+                            <td class="fw-medium text-muted">@user.Id</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <img src="https://avatar.iran.liara.run/public/24?height=40&width=40"
+                                         alt="Usuario"
+                                         class="user-avatar me-3">
+                                    <div>
+                                        <div class="fw-semibold">@user.Nombre @user.Apellido</div>
+                                        <div class="text-muted small">@(user.Rol?.Nombre ?? "—")</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>@user.Correo</td>
+                            <td>@user.Rol?.Nombre</td>
+                            <td>
+                                <span class="@(user.Estado ? "badge-active" : "badge-inactive")">
+                                    @(user.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td>@user.FechaCreacion.ToString("dd/MM/yyyy")</td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary table-action-btn btn-view" title="Ver" data-bs-toggle="modal" data-bs-target="#viewUserModal">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary table-action-btn btn-edit" title="Editar" data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger table-action-btn btn-delete" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-person-x fs-4 d-block mb-2"></i>
+                            No hay usuarios disponibles.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+@section Modals {
+    <!-- 🔹 Ver Usuario -->
+    <div class="modal fade" id="viewUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-person-badge me-2"></i>Detalles del Usuario</h5>
+                    <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img src="https://avatar.iran.liara.run/public/24" id="viewAvatar" class="rounded-circle border mb-3"
+                    style="width:100px;height:100px;object-fit:cover;max-width:100%;">
+                    <h5 id="viewNombre" class="fw-bold"></h5>
+                    <span id="viewEstado" class="badge bg-success mb-3">Activo</span>
+                    <ul class="list-group text-start">
+                        <li class="list-group-item"><strong>ID:</strong> <span id="viewId"></span></li>
+                        <li class="list-group-item"><strong>Correo:</strong> <span id="viewCorreo"></span></li>
+                        <li class="list-group-item"><strong>Rol:</strong> <span id="viewRol"></span></li>
+                        <li class="list-group-item"><strong>Fecha Creación:</strong> <span id="viewFecha"></span></li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 Editar Usuario -->
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Usuario</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="editUserForm">
+                    <div class="modal-body">
+                        <input type="hidden" id="editId">
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" id="editNombre" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Correo</label>
+                            <input type="email" id="editCorreo" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Rol</label>
+                            <select id="editRol" class="form-select">
+                                <option value="1">Administrador</option>
+                                <option value="2">Entrenador</option>
+                                <option value="3">Atleta</option>
+                            </select>
+                        </div>
+
+                        <div class="form-check form-switch">
+                            <input type="checkbox" id="editEstado" class="form-check-input">
+                            <label class="form-check-label" for="editEstado">Activo</label>
+                        </div>
+
+                        <div class="mt-3 text-muted small">
+                            <strong>Fecha creación:</strong> <span id="editFecha"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 Eliminar Usuario -->
+    <div class="modal fade" id="deleteUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-trash3 me-2"></i>Eliminar Usuario</h5>
+                    <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post" action="/Usuarios/Delete">
+                    <div class="modal-body text-center">
+                        <p>¿Seguro que deseas eliminar a <strong id="deleteNombre"></strong>?</p>
+                        <input type="hidden" name="id" id="deleteId">
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

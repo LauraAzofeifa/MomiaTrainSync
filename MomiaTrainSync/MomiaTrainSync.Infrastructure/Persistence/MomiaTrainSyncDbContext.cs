@@ -18,25 +18,24 @@ namespace MomiaTrainSync.Infrastructure.Persistence
         #region DbSets
 
         #region UsuariosRoles
-        public DbSet<UsuarioEnt> Usuarios { get; set; }
-        public DbSet<RolEnt> Roles { get; set; }
         public DbSet<PermisoEnt> Permisos { get; set; }
+        public DbSet<RolEnt> Roles { get; set; }
         public DbSet<RolPermisoEnt> RolesPermisos { get; set; }
+        public DbSet<UsuarioEnt> Usuarios { get; set; }
         #endregion
 
         #region EntrenadorAtleta
         public DbSet<EntrenadorAtletaEnt> EntrenadorAtletas { get; set; }
         #endregion
 
-        #region EntrenamientosZonas
+        #region RutinasEntrenamientos
+        public DbSet<RutinaEnt> Rutinas { get; set; }
         public DbSet<EntrenamientoEnt> Entrenamientos { get; set; }
-        public DbSet<ZonaEntrenamientoEnt> ZonasEntrenamiento { get; set; }
-        public DbSet<DetalleZonaPlanEnt> DetallesZonasPlan { get; set; }
         #endregion
 
-        #region RutinasAsignaciones
-        public DbSet<RutinaEnt> Rutinas { get; set; }
-        public DbSet<AsignacionRutinaEnt> AsignacionesRutina { get; set; }
+        #region EntrenamientosZonas
+        public DbSet<ZonaEntrenamientoEnt> ZonasEntrenamiento { get; set; }
+        public DbSet<DetalleZonaPlanEnt> DetallesZonasPlan { get; set; }
         #endregion
 
         #region SesionesEntrenamiento

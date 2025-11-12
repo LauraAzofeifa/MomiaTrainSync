@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MomiaTrainSync.Core.DTOs;
+using MomiaTrainSync.Core.DTOs.UsuariosRoles;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
 using MomiaTrainSync.Web.Security;
 using MomiaTrainSync.Web.ViewModels;

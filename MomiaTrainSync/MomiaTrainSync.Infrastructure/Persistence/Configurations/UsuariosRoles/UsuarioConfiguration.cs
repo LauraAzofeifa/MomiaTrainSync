@@ -66,6 +66,25 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.UsuariosRoles
                 .WithOne(e => e.Atleta)
                 .HasForeignKey(e => e.IdAtleta)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Seed inicial de Usuarios
+            builder.HasData(
+                // Administrador
+                new UsuarioEnt
+                {
+                    Id = -1,
+                    Nombre = "Admin",
+                    Apellido = "Sistema",
+                    Correo = "admin@dominio.com",
+                    Telefono = "60000000",
+                    FechaCumpleannos = new DateTime(1990, 1, 1),
+                    ContrasennaHash = "UDd9Jxr59YTGLmp8Dofxlw==.Bf/QH105NwCI9Dt8C+fkRpjRXwOlPSEOjVZKMgqK0pI=", // Reemplazar por hash real
+                    Estado = true,
+                    FechaCreacion = new DateTime(2025, 11, 11),
+                    RolId = -1
+                }
+            );
+
         }
     }
 }

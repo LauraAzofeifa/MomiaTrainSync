@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MomiaTrainSync.Core.Common;
-using MomiaTrainSync.Core.Interfaces.Repositories;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
+using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
 using MomiaTrainSync.Core.Interfaces.Services;
 using System;
 using System.Collections.Generic;

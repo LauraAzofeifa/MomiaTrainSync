@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using MomiaTrainSync.Core.Interfaces.Repositories;
+using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
 using System.Security.Claims;
 
 namespace MomiaTrainSync.Web.Security

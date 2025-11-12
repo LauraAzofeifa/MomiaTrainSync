@@ -21,6 +21,5 @@ namespace MomiaTrainSync.Domain.Entities.UsuariosRoles
         public RolEnt? Rol { get; set; }
         public ICollection<EntrenadorAtletaEnt> EntrenamientosComoEntrenador { get; set; } = new List<EntrenadorAtletaEnt>();
         public ICollection<EntrenadorAtletaEnt> EntrenamientosComoAtleta { get; set; } = new List<EntrenadorAtletaEnt>();
-        public ICollection<EntrenamientoEnt> EntrenamientosCreados { get; set; } = new List<EntrenamientoEnt>();
     }
 }

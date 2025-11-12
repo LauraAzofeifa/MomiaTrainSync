@@ -1,0 +1,83 @@
+﻿.table-custom {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+}
+
+.table-custom thead {
+    background: linear-gradient(90deg, #4f46e5, #6366f1);
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+    .table-custom thead th {
+        padding: 1rem;
+        font-size: 0.9rem;
+        border: none;
+    }
+
+.table-custom tbody tr {
+    transition: all 0.2s ease-in-out;
+}
+
+    .table-custom tbody tr:hover {
+        background-color: #f8f9fa;
+        transform: scale(1.01);
+    }
+
+/* Avatar + nombre */
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #e0e7ff;
+    object-fit: cover;
+    transition: 0.2s;
+}
+
+    .user-avatar:hover {
+        border-color: #6366f1;
+        transform: scale(1.1);
+    }
+
+/* Badges más visuales */
+.badge-active {
+    background-color: #22c55e !important;
+    color: #fff;
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 20px;
+}
+
+.badge-inactive {
+    background-color: #facc15 !important;
+    color: #000;
+    font-weight: 500;
+    padding: 0.5em 0.8em;
+    border-radius: 20px;
+}
+
+/* Botones */
+.table-action-btn {
+    border: none;
+    transition: all 0.2s ease-in-out;
+    margin: 0 2px;
+}
+
+    .table-action-btn:hover {
+        transform: translateY(-2px);
+    }
+
+.btn-outline-primary i {
+    color: #4f46e5;
+}
+
+.btn-outline-secondary i {
+    color: #6b7280;
+}
+
+.btn-outline-danger i {
+    color: #dc2626;
+}

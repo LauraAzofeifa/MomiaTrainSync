@@ -1,4 +1,5 @@
-﻿using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
+﻿using MomiaTrainSync.Domain.Entities.EntrenamientosZonas;
+using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +11,15 @@ namespace MomiaTrainSync.Domain.Entities.SesionesEntrenamiento
     public class SesionEntrenamientoEnt
     {
         public int IdSesion { get; set; }
-        public int IdAsignacion { get; set; }
-        public DateTime FechaRegistro { get; set; }
+        public int IdEntrenamiento { get; set; }
+        public DateTime FechaEjecucion { get; set; }
         public int DuracionReal { get; set; }
         public byte NivelEsfuerzoPercibido { get; set; }
         public string? Comentarios { get; set; }
         public decimal CargaTotal { get; set; }
 
         // Relaciones
-        public AsignacionRutinaEnt? Asignacion { get; set; }
+        public EntrenamientoEnt? Entrenamiento { get; set; }
         public ICollection<DetalleZonaSesionEnt> DetallesZona { get; set; } = new List<DetalleZonaSesionEnt>();
     }
 }

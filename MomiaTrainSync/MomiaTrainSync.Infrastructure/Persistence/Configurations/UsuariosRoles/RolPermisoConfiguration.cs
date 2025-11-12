@@ -33,12 +33,15 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.UsuariosRoles
                 new RolPermisoEnt { IdRol = -1, IdPermiso = -3 },
                 new RolPermisoEnt { IdRol = -1, IdPermiso = -4 },
                 new RolPermisoEnt { IdRol = -1, IdPermiso = -5 },
+                new RolPermisoEnt { IdRol = -1, IdPermiso = -8 },
 
                 // TRAINER: solo los suyos + perfil
                 new RolPermisoEnt { IdRol = -2, IdPermiso = -2 },
                 new RolPermisoEnt { IdRol = -2, IdPermiso = -3 },
                 new RolPermisoEnt { IdRol = -2, IdPermiso = -4 },
                 new RolPermisoEnt { IdRol = -2, IdPermiso = -5 },
+                new RolPermisoEnt { IdRol = -2, IdPermiso = -6 }, 
+                new RolPermisoEnt { IdRol = -2, IdPermiso = -7 },
 
                 // ATHLETE: solo perfil
                 new RolPermisoEnt { IdRol = -3, IdPermiso = -3 },

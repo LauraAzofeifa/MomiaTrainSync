@@ -1,6 +1,10 @@
-﻿using MomiaTrainSync.Core.DTOs;
+﻿using AutoMapper;
+using MomiaTrainSync.Core.DTOs.UsuariosRoles;
+using MomiaTrainSync.Core.DTOs.RutinasAsignaciones;
+using MomiaTrainSync.Core.DTOs.EntrenadorAtleta;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
-using AutoMapper;
+using MomiaTrainSync.Domain.Entities.EntrenadorAtleta;
+using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
 using System;
 
 namespace MomiaTrainSync.Core.Mappings
@@ -9,14 +13,22 @@ namespace MomiaTrainSync.Core.Mappings
     {
         public MappingProfile()
         {
-            // Mapea Rol también
-            CreateMap<RolEnt, RolDto>();
+            // Roles y Permisos
+            CreateMap<PermisoEnt, PermisoDto>().ReverseMap();
+            CreateMap<RolPermisoEnt, RolPermisoDto>().ReverseMap();
+            CreateMap<RolEnt, RolDto>().ReverseMap();
 
-            CreateMap<UsuarioEnt, UsuarioDto>();
-
-            // DTO → Entidad
-            CreateMap<UsuarioDto, UsuarioEnt>()
+            // Usuarios
+            CreateMap<UsuarioEnt, UsuarioDto>()
+                .ForMember(dest => dest.Rol, opt => opt.MapFrom(src => src.Rol))
+                .ReverseMap()
                 .ForMember(dest => dest.Rol, opt => opt.Ignore());
+
+            // Mapea Entrenador Atleta
+            CreateMap<EntrenadorAtletaEnt, EntrenadorAtletaDto>().ReverseMap();
+
+            // Rutina
+            CreateMap<RutinaEnt, RutinaDto>();
         }
     }
 }

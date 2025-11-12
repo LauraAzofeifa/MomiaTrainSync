@@ -47,8 +47,8 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.UsuariosRoles
                     IdPermiso = -1,
                     Codigo = "GESTIONAR_USUARIOS",
                     Descripcion = "Permite administrar usuarios del sistema",
-                    Categoria = "Admin",
-                    Ruta = "/Admin/ManageUsers",
+                    Categoria = "Users",
+                    Ruta = "/Users/ManageUsers",
                     Estado = true
                 },
                 // ENTRENADOR PERMISOS
@@ -57,7 +57,7 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.UsuariosRoles
                     IdPermiso = -2,
                     Codigo = "GESTIONAR_ATLETAS",
                     Descripcion = "Permite gestionar atletas",
-                    Categoria = "Trainer",
+                    Categoria = "Athletes",
                     Ruta = "/Trainer/ManageAthletes",
                     Estado = true
                 },
@@ -88,8 +88,35 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.UsuariosRoles
                     Categoria = "Profile",
                     Ruta = "/Profile/ChangePassword",
                     Estado = true
+                },
+                // PERMISOS POSITIVOS ADAPTADOS A NEGATIVOS
+                new PermisoEnt
+                {
+                    IdPermiso = -6,
+                    Codigo = "AGREGAR_ATLETA_ENTRENADOR",
+                    Descripcion = "Permite al entrenador agregar atletas a su lista asignada",
+                    Categoria = "Usuarios",
+                    Ruta = "/Trainer/AddAthlete",
+                    Estado = true
+                },
+                new PermisoEnt
+                {
+                    IdPermiso = -7,
+                    Codigo = "ELIMINAR_ATLETA_ENTRENADOR",
+                    Descripcion = "Permite al entrenador eliminar atletas de su lista",
+                    Categoria = "Usuarios",
+                    Ruta = "/Trainer/DeleteAthlete",
+                    Estado = true
+                },
+                new PermisoEnt
+                {
+                    IdPermiso = -8,
+                    Codigo = "VER_PERMISOS",
+                    Descripcion = "Permite ver la lista de permisos",
+                    Categoria = "Security",
+                    Ruta = "/Permissions/Index",
+                    Estado = true
                 }
-
             );
         }
     }

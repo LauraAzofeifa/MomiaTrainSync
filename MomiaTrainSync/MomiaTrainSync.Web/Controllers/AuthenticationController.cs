@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
-using MomiaTrainSync.Core.DTOs;
+using MomiaTrainSync.Core.DTOs.UsuariosRoles;
 using MomiaTrainSync.Core.UseCases.AuthenticationUseCase;
 using MomiaTrainSync.Web.ViewModels;
 using System.Security.Claims;

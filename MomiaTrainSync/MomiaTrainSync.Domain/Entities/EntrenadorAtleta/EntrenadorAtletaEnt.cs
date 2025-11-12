@@ -19,6 +19,6 @@ namespace MomiaTrainSync.Domain.Entities.EntrenadorAtleta
         // Relaciones
         public UsuarioEnt? Entrenador { get; set; }
         public UsuarioEnt? Atleta { get; set; }
-        public ICollection<AsignacionRutinaEnt> Asignaciones { get; set; } = new List<AsignacionRutinaEnt>();
+        public ICollection<RutinaEnt> Rutinas { get; set; } = new List<RutinaEnt>();
     }
 }

@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using MomiaTrainSync.Core.Common;
-using MomiaTrainSync.Core.DTOs;
-using MomiaTrainSync.Core.Interfaces.Repositories;
+using MomiaTrainSync.Core.DTOs.UsuariosRoles;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
+using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
 using System;
 
 namespace MomiaTrainSync.Core.UseCases.UsersUseCases
