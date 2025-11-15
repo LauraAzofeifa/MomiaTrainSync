@@ -1,0 +1,452 @@
+﻿@model RolPermisosViewModel
+
+@{
+    ViewData["Title"] = "Gestión de Roles y Permisos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" />
+
+    <style>
+        /* Expande el select de cantidad de filas de DataTables */
+        .dataTables_length select.form-select {
+            width: 35% !important; /* Ajusta según gusto: 100px, 140px, etc. */
+        }
+    </style>
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <!-- 🔹 Encabezado -->
+        <div class="card-header bg-gradient bg-primary text-white d-flex justify-content-between align-items-center flex-wrap rounded-top-4">
+            <h5 class="mb-0 fw-semibold">
+                <i class="bi bi-shield-lock me-2"></i>Gestión de Roles y Permisos
+            </h5>
+            <button data-bs-toggle="modal" data-bs-target="#addRolModal" class="btn btn-light btn-sm fw-semibold shadow-sm">
+                <i class="bi bi-plus-circle me-1"></i>Nuevo Rol
+            </button>
+        </div>
+
+        <div class="card-body bg-light-subtle rounded-bottom-4 p-4">
+            <!-- 🔹 Mensaje de éxito -->
+            @if (TempData["Mensaje"] != null)
+            {
+                <div class="alert alert-success shadow-sm">
+                    <i class="bi bi-check-circle me-2"></i>@TempData["Mensaje"]
+                </div>
+            }
+
+            <!-- 🔹 Selección de rol -->
+            <form asp-action="Index" method="get" class="row g-3 align-items-center mb-4">
+                <div class="col-md-4">
+                    <label for="idRol" class="form-label fw-semibold">Seleccionar Rol</label>
+                    <select id="idRol" name="idRol" class="form-select shadow-sm" onchange="this.form.submit()">
+                        <option value="">-- Selecciona un rol --</option>
+                        @foreach (var rol in Model.Roles)
+                        {
+                            <option value="@rol.IdRol"
+                                    selected="@(Model.RolSeleccionadoId == rol.IdRol)">
+                                @rol.Nombre (@(rol.Estado ? "Activo" : "Inactivo"))
+                            </option>
+                        }
+                    </select>
+                </div>
+            </form>
+
+            <div class="row g-4">
+                <!-- 🔹 Columna izquierda: Permisos -->
+                <div class="col-12 col-lg-8">
+                    <div class="card border-0 shadow-sm rounded-4">
+                        <div class="card-header bg-secondary text-white rounded-top-4">
+                            <h6 class="mb-0 fw-semibold">
+                                <i class="bi bi-key me-2"></i>
+                                @(Model.RolSeleccionadoId.HasValue ? "Permisos del Rol" : "Todos los Permisos")
+                            </h6>
+                        </div>
+
+                        <div class="card-body bg-white rounded-bottom-4">
+                            <form asp-action="AssignPermissionToRole" method="post">
+                                <input type="hidden" asp-for="RolSeleccionadoId" />
+
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h6 class="fw-bold text-primary mb-0">
+                                        @(Model.RolSeleccionadoId.HasValue ? "Permisos del Rol" : "Listado de Permisos")
+                                    </h6>
+
+                                    <button type="button"
+                                            class="btn btn-outline-primary btn-sm"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#addPermisoModal">
+                                        <i class="bi bi-plus-circle me-1"></i>Nuevo Permiso
+                                    </button>
+                                </div>
+
+                                <div class="table-responsive pt-1">
+                                    <table id="rolespermisosTable"
+                                           class="my-table-custom table table-hover align-middle table-bordered">
+                                        <thead class="table-light">
+                                            <tr class="text-center">
+                                                <th style="width: 80px;">Asignado</th>
+                                                <th>Código</th>
+                                                <th>Descripción</th>
+                                                <th>Categoría</th>
+                                                <th>Ruta</th>
+                                                <th style="width: 120px;">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var permiso in Model.TodosPermisos)
+                                            {
+                                                bool asignado = Model.PermisosAsignadosIds.Contains(permiso.IdPermiso);
+
+                                                <tr>
+                                                    <td class="text-center">
+                                                        <input type="checkbox"
+                                                               name="PermisosSeleccionados"
+                                                               value="@permiso.IdPermiso"
+                                                               class="form-check-input"
+                                                               @(asignado ? "checked" : "")
+                                                               @(Model.RolSeleccionadoId == null ? "disabled" : "") />
+                                                    </td>
+                                                    <td>@permiso.Codigo</td>
+                                                    <td>@permiso.Descripcion</td>
+                                                    <td><span class="badge bg-info text-dark">@permiso.Categoria</span></td>
+                                                    <td>@permiso.Ruta</td>
+                                                    <td class="text-center actions-cell">
+                                                        <div class="d-flex gap-2 justify-content-center align-items-center">
+                                                            <!-- Editar: botón que abre modal -->
+                                                            <button type="button"
+                                                                    class="btn btn-sm btn-outline-secondary py-1"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#editPermisoModal"
+                                                                    data-id="@permiso.IdPermiso"
+                                                                    data-codigo="@permiso.Codigo"
+                                                                    data-descripcion="@permiso.Descripcion"
+                                                                    data-categoria="@permiso.Categoria"
+                                                                    data-ruta="@permiso.Ruta"
+                                                                    title="Editar">
+                                                                <i class="bi bi-pencil"></i>
+                                                            </button>
+
+                                                            <!-- Toggle estado: formulario inline (no rompe layout) -->
+                                                            <form asp-action="ToggleEstadoPermiso" method="post" class="d-inline m-0 p-0">
+                                                                <input type="hidden" name="id" value="@permiso.IdPermiso" />
+                                                                <button type="submit"
+                                                                        class="btn btn-sm @(permiso.Estado ? "btn-outline-danger" : "btn-outline-success") py-1"
+                                                                        title="Activar / Desactivar">
+                                                                    <i class="bi @(permiso.Estado ? "bi-x-circle" : "bi-check-circle")"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                @if (Model.RolSeleccionadoId.HasValue)
+                                {
+                                    <div class="text-end mt-3">
+                                        <button type="submit" class="btn btn-success shadow-sm px-4">
+                                            <i class="bi bi-save me-2"></i>Guardar Cambios
+                                        </button>
+                                    </div>
+                                }
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 🔹 Columna derecha SOLO si hay rol seleccionado -->
+                @if (Model.RolSeleccionadoId.HasValue)
+                {
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4">
+                            <div class="card-header bg-primary text-white rounded-top-4 d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0 fw-semibold">Información del Rol</h6>
+                                <button class="btn btn-sm btn-light"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#editRolModal"
+                                        data-id="@Model.RolSeleccionadoId">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                            </div>
+                            <div class="card-body bg-white rounded-bottom-4">
+                                @{
+                                    var rolSel = Model.Roles.FirstOrDefault(r => r.IdRol == Model.RolSeleccionadoId);
+                                }
+                                @if (rolSel != null)
+                                {
+                                    <ul class="list-group list-group-flush small">
+                                        <li class="list-group-item"><strong>ID:</strong> @rolSel.IdRol</li>
+                                        <li class="list-group-item"><strong>Nombre:</strong> @rolSel.Nombre</li>
+                                        <li class="list-group-item">
+                                            <strong>Estado:</strong>
+                                            <span class="badge @(rolSel.Estado ? "bg-success" : "bg-warning text-dark")">
+                                                @(rolSel.Estado ? "Activo" : "Inactivo")
+                                            </span>
+                                        </li>
+                                    </ul>
+
+                                    <div class="mt-3 text-center">
+                                        <form asp-action="ToggleEstadoRol" method="post">
+                                            <input type="hidden" name="id" value="@rolSel.IdRol" />
+                                            <button type="submit"
+                                                    class="btn btn-sm @(rolSel.Estado ? "btn-danger" : "btn-success") shadow-sm px-3">
+                                                <i class="bi @(rolSel.Estado ? "bi-x-circle" : "bi-check-circle") me-1"></i>
+                                                @(rolSel.Estado ? "Desactivar Rol" : "Activar Rol")
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Modals {
+    <!-- 🔹 Modal Editar Permiso -->
+    <div class="modal fade" id="editPermisoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="EditPermission" method="post">
+                    <div class="modal-header bg-secondary text-white">
+                        <h5 class="modal-title">Editar Permiso</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <input asp-for="PermisoForm.IdPermiso" type="hidden" id="editIdPermiso" />
+
+                        <div class="mb-3">
+                            <label asp-for="PermisoForm.Codigo" class="form-label"></label>
+                            <input asp-for="PermisoForm.Codigo" class="form-control" id="editCodigo" />
+                            <span asp-validation-for="PermisoForm.Codigo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PermisoForm.Descripcion" class="form-label"></label>
+                            <textarea asp-for="PermisoForm.Descripcion" class="form-control" id="editDescripcion"></textarea>
+                            <span asp-validation-for="PermisoForm.Descripcion" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PermisoForm.Categoria" class="form-label"></label>
+                            <input asp-for="PermisoForm.Categoria" class="form-control" id="editCategoria" />
+                            <span asp-validation-for="PermisoForm.Categoria" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PermisoForm.Ruta" class="form-label"></label>
+                            <input asp-for="PermisoForm.Ruta" class="form-control" id="editRuta" />
+                            <span asp-validation-for="PermisoForm.Ruta" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 Modal Editar Rol -->
+    <div class="modal fade" id="editRolModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form asp-action="EditRole" method="post">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Editar Rol</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <!-- ID oculto -->
+                        <input asp-for="RolForm.IdRol" type="hidden" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Nombre del Rol</label>
+                            <input asp-for="RolForm.Nombre" class="form-control" />
+                            <span asp-validation-for="RolForm.Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea asp-for="RolForm.Descripcion" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="RolForm.Descripcion" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🔹 Modal: Nuevo Permiso -->
+    <div class="modal fade" id="addPermisoModal" tabindex="-1" aria-labelledby="addPermisoLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" id="addPermisoLabel">
+                        <i class="bi bi-plus-circle me-2"></i>Agregar Nuevo Permiso
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form asp-action="AddPermission" method="post">
+                    <div class="modal-body">
+
+                        <!-- Código -->
+                        <div class="mb-3">
+                            <label asp-for="PermisoForm.Codigo" class="form-label fw-bold"></label>
+                            <input asp-for="PermisoForm.Codigo" class="form-control" placeholder="Ej: USR_EDIT">
+                            <span asp-validation-for="PermisoForm.Codigo" class="text-danger"></span>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label asp-for="PermisoForm.Descripcion" class="form-label fw-bold"></label>
+                            <input asp-for="PermisoForm.Descripcion" class="form-control" placeholder="Ej: Editar usuarios">
+                            <span asp-validation-for="PermisoForm.Descripcion" class="text-danger"></span>
+                        </div>
+
+                        <!-- Categoría -->
+                        <div class="mb-3">
+                            <label asp-for="PermisoForm.Categoria" class="form-label fw-bold"></label>
+                            <input asp-for="PermisoForm.Categoria" class="form-control" placeholder="Ej: Usuarios, Roles, Mascotas">
+                            <span asp-validation-for="PermisoForm.Categoria" class="text-danger"></span>
+                        </div>
+
+                        <!-- Ruta -->
+                        <div class="mb-3">
+                            <label asp-for="PermisoForm.Ruta" class="form-label fw-bold"></label>
+                            <input asp-for="PermisoForm.Ruta" class="form-control" placeholder="/Usuario/Editar">
+                            <span asp-validation-for="PermisoForm.Ruta" class="text-danger"></span>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-save me-1"></i>Guardar Permiso
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 🔹 Modal: Nuevo Rol -->
+    <div class="modal fade" id="addRolModal" tabindex="-1" aria-labelledby="addRolLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <!-- Header -->
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addRolLabel">
+                        <i class="bi bi-people-fill me-2"></i>Agregar Nuevo Rol
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <!-- Form -->
+                <form asp-action="AddRole" method="post">
+                    <div class="modal-body">
+
+                        <!-- Errores generales del modelo -->
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre del Rol</label>
+                            <input asp-for="RolForm.Nombre" class="form-control"
+                                   placeholder="Ej: Coordinador, Invitado, Supervisor" />
+                            <span asp-validation-for="RolForm.Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <textarea asp-for="RolForm.Descripcion" class="form-control"
+                                      placeholder="Descripción breve del rol" rows="2"></textarea>
+                            <span asp-validation-for="RolForm.Descripcion" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input asp-for="RolForm.Estado" class="form-check-input" />
+                            <label class="form-check-label fw-bold" asp-for="RolForm.Estado">Activo</label>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-save me-1"></i>Guardar Rol
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/js/users.js"></script>
+    <script>
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const modalToShow = '@TempData["ShowModal"]';
+            if (modalToShow) {
+                const modalElement = document.getElementById(modalToShow);
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+
+            $("#rolespermisosTable").DataTable();
+
+            const editModal = document.getElementById('editPermisoModal');
+
+            editModal.addEventListener('show.bs.modal', function (event) {
+            const btn = event.relatedTarget;
+            document.getElementById("editIdPermiso").value = btn.dataset.id;
+            document.getElementById("editCodigo").value = btn.dataset.codigo;
+            document.getElementById("editDescripcion").value = btn.dataset.descripcion;
+            document.getElementById("editCategoria").value = btn.dataset.categoria;
+            document.getElementById("editRuta").value = btn.dataset.ruta;
+        });
+
+            // Simulación de soft delete (por ahora solo alerta)
+            function togglePermisoEstado(id) {
+                if (confirm('¿Deseas cambiar el estado de este permiso?')) {
+                    window.location.href = `/Permiso/ToggleEstado/${id}`;
+                }
+            }
+        });
+    </script>
+}

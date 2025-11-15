@@ -10,16 +10,37 @@ namespace MomiaTrainSync.Web.Controllers
 {
     public class UsersController : Controller
     {
+        #region Dependencias
+
+        // Usuario
         private readonly GetUsuariosUseCase _getUsuariosUseCase;
+        private readonly UpdateUsuarioRolEstadoUseCase _updateUsuarioRolEstadoUseCase;
+
+        // Entrenador
         private readonly GetEntrenadorAtletaUseCase _getEntrenadorAtletaUseCase;
 
+        #endregion
+
+        #region Constructor
+
         public UsersController(
-            GetUsuariosUseCase getUsuariosUseCase, 
+            // Usuario
+            GetUsuariosUseCase getUsuariosUseCase,
+            UpdateUsuarioRolEstadoUseCase updateUsuarioRolEstadoUseCase,
+            // Entrenador
             GetEntrenadorAtletaUseCase getEntrenadorAtletaUseCase)
         {
+            // Usuario
             _getUsuariosUseCase = getUsuariosUseCase;
+            _updateUsuarioRolEstadoUseCase = updateUsuarioRolEstadoUseCase;
+
+            // Entrenador
             _getEntrenadorAtletaUseCase = getEntrenadorAtletaUseCase;
         }
+
+        #endregion
+
+        #region Métodos Auxiliares Privados
 
         private int? GetCurrentUserId()
         {
@@ -44,15 +65,31 @@ namespace MomiaTrainSync.Web.Controllers
                 .ToList();
         }
 
+        #endregion
+
+        #region Administración de Usuarios (Admin)
 
         [HttpGet]
         [Permiso]
         public IActionResult ManageUsers()
         {
             var result = _getUsuariosUseCase.ExecuteAsync(incluirInactivos: true).Result;
-
             return View(result.Datos);
         }
+
+        [HttpPost]
+        [Permiso]
+        public IActionResult UpdateUser(int deleteId)
+        {
+            if (deleteId <= 0)
+                return BadRequest("ID de usuario inválido.");
+
+            return View();
+        }
+
+        #endregion
+
+        #region Gestión de Atletas (Entrenador)
 
         [HttpGet]
         [Permiso]
@@ -62,11 +99,16 @@ namespace MomiaTrainSync.Web.Controllers
             if (userId is null)
                 return Unauthorized();
 
-            var response = _getEntrenadorAtletaUseCase.ExecuteAsync(entrenadorId: userId.Value, incluirInactivos: true).Result;
-            
+            var response = _getEntrenadorAtletaUseCase.ExecuteAsync(
+                entrenadorId: userId.Value,
+                incluirInactivos: true
+            ).Result;
+
             ViewBag.Athletes = await GetAthletesSelectListItemsAsync();
 
             return View(response.Datos);
         }
+
+        #endregion
     }
 }

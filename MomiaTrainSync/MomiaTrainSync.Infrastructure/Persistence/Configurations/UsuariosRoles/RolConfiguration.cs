@@ -24,6 +24,12 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.UsuariosRoles
             builder.Property(r => r.Descripcion)
                 .HasMaxLength(255);
 
+            builder.Property(r => r.Estado)
+                .IsRequired();
+
+            // Índices y unicidad
+            builder.HasIndex(r => r.Nombre).IsUnique();
+
             // Relaciones
             builder.HasMany(r => r.Usuarios)
                 .WithOne(u => u.Rol)
@@ -34,13 +40,6 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.UsuariosRoles
                 .WithOne(rp => rp.Rol)
                 .HasForeignKey(rp => rp.IdRol)
                 .OnDelete(DeleteBehavior.Cascade);
-
-            // Seed inicial de Roles (Admin, Entrenador, Atleta)
-            builder.HasData(
-                new RolEnt { IdRol = -1, Nombre = "Administrador", Descripcion = "Acceso completo al sistema" },
-                new RolEnt { IdRol = -2, Nombre = "Entrenador", Descripcion = "Gestiona rutinas, entrenamientos y atletas" },
-                new RolEnt { IdRol = -3, Nombre = "Atleta", Descripcion = "Usuario que recibe rutinas asignadas" }
-            );
         }
     }
 }

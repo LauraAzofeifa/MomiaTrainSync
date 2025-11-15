@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MomiaTrainSync.Infrastructure.Persistence;
 
@@ -11,9 +12,11 @@ using MomiaTrainSync.Infrastructure.Persistence;
 namespace MomiaTrainSync.Infrastructure.Migrations
 {
     [DbContext(typeof(MomiaTrainSyncDbContext))]
-    partial class MomiaTrainSyncDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251112221315_NuevaPropiedadEstadoEnRol")]
+    partial class NuevaPropiedadEstadoEnRol
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -312,6 +315,80 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.HasKey("IdPermiso");
 
                     b.ToTable("Permiso", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            IdPermiso = -1,
+                            Categoria = "Users",
+                            Codigo = "GESTIONAR_USUARIOS",
+                            Descripcion = "Permite administrar usuarios del sistema",
+                            Estado = true,
+                            Ruta = "/Users/ManageUsers"
+                        },
+                        new
+                        {
+                            IdPermiso = -2,
+                            Categoria = "Athletes",
+                            Codigo = "GESTIONAR_ATLETAS",
+                            Descripcion = "Permite gestionar atletas",
+                            Estado = true,
+                            Ruta = "/Trainer/ManageAthletes"
+                        },
+                        new
+                        {
+                            IdPermiso = -3,
+                            Categoria = "Profile",
+                            Codigo = "VER_PERFIL",
+                            Descripcion = "Permite ver el perfil del usuario",
+                            Estado = true,
+                            Ruta = "/Profile/MyProfile"
+                        },
+                        new
+                        {
+                            IdPermiso = -4,
+                            Categoria = "Profile",
+                            Codigo = "EDITAR_PERFIL",
+                            Descripcion = "Permite editar el perfil del usuario",
+                            Estado = true,
+                            Ruta = "/Profile/EditProfile"
+                        },
+                        new
+                        {
+                            IdPermiso = -5,
+                            Categoria = "Profile",
+                            Codigo = "CAMBIAR_CONTRASENNA_PERFIL",
+                            Descripcion = "Permite cambiar la contraseña del usuario",
+                            Estado = true,
+                            Ruta = "/Profile/ChangePassword"
+                        },
+                        new
+                        {
+                            IdPermiso = -6,
+                            Categoria = "Usuarios",
+                            Codigo = "AGREGAR_ATLETA_ENTRENADOR",
+                            Descripcion = "Permite al entrenador agregar atletas a su lista asignada",
+                            Estado = true,
+                            Ruta = "/Trainer/AddAthlete"
+                        },
+                        new
+                        {
+                            IdPermiso = -7,
+                            Categoria = "Usuarios",
+                            Codigo = "ELIMINAR_ATLETA_ENTRENADOR",
+                            Descripcion = "Permite al entrenador eliminar atletas de su lista",
+                            Estado = true,
+                            Ruta = "/Trainer/DeleteAthlete"
+                        },
+                        new
+                        {
+                            IdPermiso = -8,
+                            Categoria = "Security",
+                            Codigo = "VER_PERMISOS",
+                            Descripcion = "Permite ver la lista de permisos",
+                            Estado = true,
+                            Ruta = "/Permissions/Index"
+                        });
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.UsuariosRoles.RolEnt", b =>
@@ -337,10 +414,30 @@ namespace MomiaTrainSync.Infrastructure.Migrations
 
                     b.HasKey("IdRol");
 
-                    b.HasIndex("Nombre")
-                        .IsUnique();
-
                     b.ToTable("Rol", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            IdRol = -1,
+                            Descripcion = "Acceso completo al sistema",
+                            Estado = true,
+                            Nombre = "Administrador"
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            Descripcion = "Gestiona rutinas, entrenamientos y atletas",
+                            Estado = true,
+                            Nombre = "Entrenador"
+                        },
+                        new
+                        {
+                            IdRol = -3,
+                            Descripcion = "Usuario que recibe rutinas asignadas",
+                            Estado = true,
+                            Nombre = "Atleta"
+                        });
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.UsuariosRoles.RolPermisoEnt", b =>
@@ -356,6 +453,83 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.HasIndex("IdPermiso");
 
                     b.ToTable("RolPermiso", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            IdRol = -1,
+                            IdPermiso = -1
+                        },
+                        new
+                        {
+                            IdRol = -1,
+                            IdPermiso = -2
+                        },
+                        new
+                        {
+                            IdRol = -1,
+                            IdPermiso = -3
+                        },
+                        new
+                        {
+                            IdRol = -1,
+                            IdPermiso = -4
+                        },
+                        new
+                        {
+                            IdRol = -1,
+                            IdPermiso = -5
+                        },
+                        new
+                        {
+                            IdRol = -1,
+                            IdPermiso = -8
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            IdPermiso = -2
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            IdPermiso = -3
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            IdPermiso = -4
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            IdPermiso = -5
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            IdPermiso = -6
+                        },
+                        new
+                        {
+                            IdRol = -2,
+                            IdPermiso = -7
+                        },
+                        new
+                        {
+                            IdRol = -3,
+                            IdPermiso = -3
+                        },
+                        new
+                        {
+                            IdRol = -3,
+                            IdPermiso = -4
+                        },
+                        new
+                        {
+                            IdRol = -3,
+                            IdPermiso = -5
+                        });
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.UsuariosRoles.UsuarioEnt", b =>
@@ -411,6 +585,21 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.HasIndex("RolId");
 
                     b.ToTable("Usuarios", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            Apellido = "Sistema",
+                            ContrasennaHash = "UDd9Jxr59YTGLmp8Dofxlw==.Bf/QH105NwCI9Dt8C+fkRpjRXwOlPSEOjVZKMgqK0pI=",
+                            Correo = "admin@dominio.com",
+                            Estado = true,
+                            FechaCreacion = new DateTime(2025, 11, 11, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            FechaCumpleannos = new DateTime(1990, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Nombre = "Admin",
+                            RolId = -1,
+                            Telefono = "60000000"
+                        });
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.EntrenadorAtleta.EntrenadorAtletaEnt", b =>

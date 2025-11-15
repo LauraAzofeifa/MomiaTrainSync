@@ -13,17 +13,20 @@ namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
     {
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IPasswordHasherService _passwordHasherService;
+        private readonly IRolRepository _rolRepository;
         private readonly ILogErrorRepository _logErrorRepository;
         private readonly IMapper _mapper;
 
         public RegisterUseCase(
             IUsuarioRepository usuarioRepository,
             IPasswordHasherService passwordHasherService,
+            IRolRepository rolRepository,
             ILogErrorRepository logErrorRepository,
             IMapper mapper)
         {
             _usuarioRepository = usuarioRepository;
             _passwordHasherService = passwordHasherService;
+            _rolRepository = rolRepository;
             _logErrorRepository = logErrorRepository;
             _mapper = mapper;
         }
@@ -32,15 +35,20 @@ namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
         {
             try
             {
-                // 1️⃣ Verificar si el correo ya existe
+                // Verificar si el correo ya existe
                 var existingUser = await _usuarioRepository.GetByEmailAsync(correo);
                 if (existingUser != null)
                     return Response<UsuarioDto>.Fail("El correo ya está registrado. Intenta con otro.");
 
-                // 2️⃣ Hashear la contraseña
+                // Obtener el rol predeterminado (Atleta)
+                var defaultRole = await _rolRepository.GetByNombreAsync("Atleta");
+                if (defaultRole == null)
+                    return Response<UsuarioDto>.Fail("El rol predeterminado no está configurado. Contacta al administrador.");
+
+                // Hashear la contraseña
                 var hash = _passwordHasherService.HashPassword(contrasena);
 
-                // 3️⃣ Crear la entidad
+                // Crear la entidad
                 var usuario = new UsuarioEnt
                 {
                     Nombre = nombre,
@@ -49,13 +57,13 @@ namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
                     ContrasennaHash = hash,
                     Estado = true,
                     FechaCreacion = DateTime.UtcNow,
-                    RolId = -3
+                    RolId = defaultRole.IdRol
                 };
 
-                // 4️⃣ Guardar en base de datos
+                // Guardar en base de datos
                 var createdUser = await _usuarioRepository.AddAsync(usuario);
 
-                // 5️⃣ Mapear a DTO
+                // Mapear a DTO
                 var usuarioDto = _mapper.Map<UsuarioDto>(createdUser);
 
                 return Response<UsuarioDto>.Success(usuarioDto, "Usuario registrado exitosamente.");

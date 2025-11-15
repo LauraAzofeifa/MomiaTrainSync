@@ -1,28 +1,28 @@
-﻿.table-custom {
+﻿.my-table-custom {
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
     background-color: #fff;
 }
 
-.table-custom thead {
+.my-table-custom thead {
     background: linear-gradient(90deg, #4f46e5, #6366f1);
     color: #fff;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
 
-    .table-custom thead th {
+    .my-table-custom thead th {
         padding: 1rem;
         font-size: 0.9rem;
         border: none;
     }
 
-.table-custom tbody tr {
+.my-table-custom tbody tr {
     transition: all 0.2s ease-in-out;
 }
 
-    .table-custom tbody tr:hover {
+    .my-table-custom tbody tr:hover {
         background-color: #f8f9fa;
         transform: scale(1.01);
     }

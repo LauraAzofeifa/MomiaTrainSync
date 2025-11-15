@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MomiaTrainSync.Core.UseCases.RolesPermisos
+namespace MomiaTrainSync.Core.UseCases.RolesPermisos.Permiso
 {
     public class GetPermisosUseCase
     {

@@ -6,6 +6,7 @@
     <title>@ViewData["Title"] - MomiaTrainSync Admin</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     @RenderSection("Styles", required: false)
     <link rel="stylesheet" href="~/css/styles.css">
 
@@ -57,7 +58,7 @@
                         </a>
                         <ul class="collapse list-unstyled" id="routinesSubmenu">
                             <li><a asp-controller="Users" asp-action="ManageUsers"><i class="bi bi-people"></i>Usuarios</a></li>
-                            <li><a asp-controller="Permissions" asp-action="Index"><i class="bi bi-key"></i>Permisos</a></li>
+                            <li><a asp-controller="RolPermiso" asp-action="Index"><i class="bi bi-key"></i>Permisos</a></li>
                             <li><a asp-controller="Admin" asp-action="Metrics"><i class="bi bi-people"></i>Métricas</a></li>
                         </ul>
                     </li>
@@ -207,27 +208,35 @@
     </div>
 
     <!-- Toast container -->
-    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1100">
+    <div class="position-fixed top-0 end-0 p-4" style="z-index: 1100;">
         @if (TempData["SuccessMessage"] != null)
         {
-            <div class="toast align-items-center text-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        @TempData["SuccessMessage"]
-                    </div>
-                    <button type="button" class="btn-close btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="toast show shadow-lg border-0 animate__animated animate__fadeInDown"
+                 role="alert" aria-live="assertive" aria-atomic="true"
+                 style="border-left: 6px solid #28a745;">
+                <div class="toast-header bg-success text-white">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <strong class="me-auto">Éxito</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    @TempData["SuccessMessage"]
                 </div>
             </div>
         }
 
         @if (TempData["ErrorMessage"] != null)
         {
-            <div class="toast align-items-center text-danger border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="d-flex">
-                    <div class="toast-body">
-                        @TempData["ErrorMessage"]
-                    </div>
-                    <button type="button" class="btn-close btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            <div class="toast show shadow-lg border-0 animate__animated animate__fadeInDown"
+                 role="alert" aria-live="assertive" aria-atomic="true"
+                 style="border-left: 6px solid #dc3545;">
+                <div class="toast-header bg-danger text-white">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong class="me-auto">Error</strong>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+                </div>
+                <div class="toast-body">
+                    @TempData["ErrorMessage"]
                 </div>
             </div>
         }

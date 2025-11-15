@@ -142,6 +142,7 @@ namespace MomiaTrainSync.Infrastructure.Repositories.RolesPermisos
                     .Include(u => u.Rol)
                         .ThenInclude(r => r!.RolPermisos)
                             .ThenInclude(rp => rp.Permiso)
+                            .Where(u => u.Id == userId && u.Rol!.Estado)
                     .FirstOrDefaultAsync(u => u.Id == userId);
 
                 if (usuario == null)

@@ -2,14 +2,15 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using MomiaTrainSync.Core.Common;
 using MomiaTrainSync.Core.Interfaces.Repositories.EntrenadorAtleta;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
 using MomiaTrainSync.Core.Interfaces.Services;
 using MomiaTrainSync.Core.Mappings;
 using MomiaTrainSync.Core.UseCases.AuthenticationUseCase;
-using MomiaTrainSync.Core.UseCases.RolesPermisos;
+using MomiaTrainSync.Core.UseCases.RolesPermisos.Permiso;
+using MomiaTrainSync.Core.UseCases.RolesPermisos.Rol;
+using MomiaTrainSync.Core.UseCases.RolesPermisos.RolPermiso;
 using MomiaTrainSync.Core.UseCases.TrainerAthleteUseCase;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
 using MomiaTrainSync.Infrastructure.Persistence;
@@ -32,11 +33,19 @@ namespace MomiaTrainSync.Composition
             services.AddDbContext<MomiaTrainSyncDbContext> (options =>
             options.UseSqlServer(connectionString));
 
-            // Repositories
+            #region Repositories
+
+            // Roles
+            services.AddScoped<IPermisoRepository, PermisoRepository>();
+            services.AddScoped<IRolRepository, RolRepository>();
+            services.AddScoped<IRolPermisoRepository, RolPermisoRepository>();
+
+            // Usuarios
             services.AddScoped<ILogErrorRepository, LogErrorRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-            services.AddScoped<IPermisoRepository, PermisoRepository>();
             services.AddScoped<IEntrenadorAtletaRepository, EntrenadorAtletaRepository>();
+
+            #endregion
 
             // Services
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
@@ -44,7 +53,19 @@ namespace MomiaTrainSync.Composition
 
             // Use Cases
             #region Roles y Permisos
+            // Rol
+            services.AddScoped<AddRolUseCase>();
+            services.AddScoped<GetRolesUseCase>();
+            services.AddScoped<UpdateRolUseCase>();
+
+            // RolPermiso
+            services.AddScoped<AsignarPermisosUseCase>();
+            services.AddScoped<GetPermisosPorRolUseCase>();
+
+            // Permiso
+            services.AddScoped<AddPermisoUseCase>();
             services.AddScoped<GetPermisosUseCase>();
+            services.AddScoped<UpdatePermisoUseCase>();
             #endregion
 
             #region Usuarios
@@ -55,6 +76,7 @@ namespace MomiaTrainSync.Composition
             services.AddScoped<GetUsuariosUseCase>();
             services.AddScoped<UpdateUsuarioUseCase>();
             services.AddScoped<ChangePasswordUsuarioUseCase>();
+            services.AddScoped<UpdateUsuarioRolEstadoUseCase>();
             #endregion
 
             #region EntrenadorAtleta

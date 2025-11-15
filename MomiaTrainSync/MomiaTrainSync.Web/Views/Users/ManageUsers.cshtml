@@ -29,7 +29,7 @@
                     fecha: row.dataset.fechacreacion
                 };
 
-                // 🔹 Ver Usuario
+                // Ver Usuario
                 row.querySelector(".btn-view").addEventListener("click", () => {
                     document.getElementById("viewId").textContent = data.id;
                     document.getElementById("viewNombre").textContent = data.nombre;
@@ -41,7 +41,7 @@
                     estadoEl.className = data.estado ? "badge bg-success" : "badge bg-warning text-dark";
                 });
 
-                // 🔹 Editar Usuario
+                // Editar Usuario
                 row.querySelector(".btn-edit").addEventListener("click", () => {
                     document.getElementById("editId").value = data.id;
                     document.getElementById("editNombre").value = data.nombre;
@@ -51,7 +51,7 @@
                     document.getElementById("editFecha").textContent = data.fecha;
                 });
 
-                // 🔹 Eliminar Usuario
+                // Eliminar Usuario
                 row.querySelector(".btn-delete").addEventListener("click", () => {
                     document.getElementById("deleteId").value = data.id;
                     document.getElementById("deleteNombre").textContent = data.nombre;
@@ -116,7 +116,7 @@
 
 <div class="card">
     <div class="card-body table-responsive">
-        <table id="usersTable" class="table-custom table table-hover align-middle mb-0">
+        <table id="usersTable" class="my-table-custom table table-hover align-middle mb-0">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -225,7 +225,7 @@
                     <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Usuario</h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="editUserForm">
+                <form asp-controller="" asp-action="">
                     <div class="modal-body">
                         <input type="hidden" id="editId">
 

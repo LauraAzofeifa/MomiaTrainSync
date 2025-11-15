@@ -11,6 +11,7 @@ namespace MomiaTrainSync.Domain.Entities.UsuariosRoles
         public int IdRol { get; set; }
         public string Nombre { get; set; } = string.Empty;
         public string Descripcion { get; set; } = string.Empty;
+        public bool Estado { get; set; }
 
         // Relaciones
         public ICollection<UsuarioEnt> Usuarios { get; set; } = new List<UsuarioEnt>();

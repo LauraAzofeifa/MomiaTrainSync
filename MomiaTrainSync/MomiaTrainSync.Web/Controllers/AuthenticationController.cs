@@ -103,7 +103,7 @@ namespace MomiaTrainSync.Web.Controllers
 
             if (!response.Exito)
             {
-                ModelState.AddModelError("", response.Mensaje);
+                TempData["ErrorMessage"] = response.Mensaje;
                 return View(vm);
             }
 
