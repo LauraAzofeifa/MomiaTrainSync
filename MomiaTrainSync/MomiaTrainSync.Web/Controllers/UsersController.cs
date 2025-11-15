@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MomiaTrainSync.Core.DTOs.UsuariosRoles;
+using MomiaTrainSync.Core.UseCases.RolesPermisos.Rol;
 using MomiaTrainSync.Core.UseCases.TrainerAthleteUseCase;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
 using MomiaTrainSync.Web.Security;
@@ -12,11 +13,9 @@ namespace MomiaTrainSync.Web.Controllers
     {
         #region Dependencias
 
-        // Usuario
+        private readonly GetRolesUseCase _getRolesUseCase;
         private readonly GetUsuariosUseCase _getUsuariosUseCase;
-        private readonly UpdateUsuarioRolEstadoUseCase _updateUsuarioRolEstadoUseCase;
-
-        // Entrenador
+        private readonly UpdateUsuarioUseCase _updateUsuarioUseCase;
         private readonly GetEntrenadorAtletaUseCase _getEntrenadorAtletaUseCase;
 
         #endregion
@@ -24,23 +23,20 @@ namespace MomiaTrainSync.Web.Controllers
         #region Constructor
 
         public UsersController(
-            // Usuario
+            GetRolesUseCase getRolesUseCase,
             GetUsuariosUseCase getUsuariosUseCase,
-            UpdateUsuarioRolEstadoUseCase updateUsuarioRolEstadoUseCase,
-            // Entrenador
+            UpdateUsuarioUseCase updateUsuarioUseCase,
             GetEntrenadorAtletaUseCase getEntrenadorAtletaUseCase)
         {
-            // Usuario
+            _getRolesUseCase = getRolesUseCase;
             _getUsuariosUseCase = getUsuariosUseCase;
-            _updateUsuarioRolEstadoUseCase = updateUsuarioRolEstadoUseCase;
-
-            // Entrenador
+            _updateUsuarioUseCase = updateUsuarioUseCase;
             _getEntrenadorAtletaUseCase = getEntrenadorAtletaUseCase;
         }
 
         #endregion
 
-        #region Métodos Auxiliares Privados
+        #region Métodos Privados Auxiliares
 
         private int? GetCurrentUserId()
         {
@@ -52,17 +48,30 @@ namespace MomiaTrainSync.Web.Controllers
         {
             var response = await _getUsuariosUseCase.ExecuteAsync(rol: "Atleta");
 
-            if (!response.Exito || response.Datos == null || !response.Datos.Any())
+            if (!response.Exito || response.Datos is null)
                 return new List<SelectListItem>();
 
             return response.Datos
-                .OrderBy(a => a.Nombre) // opcional: ordena alfabéticamente
+                .OrderBy(a => a.Nombre)
                 .Select(a => new SelectListItem
                 {
-                    Text = $"{a.Nombre ?? ""} {a.Apellido ?? ""}".Trim(),
+                    Text = $"{a.Nombre} {a.Apellido}".Trim(),
                     Value = a.Id.ToString()
                 })
                 .ToList();
+        }
+
+        private async Task LoadRolesAsync()
+        {
+            var response = await _getRolesUseCase.ExecuteAsync();
+
+            ViewBag.Roles = response.Exito && response.Datos != null
+                ? response.Datos.Select(r => new SelectListItem
+                {
+                    Text = r.Nombre,
+                    Value = r.IdRol.ToString()
+                }).ToList()
+                : new List<SelectListItem>();
         }
 
         #endregion
@@ -71,20 +80,33 @@ namespace MomiaTrainSync.Web.Controllers
 
         [HttpGet]
         [Permiso]
-        public IActionResult ManageUsers()
+        public async Task<IActionResult> ManageUsers()
         {
-            var result = _getUsuariosUseCase.ExecuteAsync(incluirInactivos: true).Result;
+            await LoadRolesAsync(); // <<--- Cargar roles para el modal
+
+            var result = await _getUsuariosUseCase.ExecuteAsync(incluirInactivos: true);
             return View(result.Datos);
         }
 
         [HttpPost]
         [Permiso]
-        public IActionResult UpdateUser(int deleteId)
+        public async Task<IActionResult> UpdateUserRoleAsync(int Id, int RolId)
         {
-            if (deleteId <= 0)
-                return BadRequest("ID de usuario inválido.");
 
-            return View();
+            var result = await _updateUsuarioUseCase.CambiarRolAsync(Id, RolId);
+
+            TempData[result.Exito ? "SuccessMessage" : "ErrorMessage"] = result.Mensaje;
+            return RedirectToAction("ManageUsers");
+        }
+
+        [HttpPost]
+        [Permiso]
+        public async Task<IActionResult> ToggleEstadoUser(int Id) 
+        { 
+            var result = await _updateUsuarioUseCase.CambiarEstadoAsync(Id);
+
+            TempData[result.Exito ? "SuccessMessage" : "ErrorMessage"] = result.Mensaje;
+            return RedirectToAction("ManageUsers");
         }
 
         #endregion
@@ -99,10 +121,10 @@ namespace MomiaTrainSync.Web.Controllers
             if (userId is null)
                 return Unauthorized();
 
-            var response = _getEntrenadorAtletaUseCase.ExecuteAsync(
-                entrenadorId: userId.Value,
-                incluirInactivos: true
-            ).Result;
+            var response = await _getEntrenadorAtletaUseCase.ExecuteAsync(
+               entrenadorId: userId.Value,
+               incluirInactivos: true
+            );
 
             ViewBag.Athletes = await GetAthletesSelectListItemsAsync();
 

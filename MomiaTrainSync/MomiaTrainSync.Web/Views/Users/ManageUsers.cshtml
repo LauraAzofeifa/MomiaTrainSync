@@ -41,15 +41,15 @@
                     estadoEl.className = data.estado ? "badge bg-success" : "badge bg-warning text-dark";
                 });
 
-                // Editar Usuario
                 row.querySelector(".btn-edit").addEventListener("click", () => {
                     document.getElementById("editId").value = data.id;
                     document.getElementById("editNombre").value = data.nombre;
                     document.getElementById("editCorreo").value = data.correo;
+
                     document.getElementById("editRol").value = data.rolid;
-                    document.getElementById("editEstado").checked = data.estado;
                     document.getElementById("editFecha").textContent = data.fecha;
                 });
+
 
                 // Eliminar Usuario
                 row.querySelector(".btn-delete").addEventListener("click", () => {
@@ -167,9 +167,16 @@
                                 <button class="btn btn-sm btn-outline-secondary table-action-btn btn-edit" title="Editar" data-bs-toggle="modal" data-bs-target="#editUserModal">
                                     <i class="bi bi-pencil"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger table-action-btn btn-delete" title="Eliminar" data-bs-toggle="modal" data-bs-target="#deleteUserModal">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+                                <form asp-action="ToggleEstadoUser" method="post">
+                                    <input type="hidden" name="id" value="@user.Id" />
+                                    <button type="submit"
+                                            class="btn btn-sm @(user.Estado
+                                                        ? "btn-outline-danger btn-delete"
+                                                        : "btn-outline-success") table-action-btn"
+                                            title="@(user.Estado ? "Eliminar" : "Restaurar")">
+                                        <i class="bi @(user.Estado ? "bi-trash" : "bi-arrow-counterclockwise")"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }
@@ -200,7 +207,7 @@
                 </div>
                 <div class="modal-body text-center">
                     <img src="https://avatar.iran.liara.run/public/24" id="viewAvatar" class="rounded-circle border mb-3"
-                    style="width:100px;height:100px;object-fit:cover;max-width:100%;">
+                         style="width:100px;height:100px;object-fit:cover;max-width:100%;">
                     <h5 id="viewNombre" class="fw-bold"></h5>
                     <span id="viewEstado" class="badge bg-success mb-3">Activo</span>
                     <ul class="list-group text-start">
@@ -225,43 +232,47 @@
                     <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Usuario</h5>
                     <button class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form asp-controller="" asp-action="">
-                    <div class="modal-body">
-                        <input type="hidden" id="editId">
 
+                <form method="post" asp-action="UpdateUserRole">
+                    <div class="modal-body">
+
+                        <input type="hidden" name="Id" id="editId">
+
+                        <!-- Nombre (solo lectura) -->
                         <div class="mb-3">
                             <label class="form-label">Nombre</label>
-                            <input type="text" id="editNombre" class="form-control" required>
+                            <input type="text" id="editNombre" class="form-control bg-light" readonly>
                         </div>
 
+                        <!-- Correo (solo lectura) -->
                         <div class="mb-3">
                             <label class="form-label">Correo</label>
-                            <input type="email" id="editCorreo" class="form-control" required>
+                            <input type="email" id="editCorreo" class="form-control bg-light" readonly>
                         </div>
 
+                        <!-- Rol -->
                         <div class="mb-3">
                             <label class="form-label">Rol</label>
-                            <select id="editRol" class="form-select">
-                                <option value="1">Administrador</option>
-                                <option value="2">Entrenador</option>
-                                <option value="3">Atleta</option>
+                            <select id="editRol" name="RolId" class="form-select">
+                                @foreach (var rol in ViewBag.Roles)
+                                {
+                                    <option value="@rol.Value">@rol.Text</option>
+                                }
                             </select>
                         </div>
 
-                        <div class="form-check form-switch">
-                            <input type="checkbox" id="editEstado" class="form-check-input">
-                            <label class="form-check-label" for="editEstado">Activo</label>
-                        </div>
-
-                        <div class="mt-3 text-muted small">
+                        <div class="text-muted small">
                             <strong>Fecha creación:</strong> <span id="editFecha"></span>
                         </div>
+
                     </div>
+
                     <div class="modal-footer">
                         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                         <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                     </div>
                 </form>
+
             </div>
         </div>
     </div>
