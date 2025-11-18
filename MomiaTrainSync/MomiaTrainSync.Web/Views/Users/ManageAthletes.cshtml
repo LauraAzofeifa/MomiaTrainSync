@@ -21,40 +21,42 @@
         document.addEventListener("DOMContentLoaded", () => {
             $("#usersTable").DataTable();
 
-            document.querySelectorAll("#usersTable tbody tr").forEach(row => {
-                const data = {
-                    id: row.dataset.id,
-                    relation: row.dataset.relation,
-                    nombre: row.dataset.nombre,
-                    correo: row.dataset.correo,
-                    rolid: row.dataset.rolid,
-                    rolnombre: row.dataset.rolnombre,
-                    estado: row.dataset.estado === "True",
-                    fecha: row.dataset.fechaasignacion
-                };
+            const tableBody = document.querySelector("#usersTable tbody");
 
-                // 🔹 Ver Atleta
-                row.querySelector(".btn-view").addEventListener("click", () => {
-                    document.getElementById("viewAthleteName").textContent = data.nombre;
-                    document.getElementById("viewAthleteEmail").textContent = data.correo;
-                    document.getElementById("viewAthleteSport").textContent = data.rolnombre;
-                });
+            // Utilidad para asignar valores
+            const fill = (id, value, isInput = false) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (isInput) el.value = value;
+                else el.textContent = value;
+            };
 
-                // 🔹 Editar Atleta
-                row.querySelector(".btn-edit")?.addEventListener("click", () => {
-                    document.getElementById("editId").value = data.id;
-                    document.getElementById("editNombre").value = data.nombre;
-                    document.getElementById("editCorreo").value = data.correo;
-                    document.getElementById("editRol").value = data.rolid;
+            tableBody.addEventListener("click", (e) => {
+                const btn = e.target.closest("button");
+                if (!btn) return;
+
+                const row = btn.closest("tr");
+                const data = { ...row.dataset, estado: row.dataset.estado === "True" };
+
+                if (btn.classList.contains("btn-view")) {
+                    fill("viewAthleteName", data.nombre);
+                    fill("viewAthleteEmail", data.correo);
+                    fill("viewAthleteAssignDate", data.fecha);
+                }
+
+                if (btn.classList.contains("btn-edit")) {
+                    fill("editId", data.id, true);
+                    fill("editNombre", data.nombre, true);
+                    fill("editCorreo", data.correo, true);
+                    fill("editRol", data.rolid, true);
                     document.getElementById("editEstado").checked = data.estado;
-                    document.getElementById("editFecha").textContent = data.fecha;
-                });
+                    fill("editFecha", data.fecha);
+                }
 
-                // 🔹 Eliminar Atleta
-                row.querySelector(".btn-delete")?.addEventListener("click", () => {
-                    document.getElementById("deleteAthleteId").value = data.relation;
-                    document.getElementById("deleteAthleteName").textContent = data.nombre;
-                });
+                if (btn.classList.contains("btn-delete")) {
+                    fill("deleteAthleteId", data.relation, true);
+                    fill("deleteAthleteName", data.nombre);
+                }
             });
         });
     </script>
@@ -77,10 +79,7 @@
         <table id="usersTable" class="my-table-custom table table-hover align-middle mb-0">
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Usuario</th>
-                    <th>Correo</th>
-                    <th>Rol</th>
                     <th>Estado</th>
                     <th>Fecha Asignación</th>
                     <th class="text-center">Acciones</th>
@@ -91,42 +90,65 @@
                 {
                     foreach (var user in Model)
                     {
-                        <tr data-id="@user.Atleta?.Id" 
+                        <tr data-id="@user.Atleta?.Id"
                             data-relation="@user.IdRelacion"
-                            data-nombre="@($"{user.Atleta?.Nombre} {user.Atleta?.Apellido}")" 
+                            data-nombre="@($"{user.Atleta?.Nombre} {user.Atleta?.Apellido}")"
                             data-correo="@user.Atleta?.Correo"
-                            data-rolid="@user.Atleta?.RolId" 
-                            data-rolnombre="@user.Atleta?.Rol?.Nombre" 
                             data-estado="@user.Estado"
-                            data-fechaasignacion="@user.FechaAsignacion.ToString("yyyy-MM-dd")">
-                            <td class="fw-medium text-muted">@user.Atleta?.Id</td>
+                            data-fecha="@user.FechaAsignacion.ToString("dd/MM/yyyy")">
+
+                            <!-- Nombre + avatar -->
                             <td>
                                 <div class="d-flex align-items-center">
-                                    <img src="https://avatar.iran.liara.run/public/24?height=40&width=40" alt="Usuario"
-                                        class="user-avatar me-3">
+                                    <img src="https://avatar.iran.liara.run/public/24?height=40&width=40"
+                                         class="user-avatar me-3">
+
                                     <div>
                                         <div class="fw-semibold">@user.Atleta?.Nombre @user.Atleta?.Apellido</div>
-                                        <div class="text-muted small">@(user.Atleta?.Rol?.Nombre ?? "—")</div>
+                                        <div class="text-muted small">Atleta</div>
                                     </div>
                                 </div>
                             </td>
-                            <td>@user.Atleta?.Correo</td>
-                            <td>@user.Atleta?.Rol?.Nombre</td>
+
+                            <!-- Estado -->
                             <td>
-                                <span class="@(user.Estado ? "badge-active" : "badge-inactive")">
+                                <span class="badge @(user.Estado ? "badge-active" : "badge-inactive")">
                                     @(user.Estado ? "Activo" : "Inactivo")
                                 </span>
                             </td>
+
+                            <!-- Fecha Asignación -->
                             <td>@user.FechaAsignacion.ToString("dd/MM/yyyy")</td>
+
+                            <!-- Acciones -->
                             <td class="text-center">
-                                <button class="btn btn-sm btn-outline-primary table-action-btn btn-view" title="Ver"
-                                    data-bs-toggle="modal" data-bs-target="#viewAthleteModal">
+
+                                <!-- Ver -->
+                                <button class="btn btn-sm btn-outline-primary table-action-btn btn-view"
+                                        title="Ver"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#viewAthleteModal">
                                     <i class="bi bi-eye"></i>
                                 </button>
-                                <button class="btn btn-sm btn-outline-danger table-action-btn btn-delete" title="Eliminar"
-                                    data-bs-toggle="modal" data-bs-target="#deleteAthleteModal">
-                                    <i class="bi bi-trash"></i>
-                                </button>
+
+                                <!-- Rutina (solo si activo) -->
+                                @if (user.Estado)
+                                {
+                                    <a href="@Url.Action("Index", "Rutinas", new { id = user.Atleta!.Id })"
+                                    class="btn btn-sm btn-outline-success table-action-btn"
+                                    title="Rutinas">
+                                        <i class="bi bi-list-check"></i>
+                                    </a>
+
+
+                                    <!-- Desactivar relación -->
+                                    <button class="btn btn-sm btn-outline-warning table-action-btn btn-delete"
+                                            title="Desactivar Relación"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#deleteAthleteModal">
+                                        <i class="bi bi-slash-circle"></i>
+                                    </button>
+                                }
                             </td>
                         </tr>
                     }
@@ -134,9 +156,9 @@
                 else
                 {
                     <tr>
-                        <td colspan="7" class="text-center text-muted py-4">
+                        <td colspan="4" class="text-center text-muted py-4">
                             <i class="bi bi-person-x fs-4 d-block mb-2"></i>
-                            No hay usuarios disponibles.
+                            No tienes atletas asignados.
                         </td>
                     </tr>
                 }
@@ -171,50 +193,63 @@
         </div>
     </div>
 
-    <!-- View Athlete Modal -->
+    <!-- 🔹 Ver Usuario -->
     <div class="modal fade" id="viewAthleteModal" tabindex="-1">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title"><i class="bi bi-eye me-2"></i>Detalles del Atleta</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-person-badge me-2"></i>Detalles del Usuario</h5>
+                    <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Nombre Completo</label>
-                        <p id="viewAthleteName" class="form-control-plaintext"></p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Correo Electrónico</label>
-                        <p id="viewAthleteEmail" class="form-control-plaintext"></p>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Deporte</label>
-                        <p id="viewAthleteSport" class="form-control-plaintext"></p>
-                    </div>
+                <div class="modal-body text-center">
+                    <img src="https://avatar.iran.liara.run/public/24" id="viewAvatar" class="rounded-circle border mb-3"
+                         style="width:100px;height:100px;object-fit:cover;max-width:100%;">
+                    <h5 id="viewAthleteName" class="fw-bold"></h5>
+                    <span id="viewEstado" class="badge bg-success mb-3">Activo</span>
+                    <ul class="list-group text-start">
+                        @* <li class="list-group-item"><strong>ID:</strong> <span id="viewId"></span></li> *@
+                        <li class="list-group-item"><strong>Correo:</strong> <span id="viewAthleteEmail"></span></li>
+                        @* <li class="list-group-item"><strong>Rol:</strong> <span id="viewRol"></span></li> *@
+                        <li class="list-group-item"><strong>Fecha Asignación:</strong> <span id="viewAthleteAssignDate"></span></li>
+                    </ul>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button class="btn btn-outline-secondary" data-bs-dismiss="modal">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
-    <!-- Delete Athlete Modal -->
+
+    <!-- Desactivar relación Modal -->
     <div class="modal fade" id="deleteAthleteModal" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content border-danger">
-                <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Eliminar Atleta</h5>
+            <div class="modal-content border-warning">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title">
+                        <i class="bi bi-slash-circle me-2"></i>Desactivar Relación
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <form asp-controller="Trainer" asp-action="DeleteAthlete" method="post">
                     <div class="modal-body text-center">
-                        <p>¿Estás seguro de que deseas eliminar al atleta <strong id="deleteAthleteName"></strong>?</p>
+                        <p>
+                            ¿Estás seguro de que deseas <strong>desactivar</strong> la relación con
+                            <strong id="deleteAthleteName"></strong>?
+                        </p>
+
+                        <p class="text-muted small">
+                            El atleta no será eliminado. Solo se desactivará la asignación.
+                        </p>
+
                         <input type="hidden" id="deleteAthleteId" name="idRelacion" />
                     </div>
+
                     <div class="modal-footer justify-content-center">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-danger" id="confirmDeleteAthleteBtn">Eliminar</button>
+                        <button type="submit" class="btn btn-warning" id="confirmDeleteAthleteBtn">
+                            Desactivar
+                        </button>
                     </div>
                 </form>
             </div>
