@@ -121,6 +121,49 @@
                         </a>
                     </li>
                 }
+                @if (User.IsInRole("Atleta"))
+                {
+                    <li class="active">
+                        <a asp-controller="Atleta" asp-action="Index">
+                            <i class="bi bi-speedometer2"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Calendar" asp-action="Index">
+                            <i class="bi bi-calendar-event"></i>
+                            <span>Mi Calendario</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="#routinesSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                            <i class="bi bi-clipboard-check"></i>
+                            <span>Mis Rutinas</span>
+                            <i class="bi bi-chevron-down ms-auto"></i>
+                        </a>
+                        <ul class="collapse list-unstyled" id="routinesSubmenu">
+                            <li><a asp-controller="Rutinas" asp-action="MisRutinas">Ver Rutinas</a></li>
+                            <li><a asp-controller="Rutinas" asp-action="SesionesDia">Sesiones del Día</a></li>
+                        </ul>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Atleta" asp-action="Progreso">
+                            <i class="bi bi-graph-up"></i>
+                            <span>Estadísticas</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a asp-controller="Account" asp-action="Configuracion">
+                            <i class="bi bi-gear"></i>
+                            <span>Configuración</span>
+                        </a>
+                    </li>
+                }
+
             </ul>
         </nav>
 

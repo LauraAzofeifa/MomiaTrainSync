@@ -24,6 +24,7 @@
             document.querySelectorAll("#usersTable tbody tr").forEach(row => {
                 const data = {
                     id: row.dataset.id,
+                    relation: row.dataset.relation,
                     nombre: row.dataset.nombre,
                     correo: row.dataset.correo,
                     rolid: row.dataset.rolid,
@@ -51,7 +52,7 @@
 
                 // 🔹 Eliminar Atleta
                 row.querySelector(".btn-delete")?.addEventListener("click", () => {
-                    document.getElementById("deleteAthleteId").value = data.id;
+                    document.getElementById("deleteAthleteId").value = data.relation;
                     document.getElementById("deleteAthleteName").textContent = data.nombre;
                 });
             });
@@ -91,6 +92,7 @@
                     foreach (var user in Model)
                     {
                         <tr data-id="@user.Atleta?.Id" 
+                            data-relation="@user.IdRelacion"
                             data-nombre="@($"{user.Atleta?.Nombre} {user.Atleta?.Apellido}")" 
                             data-correo="@user.Atleta?.Correo"
                             data-rolid="@user.Atleta?.RolId" 
