@@ -4,18 +4,17 @@ using MomiaTrainSync.Core.DTOs.UsuariosRoles;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
-using System;
 
 namespace MomiaTrainSync.Core.UseCases.UsersUseCases
 {
     public class GetUsuariosUseCase
     {
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly ILogErrorRepository _logErrorRepository; 
+        private readonly ILogErrorRepository _logErrorRepository;
         private readonly IMapper _mapper;
 
         public GetUsuariosUseCase(
-            IUsuarioRepository usuarioRepository, 
+            IUsuarioRepository usuarioRepository,
             ILogErrorRepository logErrorRepository,
             IMapper mapper)
         {
@@ -35,32 +34,36 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
             {
                 IEnumerable<UsuarioEnt> usuarios;
 
-                // 🔹 1. Buscar usuario por ID (caso individual)
                 if (id.HasValue)
                 {
-                    var usuario = await _usuarioRepository.GetByIdAsync(id.Value);
+                    var usuario = await _usuarioRepository.GetByIdWithRolAsync(id.Value);
                     usuarios = usuario != null
-                        ? new List<UsuarioEnt> { usuario }
-                        : Enumerable.Empty<UsuarioEnt>();
+                        ? new[] { usuario }
+                        : Array.Empty<UsuarioEnt>();
                 }
-                // 🔹 2. Buscar atletas asignados a un entrenador
                 else if (entrenadorId.HasValue)
                 {
-                    usuarios = await _usuarioRepository.GetAtletasByEntrenadorAsync(entrenadorId.Value, incluirInactivos);
+                    usuarios = await _usuarioRepository.GetAtletasByEntrenadorAsync(
+                        entrenadorId.Value,
+                        incluirInactivos
+                    );
                 }
-                // 🔹 3. Lista general
                 else
                 {
-                    usuarios = await _usuarioRepository.GetAllAsync(incluirInactivos);
+                    usuarios = await _usuarioRepository.GetAllAsync(
+                        asNoTracking: true,
+                        includeInactive: incluirInactivos
+                    );
 
-                    if (!string.IsNullOrEmpty(filtro))
+                    if (!string.IsNullOrWhiteSpace(filtro))
                         usuarios = usuarios.Where(u =>
                             u.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase) ||
                             u.Correo.Contains(filtro, StringComparison.OrdinalIgnoreCase));
 
-                    if (!string.IsNullOrEmpty(rol))
+                    if (!string.IsNullOrWhiteSpace(rol))
                         usuarios = usuarios.Where(u =>
-                            u.Rol!.Nombre.Equals(rol, StringComparison.OrdinalIgnoreCase));
+                            u.Rol != null &&
+                            u.Rol.Nombre.Equals(rol, StringComparison.OrdinalIgnoreCase));
                 }
 
                 var usuariosDto = _mapper.Map<IEnumerable<UsuarioDto>>(usuarios);
@@ -68,16 +71,20 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
                 if (!usuariosDto.Any())
                     return Response<IEnumerable<UsuarioDto>>.Fail("No se encontraron usuarios.");
 
-                return Response<IEnumerable<UsuarioDto>>.Success(usuariosDto, "Usuarios obtenidos correctamente.");
+                return Response<IEnumerable<UsuarioDto>>
+                    .Success(usuariosDto, "Usuarios obtenidos correctamente.");
             }
             catch (Exception ex)
             {
                 await _logErrorRepository.AddLogAsync(
-                    $"{nameof(GetUsuariosUseCase)}.{nameof(ExecuteAsync)}", ex);
-                return Response<IEnumerable<UsuarioDto>>.Fail("Error al obtener los usuarios: " + ex.Message);
+                    $"{nameof(GetUsuariosUseCase)}.{nameof(ExecuteAsync)}",
+                    ex
+                );
+
+                return Response<IEnumerable<UsuarioDto>>.Fail(
+                    "Error al obtener los usuarios: " + ex.Message
+                );
             }
         }
-
     }
-
 }

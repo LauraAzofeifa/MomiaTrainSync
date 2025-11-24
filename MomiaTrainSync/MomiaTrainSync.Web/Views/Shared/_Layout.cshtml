@@ -79,7 +79,7 @@
                 @if (User.IsInRole("Entrenador"))
                 {
                     <li class="active">
-                        <a asp-controller="Tainer" asp-action="Index">
+                        <a asp-controller="Home" asp-action="Index">
                             <i class="bi bi-speedometer2"></i>
                             <span>Dashboard</span>
                         </a>
@@ -124,7 +124,7 @@
                 @if (User.IsInRole("Atleta"))
                 {
                     <li class="active">
-                        <a asp-controller="Atleta" asp-action="Index">
+                        <a asp-controller="Home" asp-action="Index">
                             <i class="bi bi-speedometer2"></i>
                             <span>Dashboard</span>
                         </a>

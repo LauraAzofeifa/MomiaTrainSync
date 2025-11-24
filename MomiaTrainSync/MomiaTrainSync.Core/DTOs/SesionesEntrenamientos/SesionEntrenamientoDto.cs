@@ -1,4 +1,4 @@
-﻿using MomiaTrainSync.Core.DTOs.RutinasAsignaciones;
+﻿using MomiaTrainSync.Core.DTOs.RutinasEntrenamientos;
 using MomiaTrainSync.Domain.Entities.EntrenamientosZonas;
 using System;
 using System.Collections.Generic;

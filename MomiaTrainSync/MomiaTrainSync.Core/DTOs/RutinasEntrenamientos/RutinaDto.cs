@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MomiaTrainSync.Core.DTOs.EntrenamientoZonas;
 
-namespace MomiaTrainSync.Core.DTOs.RutinasAsignaciones
+namespace MomiaTrainSync.Core.DTOs.RutinasEntrenamientos
 {
     public class RutinaDto
     {

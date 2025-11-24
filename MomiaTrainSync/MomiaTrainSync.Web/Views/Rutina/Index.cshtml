@@ -1,0 +1,125 @@
+﻿@model IEnumerable<RutinaDto>
+
+@{
+    ViewData["Title"] = "Rutinas del Atleta";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="fw-bold">
+            <i class="bi bi-list-check me-2"></i>Rutinas del Atleta
+        </h3>
+
+        <a asp-action="Create" asp-route-idRelacion="@ViewBag.IdRelacion"
+           class="btn btn-primary">
+            <i class="bi bi-plus-circle me-1"></i> Nueva Rutina
+        </a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Fecha Creación</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var r in Model)
+                    {
+                        <tr>
+                            <td>@r.Nombre</td>
+                            <td>@r.Descripcion</td>
+                            <td>@r.FechaCreacion.ToString("dd/MM/yyyy")</td>
+
+                            <td>
+                                @if (r.Estado)
+                                {
+                                    <span class="badge bg-success">Activa</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-secondary">Inactiva</span>
+                                }
+                            </td>
+
+                            <td class="text-center">
+
+                                <!-- Ver entrenamientos -->
+                                <a asp-controller="Entrenamientos"
+                                   asp-action="Index"
+                                   asp-route-idRutina="@r.IdRutina"
+                                   class="btn btn-sm btn-outline-info me-1"
+                                   title="Ver Entrenamientos">
+                                    <i class="bi bi-list-ul"></i>
+                                </a>
+
+                                <!-- Editar Rutina -->
+                                <a asp-action="Edit"
+                                   asp-route-id="@r.IdRutina"
+                                   class="btn btn-sm btn-outline-primary me-1"
+                                   title="Editar Rutina">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+
+                                <!-- Desactivar Rutina -->
+                                <button class="btn btn-sm btn-outline-danger"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modalDesactivar"
+                                        data-id="@r.IdRutina"
+                                        title="Desactivar Rutina">
+                                    <i class="bi bi-x-circle"></i>
+                                </button>
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Desactivar -->
+<div class="modal fade" id="modalDesactivar" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Desactivar Rutina
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>¿Seguro que quieres desactivar esta rutina? No se eliminará, solo quedará inactiva.</p>
+            </div>
+
+            <div class="modal-footer">
+                <form id="formDesactivar" method="post">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Desactivar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // pasar el id al form
+        const modal = document.getElementById('modalDesactivar');
+        modal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const id = button.getAttribute('data-id');
+            document.getElementById('formDesactivar').setAttribute('action', '/Rutinas/Desactivar/' + id);
+        });
+    </script>
+}

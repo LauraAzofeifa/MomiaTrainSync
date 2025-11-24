@@ -1,106 +1,52 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
+using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using MomiaTrainSync.Infrastructure.Persistence;
-using System;
+using MomiaTrainSync.Infrastructure.Repositories.Base;
 
 namespace MomiaTrainSync.Infrastructure.Repositories.UsuariosRoles
 {
-    public class UsuarioRepository : IUsuarioRepository
+    public class UsuarioRepository
+        : GenericRepository<UsuarioEnt>, IUsuarioRepository
     {
-        private readonly MomiaTrainSyncDbContext _context;
-        private readonly ILogErrorRepository _logErrorRepository;
-
-        public UsuarioRepository(MomiaTrainSyncDbContext context, ILogErrorRepository logErrorRepository)
+        public UsuarioRepository(
+            MomiaTrainSyncDbContext context,
+            ILogErrorRepository logErrorRepository)
+            : base(context, logErrorRepository)
         {
-            _context = context;
-            _logErrorRepository = logErrorRepository;
         }
+
+        public override Task<List<UsuarioEnt>> GetAllAsync(bool asNoTracking = true, Func<IQueryable<UsuarioEnt>, IQueryable<UsuarioEnt>>? include = null, bool includeInactive = false)
+        {
+            return base.GetAllAsync(
+                asNoTracking,
+                q => q.Include(u => u.Rol),
+                includeInactive
+             );
+        }
+
+        // ============================================================
+        // MÉTODOS PERSONALIZADOS DEL REPOSITORIO
+        // ============================================================
 
         public async Task<UsuarioEnt?> GetByEmailAsync(string email)
         {
-            // Métodos simples: sin try/catch
-            return await _context.Usuarios
-                .Include(u => u.Rol)
-                .FirstOrDefaultAsync(u => u.Correo == email);
+            return await FirstAsync(
+                u => u.Correo == email,
+                include: q => q.Include(u => u.Rol)
+            );
         }
 
-        public async Task<UsuarioEnt?> GetByIdAsync(int id)
+        public async Task<UsuarioEnt?> GetByIdWithRolAsync(int id)
         {
-            return await _context.Usuarios
-                .Include(u => u.Rol)
-                .FirstOrDefaultAsync(u => u.Id == id);
+            return await FirstAsync(
+                u => u.Id == id,
+                include: q => q.Include(u => u.Rol)
+            );
         }
 
-        public async Task<UsuarioEnt?> AddAsync(UsuarioEnt usuario)
-        {
-            try
-            {
-                await _context.Usuarios.AddAsync(usuario);
-                await _context.SaveChangesAsync();
-                return usuario;
-            }
-            catch (Exception ex)
-            {
-                await _logErrorRepository.AddLogAsync($"{nameof(UsuarioRepository)}.{nameof(AddAsync)}", ex);
-                throw; // Propaga la excepción para que el UseCase decida qué hacer
-            }
-        }
-
-        public async Task<bool> UpdateAsync(UsuarioEnt usuario)
-        {
-            try
-            {
-                _context.Usuarios.Update(usuario);
-                return await _context.SaveChangesAsync() > 0;
-            }
-            catch (Exception ex)
-            {
-                await _logErrorRepository.AddLogAsync($"{nameof(UsuarioRepository)}.{nameof(UpdateAsync)}", ex);
-                throw;
-            }
-        }
-
-        public async Task DeleteAsync(int id)
-        {
-            try
-            {
-                var usuario = await _context.Usuarios.FindAsync(id);
-                if (usuario == null) return;
-
-                _context.Usuarios.Remove(usuario);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                await _logErrorRepository.AddLogAsync($"{nameof(UsuarioRepository)}.{nameof(DeleteAsync)}", ex);
-                throw;
-            }
-        }
-
-        public async Task<List<UsuarioEnt>> GetAllAsync(bool incluirInactivos = false)
-        {
-            try
-            {
-                var query = _context.Usuarios
-                                     .Include(u => u.Rol)
-                                     .AsNoTracking();
-
-                query = !incluirInactivos
-                    ? query.Where(u => u.Estado)
-                    : query;
-
-                return await query.ToListAsync();
-            }
-            catch (Exception ex)
-            {
-                await _logErrorRepository.AddLogAsync($"{nameof(UsuarioRepository)}.{nameof(GetAllAsync)}", ex);
-                return new List<UsuarioEnt>();
-            }
-        }
-
-        public async Task<List<UsuarioEnt>> GetAtletasByEntrenadorAsync(int entrenadorId, bool incluirInactivos = false)
+        public async Task<List<UsuarioEnt>> GetAtletasByEntrenadorAsync(int entrenadorId, bool includeInactive = false)
         {
             try
             {
@@ -108,19 +54,22 @@ namespace MomiaTrainSync.Infrastructure.Repositories.UsuariosRoles
                     .Where(ea => ea.IdEntrenador == entrenadorId)
                     .Include(ea => ea.Atleta)
                         .ThenInclude(a => a!.Rol)
-                    .AsNoTracking()
-                    .Select(ea => ea.Atleta);
+                    .Select(ea => ea.Atleta)
+                    .AsQueryable();
 
-                query = !incluirInactivos
-                    ? query.Where(a => a != null && a.Estado)
-                    : query;
+                if (!includeInactive)
+                    query = query.Where(a => a != null && a.Estado);
 
-                // Filter out nulls to match List<UsuarioEnt> (not List<UsuarioEnt?>)
-                return await query.Where(a => a != null).Select(a => a!).ToListAsync();
+                return await query
+                    .Where(a => a != null)
+                    .Select(a => a!)
+                    .ToListAsync();
             }
             catch (Exception ex)
             {
-                await _logErrorRepository.AddLogAsync($"{nameof(UsuarioRepository)}.{nameof(GetAtletasByEntrenadorAsync)}", ex);
+                await _logger.AddLogAsync(
+                    $"{nameof(UsuarioRepository)}.{nameof(GetAtletasByEntrenadorAsync)}",
+                    ex);
                 return new List<UsuarioEnt>();
             }
         }

@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MomiaTrainSync.Core.DTOs.UsuariosRoles;
-using MomiaTrainSync.Core.DTOs.RutinasAsignaciones;
+using MomiaTrainSync.Core.DTOs.RutinasEntrenamientos;
 using MomiaTrainSync.Core.DTOs.EntrenadorAtleta;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using MomiaTrainSync.Domain.Entities.EntrenadorAtleta;

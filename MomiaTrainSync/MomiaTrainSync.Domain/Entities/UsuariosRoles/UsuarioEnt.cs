@@ -1,10 +1,11 @@
-﻿using MomiaTrainSync.Domain.Entities.EntrenadorAtleta;
+﻿using MomiaTrainSync.Domain.Common;
+using MomiaTrainSync.Domain.Entities.EntrenadorAtleta;
 using MomiaTrainSync.Domain.Entities.EntrenamientosZonas;
 using System;
 
 namespace MomiaTrainSync.Domain.Entities.UsuariosRoles
 {
-    public class UsuarioEnt
+    public class UsuarioEnt : BaseSoftDelete
     {
         public int Id { get; set; }
         public string Nombre { get; set; } = string.Empty;
@@ -13,7 +14,7 @@ namespace MomiaTrainSync.Domain.Entities.UsuariosRoles
         public string Telefono { get; set; } = string.Empty;
         public DateTime? FechaCumpleannos { get; set; }
         public string ContrasennaHash { get; set; } = string.Empty;
-        public bool Estado { get; set; }
+        // public bool Estado { get; set; }
         public DateTime FechaCreacion { get; set; }
         public int RolId { get; set; }
 

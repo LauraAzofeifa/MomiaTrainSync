@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MomiaTrainSync.Core.Interfaces.Repositories.Base;
 using MomiaTrainSync.Core.Interfaces.Repositories.EntrenadorAtleta;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
@@ -14,9 +15,9 @@ using MomiaTrainSync.Core.UseCases.RolesPermisos.RolPermiso;
 using MomiaTrainSync.Core.UseCases.TrainerAthleteUseCase;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
 using MomiaTrainSync.Infrastructure.Persistence;
+using MomiaTrainSync.Infrastructure.Repositories.Base;
 using MomiaTrainSync.Infrastructure.Repositories.EntrenadorAtleta;
 using MomiaTrainSync.Infrastructure.Repositories.Logging;
-using MomiaTrainSync.Infrastructure.Repositories.RolesPermisos;
 using MomiaTrainSync.Infrastructure.Repositories.UsuariosRoles;
 using MomiaTrainSync.Infrastructure.Services;
 
@@ -35,15 +36,23 @@ namespace MomiaTrainSync.Composition
 
             #region Repositories
 
+            // Base
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+
             // Roles
             services.AddScoped<IPermisoRepository, PermisoRepository>();
             services.AddScoped<IRolRepository, RolRepository>();
             services.AddScoped<IRolPermisoRepository, RolPermisoRepository>();
 
             // Usuarios
-            services.AddScoped<ILogErrorRepository, LogErrorRepository>();
             services.AddScoped<IUsuarioRepository, UsuarioRepository>();
             services.AddScoped<IEntrenadorAtletaRepository, EntrenadorAtletaRepository>();
+
+            // RutinaEntrenamiento
+
+
+            // Errores
+            services.AddScoped<ILogErrorRepository, LogErrorRepository>();
 
             #endregion
 

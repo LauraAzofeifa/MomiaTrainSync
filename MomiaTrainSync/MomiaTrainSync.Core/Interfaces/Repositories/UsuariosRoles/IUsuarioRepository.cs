@@ -1,19 +1,16 @@
-﻿using MomiaTrainSync.Domain.Entities.UsuariosRoles;
-using System;
+﻿using MomiaTrainSync.Core.Interfaces.Repositories.Base;
+using MomiaTrainSync.Domain.Entities.UsuariosRoles;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles
 {
-    public interface IUsuarioRepository
+    public interface IUsuarioRepository : IGenericRepository<UsuarioEnt>
     {
         Task<UsuarioEnt?> GetByEmailAsync(string email);
-        Task<UsuarioEnt?> GetByIdAsync(int id);
-        Task<UsuarioEnt?> AddAsync(UsuarioEnt usuario);
-        Task<bool> UpdateAsync(UsuarioEnt usuario);
-        Task DeleteAsync(int id);
-
-        // Listas
-        Task<List<UsuarioEnt>> GetAllAsync(bool incluirInactivos = false);
-
-        Task<List<UsuarioEnt>> GetAtletasByEntrenadorAsync(int entrenadorId, bool incluirInactivos = false);
+        Task<UsuarioEnt?> GetByIdWithRolAsync(int id);
+        Task<List<UsuarioEnt>> GetAtletasByEntrenadorAsync(
+            int entrenadorId,
+            bool includeInactive = false);
     }
 }

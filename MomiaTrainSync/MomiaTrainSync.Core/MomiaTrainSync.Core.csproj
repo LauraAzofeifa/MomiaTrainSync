@@ -14,4 +14,8 @@
     <ProjectReference Include="..\MomiaTrainSync.Domain\MomiaTrainSync.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="UseCases\RutinasEntrenamientos\Entrenamientos\" />
+  </ItemGroup>
+
 </Project>
