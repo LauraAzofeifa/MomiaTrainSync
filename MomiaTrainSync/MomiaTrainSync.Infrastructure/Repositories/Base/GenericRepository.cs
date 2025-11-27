@@ -102,9 +102,9 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
                     query = include(query);
 
                 // SoftDelete general
-                if (!includeInactive && typeof(BaseSoftDelete).IsAssignableFrom(typeof(TEntity)))
+                if (!includeInactive && typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
                 {
-                    query = query.Where(e => EF.Property<bool>(e, "Estado") == true);
+                    query = query.Where(e => (e as ISoftDelete)!.Estado);
                 }
 
                 return await query.ToListAsync();
@@ -133,9 +133,9 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
                 if (include != null)
                     query = include(query);
 
-                if (!includeInactive && typeof(BaseSoftDelete).IsAssignableFrom(typeof(TEntity)))
+                if (!includeInactive && typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
                 {
-                    query = query.Where(e => EF.Property<bool>(e, "Estado") == true);
+                    query = query.Where(e => (e as ISoftDelete)!.Estado);
                 }
 
                 if (asNoTracking)
@@ -219,9 +219,8 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
         {
             try
             {
-                if (!typeof(BaseSoftDelete).IsAssignableFrom(typeof(TEntity)))
+                if (!typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
                 {
-                    // Si no soporta soft delete → hard delete
                     return await DeleteAsync(id);
                 }
 

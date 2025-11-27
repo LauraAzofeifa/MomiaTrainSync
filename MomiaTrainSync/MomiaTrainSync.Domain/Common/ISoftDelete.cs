@@ -4,8 +4,8 @@ using System.Text;
 
 namespace MomiaTrainSync.Domain.Common
 {
-    public abstract class BaseSoftDelete
+    public interface ISoftDelete
     {
-        public bool Estado { get; set; } = true;
+        bool Estado { get; set; }
     }
 }

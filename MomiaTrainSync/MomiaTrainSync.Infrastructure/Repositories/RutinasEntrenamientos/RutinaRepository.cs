@@ -17,6 +17,34 @@ namespace MomiaTrainSync.Infrastructure.Repositories.RutinasEntrenamientos
         {
         }
 
+        public async Task<List<RutinaEnt>> GetRutinasAsync(
+            int? idRutina,
+            int? idRelacion,
+            bool incluirInactivos)
+        {
+            // Partimos del GetAllAsync existente para aprovechar include, tracking, etc.
+            var query = await GetAllAsync(
+                asNoTracking: true,
+                include: null,
+                includeInactive: incluirInactivos
+            );
+
+            // Convertimos a IQueryable para poder filtrar
+            var q = query.AsQueryable();
+
+            if (idRutina.HasValue)
+            {
+                q = q.Where(r => r.IdRutina == idRutina.Value);
+            }
+
+            if (idRelacion.HasValue)
+            {
+                q = q.Where(r => r.IdRelacion == idRelacion.Value);
+            }
+
+            return q.ToList();
+        }
+
         public async Task<List<RutinaEnt>> GetByRelacionAsync(
             int idRelacion,
             bool incluirInactivos = false)

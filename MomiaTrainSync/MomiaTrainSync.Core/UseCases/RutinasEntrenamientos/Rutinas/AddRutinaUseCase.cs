@@ -38,6 +38,9 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Rutinas
                     return Response<RutinaDto>.Fail(
                         $"Campos obligatorios: {string.Join(", ", missing)}"
                         );
+                
+                // Asignamos la fecha de cuando se creo.
+                dto.FechaCreacion = DateTime.Now;
 
                 var entity = _mapper.Map<RutinaEnt>(dto);
                 var created = _repo.AddAsync(entity);

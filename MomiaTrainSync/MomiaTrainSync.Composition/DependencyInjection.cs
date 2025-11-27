@@ -29,7 +29,7 @@ namespace MomiaTrainSync.Composition
             (this IServiceCollection services,
              IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = configuration.GetConnectionString("ServerConnection");
 
             services.AddDbContext<MomiaTrainSyncDbContext> (options =>
             options.UseSqlServer(connectionString));
