@@ -1,4 +1,5 @@
-﻿using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
+﻿using MomiaTrainSync.Domain.Common;
+using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Domain.Entities.EntrenadorAtleta
 {
-    public class EntrenadorAtletaEnt
+    public class EntrenadorAtletaEnt : ISoftDelete
     {
         public int IdRelacion { get; set; }
         public int IdEntrenador { get; set; }

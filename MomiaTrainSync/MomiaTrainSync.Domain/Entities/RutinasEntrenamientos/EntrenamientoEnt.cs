@@ -1,4 +1,5 @@
-﻿using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
+﻿using MomiaTrainSync.Domain.Common;
+using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
 using MomiaTrainSync.Domain.Entities.SesionesEntrenamiento;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using System;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Domain.Entities.EntrenamientosZonas
 {
-    public class EntrenamientoEnt
+    public class EntrenamientoEnt : ISoftDelete
     {
         public int IdEntrenamiento { get; set; }
         public int IdRutina { get; set; } // FK

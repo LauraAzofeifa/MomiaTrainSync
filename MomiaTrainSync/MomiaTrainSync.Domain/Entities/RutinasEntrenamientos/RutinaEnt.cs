@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MomiaTrainSync.Domain.Common;
 using MomiaTrainSync.Domain.Entities.EntrenadorAtleta;
 using MomiaTrainSync.Domain.Entities.EntrenamientosZonas;
 
 namespace MomiaTrainSync.Domain.Entities.RutinasAsignaciones
 {
-    public class RutinaEnt
+    public class RutinaEnt : ISoftDelete
     {
         public int IdRutina { get; set; }
         public int IdRelacion { get; set; } // FK

@@ -3,24 +3,22 @@ using MomiaTrainSync.Core.Common;
 using MomiaTrainSync.Core.DTOs.UsuariosRoles;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
+using MomiaTrainSync.Core.UseCases.Base;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 
 namespace MomiaTrainSync.Core.UseCases.UsersUseCases
 {
-    public class GetUsuariosUseCase
+    public class GetUsuariosUseCase : BaseUseCase
     {
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly ILogErrorRepository _logErrorRepository;
-        private readonly IMapper _mapper;
 
         public GetUsuariosUseCase(
             IUsuarioRepository usuarioRepository,
             ILogErrorRepository logErrorRepository,
-            IMapper mapper)
+            IMapper mapper
+            ) : base (mapper, logErrorRepository)
         {
             _usuarioRepository = usuarioRepository;
-            _logErrorRepository = logErrorRepository;
-            _mapper = mapper;
         }
 
         public async Task<Response<IEnumerable<UsuarioDto>>> ExecuteAsync(
@@ -30,61 +28,85 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
             int? id = null,
             int? entrenadorId = null)
         {
-            try
-            {
-                IEnumerable<UsuarioEnt> usuarios;
 
-                if (id.HasValue)
+            return await HandleAsync(
+                async () =>
                 {
-                    var usuario = await _usuarioRepository.GetByIdWithRolAsync(id.Value);
-                    usuarios = usuario != null
-                        ? new[] { usuario }
-                        : Array.Empty<UsuarioEnt>();
-                }
-                else if (entrenadorId.HasValue)
-                {
-                    usuarios = await _usuarioRepository.GetAtletasByEntrenadorAsync(
-                        entrenadorId.Value,
-                        incluirInactivos
-                    );
-                }
-                else
-                {
+                    IEnumerable<UsuarioEnt> usuarios;
+
+                    // ========================
+                    //   BUSCAR POR ID
+                    // ========================
+                    if (id.HasValue)
+                    {
+                        var usuario = await _usuarioRepository.GetByIdWithRolAsync(id.Value);
+
+                        usuarios = usuario != null
+                            ? new[] { usuario }
+                            : Enumerable.Empty<UsuarioEnt>();
+
+                        return BuildResult(usuarios, "Usuario obtenido correctamente.");
+                    }
+
+                    // ===========================
+                    //   BUSCAR ATLETAS POR ENTRENADOR
+                    // ===========================
+                    if (entrenadorId.HasValue)
+                    {
+                        usuarios = await _usuarioRepository.GetAtletasByEntrenadorAsync(
+                            entrenadorId.Value,
+                            incluirInactivos);
+
+                        return BuildResult(usuarios, "Usuarios obtenidos correctamente.");
+                    }
+
+                    // ===========================
+                    //   OBTENER TODOS
+                    // ===========================
                     usuarios = await _usuarioRepository.GetAllAsync(
                         asNoTracking: true,
                         includeInactive: incluirInactivos
                     );
 
+                    // ---------------------------
+                    //     FILTRO TEXTO
+                    // ---------------------------
                     if (!string.IsNullOrWhiteSpace(filtro))
+                    {
                         usuarios = usuarios.Where(u =>
-                            u.Nombre.Contains(filtro, StringComparison.OrdinalIgnoreCase) ||
-                            u.Correo.Contains(filtro, StringComparison.OrdinalIgnoreCase));
+                            (u.Nombre?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                            (u.Correo?.Contains(filtro, StringComparison.OrdinalIgnoreCase) ?? false));
+                    }
 
+                    // ---------------------------
+                    //     FILTRO POR ROL
+                    // ---------------------------
                     if (!string.IsNullOrWhiteSpace(rol))
+                    {
                         usuarios = usuarios.Where(u =>
                             u.Rol != null &&
                             u.Rol.Nombre.Equals(rol, StringComparison.OrdinalIgnoreCase));
+                    }
+
+                    return BuildResult(usuarios, "Usuarios obtenidos correctamente.");
                 }
+            );
+            
+        }
 
-                var usuariosDto = _mapper.Map<IEnumerable<UsuarioDto>>(usuarios);
+        // ======================================
+        //      MÉTODO PRIVADO PARA ARMAR RESPUESTA
+        // ======================================
+        private Response<IEnumerable<UsuarioDto>> BuildResult(
+            IEnumerable<UsuarioEnt> usuarios,
+            string successMessage)
+        {
+            var usuariosDto = _mapper!.Map<IEnumerable<UsuarioDto>>(usuarios);
 
-                if (!usuariosDto.Any())
-                    return Response<IEnumerable<UsuarioDto>>.Fail("No se encontraron usuarios.");
+            if (!usuariosDto.Any())
+                return Response<IEnumerable<UsuarioDto>>.Fail("No se encontraron usuarios.");
 
-                return Response<IEnumerable<UsuarioDto>>
-                    .Success(usuariosDto, "Usuarios obtenidos correctamente.");
-            }
-            catch (Exception ex)
-            {
-                await _logErrorRepository.AddLogAsync(
-                    $"{nameof(GetUsuariosUseCase)}.{nameof(ExecuteAsync)}",
-                    ex
-                );
-
-                return Response<IEnumerable<UsuarioDto>>.Fail(
-                    "Error al obtener los usuarios: " + ex.Message
-                );
-            }
+            return Response<IEnumerable<UsuarioDto>>.Success(usuariosDto, successMessage);
         }
     }
 }

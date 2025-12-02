@@ -74,8 +74,16 @@ namespace MomiaTrainSync.Web.Controllers
                 return Unauthorized();
 
             ModelState.Clear();
+
             if (!TryValidateModel(vm.Update, nameof(vm.Update)))
+            {
+                // Recargar el usuario completo (incluye Rol)
+                var userResponse = await _getUsuariosUseCase.ExecuteAsync(id: userId.Value);
+                vm.Details = userResponse.Datos!.First();
+
                 return View(nameof(MyProfile), vm);
+            }
+
 
             var dto = new UsuarioDto
             {

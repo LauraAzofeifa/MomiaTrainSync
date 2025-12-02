@@ -9,18 +9,24 @@ namespace MomiaTrainSync.Core.UseCases.Base
 {
     public abstract class BaseUseCase
     {
-        protected readonly IMapper _mapper;
+        // El mapper puede ser null si el caso de uso no necesita mapeo.
+        protected readonly IMapper? _mapper;
         protected readonly ILogErrorRepository _logger;
 
-        protected BaseUseCase(
-            IMapper mapper,
-            ILogErrorRepository logger)
+        // Constructor principal: acepta mapper opcional.
+        protected BaseUseCase(IMapper? mapper, ILogErrorRepository logger)
         {
             _mapper = mapper;
-            _logger = logger;
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        protected async Task<Response<T>> HandleAsync<T>(Func<Task<Response<T>>> action)
+        // Constructor auxiliar para escenarios donde no hay IMapper disponible/inyectado.
+        protected BaseUseCase(ILogErrorRepository logger)
+            : this(null, logger)
+        {
+        }
+
+        protected async Task<Response<T>> HandleAsync<T>(Func<Task<Response<T>>> action, string? messageFail = null)
         {
             try
             {
@@ -33,7 +39,7 @@ namespace MomiaTrainSync.Core.UseCases.Base
                     ex
                 );
 
-                return Response<T>.Fail("Ocurrió un error inesperado.");
+                return Response<T>.Fail(messageFail ?? "Ocurrió un error inesperado.");
             }
         }
     }

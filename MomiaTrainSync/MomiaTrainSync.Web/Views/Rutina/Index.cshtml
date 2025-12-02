@@ -1,8 +1,13 @@
-﻿@model IEnumerable<RutinaDto>
+﻿@model RutinaViewModel
 
 @{
     ViewData["Title"] = "Rutinas del Atleta";
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/custom_style_tables.css" />
 }
 
 <div class="container mt-4">
@@ -12,16 +17,19 @@
             <i class="bi bi-list-check me-2"></i>Rutinas del Atleta
         </h3>
 
-        <a asp-action="Create" asp-route-idRelacion="@ViewBag.IdRelacion"
-           class="btn btn-primary">
+        <button data-bs-toggle="modal"
+                data-bs-target="#addRutinaModal"
+                class="btn btn-primary btn-add"
+                data-relacionid="@Model.IdRelacion">
             <i class="bi bi-plus-circle me-1"></i> Nueva Rutina
-        </a>
+        </button>
+
     </div>
 
     <div class="card shadow-sm">
         <div class="card-body table-responsive">
-            <table class="table table-hover align-middle">
-                <thead class="table-light">
+            <table id="rutinaTable" class="my-table-custom table table-hover align-middle">
+                <thead>
                     <tr>
                         <th>Nombre</th>
                         <th>Descripción</th>
@@ -32,54 +40,78 @@
                 </thead>
 
                 <tbody>
-                    @foreach (var r in Model)
+                    @if (Model == null || !Model.Rutinas!.Any())
                     {
                         <tr>
-                            <td>@r.Nombre</td>
-                            <td>@r.Descripcion</td>
-                            <td>@r.FechaCreacion.ToString("dd/MM/yyyy")</td>
-
-                            <td>
-                                @if (r.Estado)
-                                {
-                                    <span class="badge bg-success">Activa</span>
-                                }
-                                else
-                                {
-                                    <span class="badge bg-secondary">Inactiva</span>
-                                }
-                            </td>
-
-                            <td class="text-center">
-
-                                <!-- Ver entrenamientos -->
-                                <a asp-controller="Entrenamientos"
-                                   asp-action="Index"
-                                   asp-route-idRutina="@r.IdRutina"
-                                   class="btn btn-sm btn-outline-info me-1"
-                                   title="Ver Entrenamientos">
-                                    <i class="bi bi-list-ul"></i>
-                                </a>
-
-                                <!-- Editar Rutina -->
-                                <a asp-action="Edit"
-                                   asp-route-id="@r.IdRutina"
-                                   class="btn btn-sm btn-outline-primary me-1"
-                                   title="Editar Rutina">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-
-                                <!-- Desactivar Rutina -->
-                                <button class="btn btn-sm btn-outline-danger"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#modalDesactivar"
-                                        data-id="@r.IdRutina"
-                                        title="Desactivar Rutina">
-                                    <i class="bi bi-x-circle"></i>
-                                </button>
-
+                            <td colspan="5" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                No hay rutinas disponibles.
                             </td>
                         </tr>
+                    }
+                    else
+                    {
+                        foreach (var r in Model.Rutinas!)
+                        {
+                            <tr data-rutinaId="@r.IdRutina"
+                                data-relacionId="@r.IdRelacion"
+                                data-nombre="@r.Nombre"
+                                data-descripcion="@r.Descripcion"
+                                data-fechaCreacion="@r.FechaCreacion"
+                                data-estado="@r.Estado">
+
+                                <td>@r.Nombre</td>
+
+                                <td>@r.Descripcion</td>
+
+                                <td>@r.FechaCreacion.ToString("dd/MM/yyyy")</td>
+
+                                <td>
+                                    @if (r.Estado)
+                                    {
+                                        <span class="badge bg-success">Activa</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Inactiva</span>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+
+                                    <!-- Ver entrenamientos -->
+                                    <a asp-controller="Entrenamientos"
+                                       asp-action="Index"
+                                       asp-route-idRutina="@r.IdRutina"
+                                       class="btn btn-sm btn-outline-info me-1"
+                                       title="Ver Entrenamientos">
+                                        <i class="bi bi-list-ul"></i>
+                                    </a>
+
+                                    <!-- Editar Rutina -->
+                                    <button class="btn btn-sm btn-outline-primary me-1 btn-edit"
+                                            title="Editar Rutina"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editRutinaModal">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+
+                                    <!-- Activar / Desactivar Rutina -->
+                                    <form class="d-inline" asp-action="ToggleEstadoRutina" method="post">
+                                        <input type="hidden" name="IdRutina" value="@r.IdRutina" />
+                                        <input type="hidden" name="IdRelacion" value="@r.IdRelacion" />
+
+                                        <button type="submit"
+                                                class="btn btn-sm @(r.Estado ? "btn-outline-danger" : "btn-outline-success") toggle-estado-btn"
+                                                title="@(r.Estado ? "Desactivar Rutina" : "Activar Rutina")">
+                                            <i class="bi @(r.Estado ? "bi-x-circle" : "bi-check-circle")"></i>
+                                        </button>
+                                    </form>
+
+
+                                </td>
+                            </tr>
+                        }
                     }
                 </tbody>
             </table>
@@ -87,39 +119,187 @@
     </div>
 </div>
 
-<!-- Modal Desactivar -->
-<div class="modal fade" id="modalDesactivar" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">
-                    <i class="bi bi-exclamation-triangle me-2"></i>Desactivar Rutina
-                </h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
+@section Modals {
+    <!-- ================================================================= -->
+    <!-- 🔹 Modal: Nueva Rutina -->
+    <!-- ================================================================= -->
+    <div class="modal fade" id="addRutinaModal" tabindex="-1" aria-labelledby="addRutinaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
 
-            <div class="modal-body">
-                <p>¿Seguro que quieres desactivar esta rutina? No se eliminará, solo quedará inactiva.</p>
-            </div>
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addRutinaLabel">
+                        <i class="bi bi-list-check me-2"></i>Agregar Nueva Rutina
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
 
-            <div class="modal-footer">
-                <form id="formDesactivar" method="post">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-danger">Desactivar</button>
+                <form asp-action="AddRutina" method="post">
+                    <div class="modal-body">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                        <!-- Hidden IDRelacion correcto -->
+                        <input asp-for="RutinaFormCreate.IdRelacion" value="@Model!.IdRelacion" type="hidden"/>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre de la Rutina</label>
+                            <input asp-for="RutinaFormCreate.Nombre" class="form-control" placeholder="Ej: Pecho y tríceps" />
+                            <span asp-validation-for="RutinaFormCreate.Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <textarea asp-for="RutinaFormCreate.Descripcion" class="form-control"
+                                      placeholder="Descripción breve de la rutina" rows="2"></textarea>
+                            <span asp-validation-for="RutinaFormCreate.Descripcion" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-2">
+                            <input asp-for="RutinaFormCreate.Estado" class="form-check-input" />
+                            <label class="form-check-label fw-bold" asp-for="RutinaFormCreate.Estado">Activa</label>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Agregar Rutina
+                        </button>
+                    </div>
                 </form>
+
             </div>
         </div>
     </div>
-</div>
+
+    <!-- ================================================================= -->
+    <!-- 🔹 Modal: Editar Rutina -->
+    <!-- ================================================================= -->
+    <div class="modal fade" id="editRutinaModal" tabindex="-1" aria-labelledby="editRutinaLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="editRutinaLabel">
+                        <i class="bi bi-pencil-square me-2"></i>Editar Rutina
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form asp-action="UpdateRutina" method="post">
+                    <div class="modal-body">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                        <!-- Hidden ID -->
+                        <input asp-for="RutinaFormUpdate.IdRelacion" value="@Model!.IdRelacion" type="hidden" />
+                        <input asp-for="RutinaFormUpdate.IdRutina" type="hidden" id="editId" />
+
+                        <!-- Nombre -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre de la Rutina</label>
+                            <input asp-for="RutinaFormUpdate.Nombre" class="form-control" id="editNombre" />
+                            <span asp-validation-for="RutinaFormUpdate.Nombre" class="text-danger"></span>
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <textarea asp-for="RutinaFormUpdate.Descripcion"
+                                      class="form-control" id="editDescripcion" rows="2"></textarea>
+                            <span asp-validation-for="RutinaFormUpdate.Descripcion" class="text-danger"></span>
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="form-check mb-2">
+                            <input asp-for="RutinaFormUpdate.Estado" class="form-check-input" id="editEstado" />
+                            <label class="form-check-label fw-bold" asp-for="RutinaFormUpdate.Estado">Activa</label>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-warning text-white">
+                            <i class="bi bi-save me-1"></i>Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+}
 
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/js/DataTable.js"></script>
     <script>
-        // pasar el id al form
-        const modal = document.getElementById('modalDesactivar');
-        modal.addEventListener('show.bs.modal', event => {
-            const button = event.relatedTarget;
-            const id = button.getAttribute('data-id');
-            document.getElementById('formDesactivar').setAttribute('action', '/Rutinas/Desactivar/' + id);
+        document.addEventListener('DOMContentLoaded', () =>
+        {
+            const modalToShow = '@TempData["ShowModal"]';
+            if (modalToShow) {
+                const modalElement = document.getElementById(modalToShow);
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+
+            $("#rutinaTable").DataTable();
+
+            const tableBody = document.querySelector("#rutinaTable tbody");
+
+            const fill = (id, value, isInput = false) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (isInput) el.value = value;
+                else el.textContent = value;
+            };
+
+            document.addEventListener("click", (e) =>
+            {
+                const btn = e.target.closest("button");
+                if (!btn) return;
+
+                const data = { ...btn.dataset };
+                const row = btn.closest("tr");
+                if (row) Object.assign(data, row.dataset);
+
+                // ===== Crear =====
+                if (btn.classList.contains("btn-add")) {
+                    fill("RutinaFormCreate_IdRelacion", data.relacionid, true);
+                }
+
+                // ===== Editar =====
+                if (btn.classList.contains("btn-edit")) {
+                    fill("editId", data.rutinaid, true);
+                    fill("editNombre", data.nombre, true);
+                    fill("editDescripcion", data.descripcion, true);
+                }
+
+                // ===== Activar / Desactivar =====
+                if (btn.classList.contains("toggle-estado-btn")) {
+                    e.preventDefault(); // Evita submit inmediato
+
+                    // Determinar si la rutina está activa por el color del botón
+                    const isActive = btn.classList.contains("btn-outline-danger");
+                    const msg = isActive
+                        ? "¿Seguro que quieres desactivar esta rutina? No se eliminará, solo quedará inactiva."
+                        : "¿Deseas activar esta rutina?";
+
+                    if (confirm(msg)) {
+                        btn.closest("form").submit();
+                    }
+                }
+
+            });
         });
     </script>
 }

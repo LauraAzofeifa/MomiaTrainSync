@@ -28,8 +28,10 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories.Base
             bool includeInactive = false);
 
         Task<TEntity> AddAsync(TEntity entity);
-        Task<bool> UpdateAsync(TEntity entity);
+        Task<TEntity?> UpdateAsync(TEntity entity);
         Task<bool> DeleteAsync(int id);     // Hard delete
         Task<bool> SoftDeleteAsync(int id); // Soft delete si aplica
+        Task<bool> RestoreSoftDeleteAsync(int id);
+        Task<bool> ToggleEstadoAsync(int id);
     }
 }

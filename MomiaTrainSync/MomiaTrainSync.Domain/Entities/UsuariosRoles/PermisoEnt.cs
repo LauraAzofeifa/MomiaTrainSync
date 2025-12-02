@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MomiaTrainSync.Domain.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Domain.Entities.UsuariosRoles
 {
-    public class PermisoEnt
+    public class PermisoEnt : ISoftDelete
     {
         public int IdPermiso { get; set; }
         public string Codigo { get; set; } = string.Empty;

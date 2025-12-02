@@ -9,5 +9,11 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories.RutinasEntrenamientos
     public interface IEntrenamientoRepository : IGenericRepository<EntrenamientoEnt>
     {
         Task<List<EntrenamientoEnt>> GetByRutinaAsync(int idRutina);
+        Task<List<EntrenamientoEnt>> GetEntrenamientosAsync(
+            int? IdEntrenamiento = null,
+            int? IdRutina = null,
+            bool incluirInactivos = false
+            );
+        Task<bool> ToggleEstadoByRutinaIdAsync(int idRutina, bool nuevoEstado);
     }
 }

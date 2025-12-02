@@ -22,7 +22,8 @@ namespace MomiaTrainSync.Web.ViewModels.UsuariosRoles
 
         // Sub-ViewModels
         public RolFormViewModel RolForm { get; set; } = new();
-        public PermisoFormViewModel PermisoForm { get; set; } = new();
+        public PermisoFormViewModel PermisoFormAdd { get; set; } = new();
+        public PermisoFormViewModel PermisoFormEdit { get; set; } = new();
     }
 
 

@@ -34,7 +34,7 @@ namespace MomiaTrainSync.Core.UseCases.TrainerAthleteUseCase
             {
                 var entidad = _mapper.Map<EntrenadorAtletaEnt>(entrenadorAtletaDto);
 
-                var result = await _entrenadorAtletaRepository.AddAsync(entidad);
+                var result = await _entrenadorAtletaRepository.AsignarRelacionAsync(entidad);
 
                 if (result == null)
                     return Response<bool>.Fail("El atleta ya tiene un entrenador activo.");

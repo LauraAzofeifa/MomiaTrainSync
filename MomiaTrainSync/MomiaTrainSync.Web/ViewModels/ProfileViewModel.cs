@@ -32,7 +32,7 @@ namespace MomiaTrainSync.Web.ViewModels
         public string Telefono { get; set; } = string.Empty;
 
         [DataType(DataType.Date)]
-        public DateTime FechaCumpleannos { get; set; }
+        public DateTime? FechaCumpleannos { get; set; }
     }
 
     public class ChangePasswordViewModel

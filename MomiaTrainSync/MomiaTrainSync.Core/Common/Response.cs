@@ -22,12 +22,14 @@ namespace MomiaTrainSync.Core.Common
             };
         }
 
-        public static Response<T> Fail(string mensaje)
+        // NUEVO: opción para enviar Datos
+        public static Response<T> Fail(string mensaje, T? data = default)
         {
             return new Response<T>
             {
                 Exito = false,
-                Mensaje = mensaje
+                Mensaje = mensaje,
+                Datos = data
             };
         }
     }

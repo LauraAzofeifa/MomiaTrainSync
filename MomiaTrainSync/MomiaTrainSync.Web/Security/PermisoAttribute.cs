@@ -20,8 +20,20 @@ namespace MomiaTrainSync.Web.Security
 
             var userId = int.Parse(userIdStr);
             var permisoRepo = context.HttpContext.RequestServices.GetRequiredService<IPermisoRepository>();
+
             var rutaActual = context.HttpContext.Request.Path.Value ?? "";
 
+            // 1. Verificar si la ruta está registrada como permiso
+            var permiso = await permisoRepo.GetByRutaAsync(rutaActual);
+
+            // 2. Si la ruta NO está en la BD → permitir acceso
+            if (permiso == null)
+            {
+                await next();
+                return;
+            }
+
+            // 3. Si la ruta SÍ existe → verificar si el usuario tiene permiso
             var tieneAcceso = await permisoRepo.HasPermissionAsync(userId, rutaActual);
 
             if (!tieneAcceso)

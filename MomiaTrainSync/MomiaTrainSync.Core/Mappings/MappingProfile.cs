@@ -6,6 +6,8 @@ using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using MomiaTrainSync.Domain.Entities.EntrenadorAtleta;
 using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
 using System;
+using MomiaTrainSync.Domain.Entities.EntrenamientosZonas;
+using MomiaTrainSync.Core.DTOs.EntrenamientoZonas;
 
 namespace MomiaTrainSync.Core.Mappings
 {
@@ -28,7 +30,8 @@ namespace MomiaTrainSync.Core.Mappings
             CreateMap<EntrenadorAtletaEnt, EntrenadorAtletaDto>().ReverseMap();
 
             // Rutina
-            CreateMap<RutinaEnt, RutinaDto>();
+            CreateMap<RutinaEnt, RutinaDto>().ReverseMap();
+            CreateMap<EntrenamientoEnt, EntrenamientoDto>().ReverseMap();
         }
     }
 }

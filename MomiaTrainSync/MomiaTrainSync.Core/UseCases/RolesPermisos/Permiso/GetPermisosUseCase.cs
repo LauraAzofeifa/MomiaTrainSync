@@ -3,6 +3,7 @@ using MomiaTrainSync.Core.Common;
 using MomiaTrainSync.Core.DTOs.UsuariosRoles;
 using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
+using MomiaTrainSync.Core.UseCases.Base;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using System;
 using System.Collections.Generic;
@@ -12,59 +13,66 @@ using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Core.UseCases.RolesPermisos.Permiso
 {
-    public class GetPermisosUseCase
+    public class GetPermisosUseCase : BaseUseCase
     {
         private readonly IPermisoRepository _permisoRepository;
-        private readonly ILogErrorRepository _logErrorRepository;
-        private readonly IMapper _mapper;
 
         public GetPermisosUseCase(
             IPermisoRepository permisoRepository,
-            ILogErrorRepository logErrorRepository,
-            IMapper mapper)
+            ILogErrorRepository logError,
+            IMapper mapper
+            ) : base(mapper, logError)
         {
             _permisoRepository = permisoRepository;
-            _logErrorRepository = logErrorRepository;
-            _mapper = mapper;
         }
 
         public async Task<Response<IEnumerable<PermisoDto>>> ExecuteAsync(
             int? id = null,
             string? codigo = null,
             string? categoria = null,
-            bool incluirInactivos = false)
+            bool incluirInactivos = true)
         {
-            try
+            return await HandleAsync(async () =>
             {
                 IEnumerable<PermisoEnt> permisos;
 
-                // 🔹 Buscar por ID
+                // Buscar por ID
                 if (id.HasValue)
                 {
                     var permiso = await _permisoRepository.GetByIdAsync(id.Value);
-                    permisos = permiso != null ? new List<PermisoEnt> { permiso } : Enumerable.Empty<PermisoEnt>();
+                    permisos = permiso != null ? new[] { permiso } : Enumerable.Empty<PermisoEnt>();
                 }
-                // 🔹 Buscar por código
-                else if (!string.IsNullOrEmpty(codigo))
+                // Buscar por Código
+                else if (!string.IsNullOrWhiteSpace(codigo))
                 {
-                    var permiso = await _permisoRepository.GetByCodigoAsync(codigo);
-                    permisos = permiso != null ? new List<PermisoEnt> { permiso } : Enumerable.Empty<PermisoEnt>();
-                }
-                // 🔹 Filtrar por categoría
-                else if (!string.IsNullOrEmpty(categoria))
-                {
-                    permisos = await _permisoRepository.GetByCategoriaAsync(categoria);
                     if (incluirInactivos)
                     {
-                        // Traemos también inactivos si se requiere
+                        var todos = await _permisoRepository.GetAllAsync(includeInactive: incluirInactivos);
+                        permisos = todos.Where(p => p.Codigo == codigo);
+                    }
+                    else
+                    {
+                        var permiso = await _permisoRepository.GetByCodigoAsync(codigo);
+                        permisos = permiso != null ? new[] { permiso } : Enumerable.Empty<PermisoEnt>();
+                    }
+                }
+                // Filtrar por Categoría
+                else if (!string.IsNullOrWhiteSpace(categoria))
+                {
+                    if (incluirInactivos)
+                    {
                         var todos = await _permisoRepository.GetAllAsync(true);
                         permisos = todos.Where(p => p.Categoria == categoria);
                     }
+                    else
+                    {
+                        permisos = await _permisoRepository.GetByCategoriaAsync(categoria);
+                    }
                 }
-                // 🔹 Obtener todos
+                // Obtener todos
                 else
                 {
-                    permisos = await _permisoRepository.GetAllAsync(incluirInactivos);
+                    permisos = await _permisoRepository.GetAllAsync(includeInactive: incluirInactivos);
                 }
 
                 var permisosDto = _mapper.Map<IEnumerable<PermisoDto>>(permisos);
@@ -76,14 +84,7 @@ namespace MomiaTrainSync.Core.UseCases.RolesPermisos.Permiso
                     permisosDto,
                     "Permisos obtenidos correctamente."
                 );
-            }
-            catch (Exception ex)
-            {
-                await _logErrorRepository.AddLogAsync(
-                    $"{nameof(GetPermisosUseCase)}.{nameof(ExecuteAsync)}", ex);
-                return Response<IEnumerable<PermisoDto>>.Fail(
-                    "Error al obtener los permisos: " + ex.Message);
-            }
+            });
         }
     }
 }

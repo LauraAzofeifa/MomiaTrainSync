@@ -18,6 +18,52 @@ namespace MomiaTrainSync.Infrastructure.Repositories.EntrenadorAtleta
         {
         }
 
+        public async Task<EntrenadorAtletaEnt?> AsignarRelacionAsync(EntrenadorAtletaEnt relacion)
+        {
+            // 1️⃣ Verificar si ya existe una relación activa con otro entrenador
+            var relacionActiva = await _context.EntrenadorAtletas
+                .FirstOrDefaultAsync(ea => ea.IdAtleta == relacion.IdAtleta && ea.Estado);
+
+            if (relacionActiva != null)
+            {
+                // Si es otro entrenador → no se puede asignar
+                if (relacionActiva.IdEntrenador != relacion.IdEntrenador)
+                    return null;
+
+                // Si ya está activa con el mismo entrenador → devolverla
+                return relacionActiva;
+            }
+
+            // 2️⃣ Verificar si existió una relación previa entre los mismos usuarios (inactiva)
+            var relacionExistente = await _context.EntrenadorAtletas
+                .FirstOrDefaultAsync(ea =>
+                    ea.IdEntrenador == relacion.IdEntrenador &&
+                    ea.IdAtleta == relacion.IdAtleta &&
+                    !ea.Estado
+                );
+
+            if (relacionExistente != null)
+            {
+                // Reactivar
+                relacionExistente.Estado = true;
+                relacionExistente.FechaAsignacion = DateTime.UtcNow;
+
+                _context.EntrenadorAtletas.Update(relacionExistente);
+                await _context.SaveChangesAsync();
+
+                return relacionExistente;
+            }
+
+            // 3️⃣ Crear nueva relación
+            relacion.FechaAsignacion = DateTime.UtcNow;
+            relacion.Estado = true;
+
+            await _context.EntrenadorAtletas.AddAsync(relacion);
+            await _context.SaveChangesAsync();
+
+            return relacion;
+        }
+
         public async Task<List<EntrenadorAtletaEnt>> GetByEntrenadorAsync(
         int entrenadorId, bool incluirInactivos = false)
         {

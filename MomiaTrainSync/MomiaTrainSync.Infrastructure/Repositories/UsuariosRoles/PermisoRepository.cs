@@ -5,9 +5,10 @@ using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using MomiaTrainSync.Infrastructure.Persistence;
 using MomiaTrainSync.Infrastructure.Repositories.Base;
 
-public class PermisoRepository
-    : GenericRepository<PermisoEnt>, IPermisoRepository
+public class PermisoRepository : GenericRepository<PermisoEnt>, IPermisoRepository
 {
+    #region Constructor
+
     public PermisoRepository(
         MomiaTrainSyncDbContext context,
         ILogErrorRepository logger
@@ -15,7 +16,12 @@ public class PermisoRepository
     {
     }
 
-    public async Task<List<PermisoEnt>> GetAllAsync(bool incluirInactivos = false)
+    #endregion
+
+
+    #region Consultas básicas (GET)
+
+    public async Task<List<PermisoEnt>> GetAllAsync(bool incluirInactivos = true)
     {
         try
         {
@@ -30,6 +36,7 @@ public class PermisoRepository
         {
             await _logger.AddLogAsync(
                 $"{nameof(PermisoRepository)}.{nameof(GetAllAsync)}", ex);
+
             return new List<PermisoEnt>();
         }
     }
@@ -45,6 +52,7 @@ public class PermisoRepository
         {
             await _logger.AddLogAsync(
                 $"{nameof(PermisoRepository)}.{nameof(GetByCodigoAsync)}", ex);
+
             return null;
         }
     }
@@ -53,8 +61,7 @@ public class PermisoRepository
     {
         try
         {
-            return await _dbSet
-                .AsNoTracking()
+            return await _dbSet.AsNoTracking()
                 .Where(p => p.Categoria == categoria && p.Estado)
                 .ToListAsync();
         }
@@ -62,9 +69,35 @@ public class PermisoRepository
         {
             await _logger.AddLogAsync(
                 $"{nameof(PermisoRepository)}.{nameof(GetByCategoriaAsync)}", ex);
+
             return new List<PermisoEnt>();
         }
     }
+
+    public async Task<PermisoEnt?> GetByRutaAsync(string ruta)
+    {
+        try
+        {
+            ruta = NormalizeRoute(ruta);
+
+            return await _context.Permisos
+                .AsNoTracking()
+                .Where(p => p.Estado)
+                .FirstOrDefaultAsync(p => NormalizeRoute(p.Ruta) == ruta);
+        }
+        catch (Exception ex)
+        {
+            await _logger.AddLogAsync(
+                $"{nameof(PermisoRepository)}.{nameof(GetByRutaAsync)}", ex);
+
+            return null;
+        }
+    }
+
+    #endregion
+
+
+    #region Validación de permisos
 
     public async Task<bool> HasPermissionAsync(int userId, string route)
     {
@@ -83,6 +116,7 @@ public class PermisoRepository
             if (usuario == null)
                 return false;
 
+            // Administrador = acceso total
             if (usuario.Rol != null &&
                 usuario.Rol.Nombre.Equals("Administrador", StringComparison.OrdinalIgnoreCase))
                 return true;
@@ -97,9 +131,15 @@ public class PermisoRepository
         {
             await _logger.AddLogAsync(
                 $"{nameof(PermisoRepository)}.{nameof(HasPermissionAsync)}", ex);
+
             return false;
         }
     }
+
+    #endregion
+
+
+    #region Helpers
 
     private static string NormalizeRoute(string? route)
     {
@@ -108,13 +148,17 @@ public class PermisoRepository
 
         route = route.ToLowerInvariant().Trim();
 
+        // eliminar query params
         var qIndex = route.IndexOf('?');
         if (qIndex > 0)
             route = route[..qIndex];
 
+        // eliminar "/" final
         if (route.EndsWith("/"))
             route = route[..^1];
 
         return route;
     }
+
+    #endregion
 }

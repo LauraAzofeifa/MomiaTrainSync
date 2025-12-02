@@ -15,14 +15,17 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Rutinas
     public class UpdateRutinaUseCase : BaseUseCase
     {
         private readonly IRutinaRepository _repository;
+        private readonly IEntrenamientoRepository _entrenamientoRepository;
 
         public UpdateRutinaUseCase(
             IRutinaRepository repository,
+            IEntrenamientoRepository entrenamientoRepository,
             ILogErrorRepository logError,
             IMapper mapper
             ) : base (mapper, logError)
         {
             _repository = repository;
+            _entrenamientoRepository = entrenamientoRepository;
         }
 
         public async Task<Response<RutinaDto>> ExecuteAsync(RutinaDto dto)
@@ -30,7 +33,7 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Rutinas
             return await HandleAsync(async () =>
             {
                 if (dto.IdRutina <= 0)
-                    return Response<RutinaDto>.Fail("No se encontro la rutina");
+                    return Response<RutinaDto>.Fail("No se encontro la rutina.");
 
                 // Validaciones requeridas
                 var missing = ValidationHelper.ValidationRequired(
@@ -53,17 +56,50 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Rutinas
                 dto.FechaCreacion = entity.FechaCreacion;
 
                 // Mapear los cambios (solo campos editables)
-                _mapper.Map(dto, entity);
+                _mapper!.Map(dto, entity);
 
                 var updated = await _repository.UpdateAsync(entity);
 
-                if (!updated)
+                if (updated == null)
                     return Response<RutinaDto>.Fail("No se pudo actualizar la rutina.");
 
                 var resultDto = _mapper.Map<RutinaDto>(updated);
 
                 return Response<RutinaDto>.Success(resultDto, "Rutina actualizada exitosamente.");
             });
+        }
+
+        public async Task<Response<RutinaDto>> StatusExecuteAsync(int id)
+        {
+            return await HandleAsync(
+                async () =>
+                {
+                    var existing = await _repository.GetByIdAsync(id);
+
+                    if (existing == null)
+                        return Response<RutinaDto>.Fail("Rutina no encontrada.");
+
+                    var toggled = await _repository.ToggleEstadoAsync(id);
+
+                    if (!toggled)
+                        return Response<RutinaDto>.Fail("No se pudo actualizar el estado de la rutina.");
+
+                    var updated = await _repository.GetByIdAsync(id);
+                    if (updated == null)
+                        return Response<RutinaDto>.Fail("Error al obtener rutina actualizada.");
+
+                    if (updated.Estado)
+                        await _entrenamientoRepository.ToggleEstadoByRutinaIdAsync(id, false);
+
+                    var dto = _mapper!.Map<RutinaDto>(updated);
+
+                    var mensaje = updated!.Estado
+                        ? "Rutina activada correctamente."
+                        : "Rutina desactivada correctamente junto a sus entrenamientos.";
+
+                    return Response<RutinaDto>.Success(dto, mensaje);
+                }
+            );
         }
 
     }

@@ -37,18 +37,18 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Rutinas
                 if (missing.Any())
                     return Response<RutinaDto>.Fail(
                         $"Campos obligatorios: {string.Join(", ", missing)}"
-                        );
-                
-                // Asignamos la fecha de cuando se creo.
+                    );
+
                 dto.FechaCreacion = DateTime.Now;
 
-                var entity = _mapper.Map<RutinaEnt>(dto);
-                var created = _repo.AddAsync(entity);
+                var entity = _mapper!.Map<RutinaEnt>(dto);
 
+                var created = await _repo.AddAsync(entity);
                 if (created == null)
                     return Response<RutinaDto>.Fail("No se pudo crear la rutina.");
 
                 var resultDto = _mapper.Map<RutinaDto>(created);
+
                 return Response<RutinaDto>.Success(resultDto, "Rutina creada exitosamente.");
             });
         }

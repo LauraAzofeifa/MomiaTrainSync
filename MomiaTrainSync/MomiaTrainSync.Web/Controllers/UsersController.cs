@@ -63,7 +63,7 @@ namespace MomiaTrainSync.Web.Controllers
 
         private async Task LoadRolesAsync()
         {
-            var response = await _getRolesUseCase.ExecuteAsync();
+            var response = await _getRolesUseCase.ExecuteAsync(incluirInactivos: true);
 
             ViewBag.Roles = response.Exito && response.Datos != null
                 ? response.Datos.Select(r => new SelectListItem
@@ -92,6 +92,14 @@ namespace MomiaTrainSync.Web.Controllers
         [Permiso]
         public async Task<IActionResult> UpdateUserRoleAsync(int Id, int RolId)
         {
+            // Validamos que si el usuario actual es administrador no se pueda cambiar su propio rol
+            var currentUserId = GetCurrentUserId();
+
+            if (currentUserId == Id)
+            {
+                TempData["ErrorMessage"] = "No se puede cambiar el rol del usuario actual.";
+                return RedirectToAction("ManageUsers");
+            }
 
             var result = await _updateUsuarioUseCase.CambiarRolAsync(Id, RolId);
 
@@ -103,6 +111,14 @@ namespace MomiaTrainSync.Web.Controllers
         [Permiso]
         public async Task<IActionResult> ToggleEstadoUser(int Id) 
         { 
+            // Validamos que el usuario actual no se pueda desactivar
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId == Id)
+            {
+                TempData["ErrorMessage"] = "No se puede cambiar el estado del usuario actual.";
+                return RedirectToAction("ManageUsers");
+            }
+
             var result = await _updateUsuarioUseCase.CambiarEstadoAsync(Id);
 
             TempData[result.Exito ? "SuccessMessage" : "ErrorMessage"] = result.Mensaje;

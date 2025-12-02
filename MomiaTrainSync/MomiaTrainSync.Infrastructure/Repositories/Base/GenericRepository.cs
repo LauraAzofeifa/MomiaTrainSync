@@ -104,7 +104,7 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
                 // SoftDelete general
                 if (!includeInactive && typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
                 {
-                    query = query.Where(e => (e as ISoftDelete)!.Estado);
+                    query = query.Where(e => EF.Property<bool>(e, "Estado") == true);
                 }
 
                 return await query.ToListAsync();
@@ -177,12 +177,17 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
         // ============================================================
         // UPDATE
         // ============================================================
-        public virtual async Task<bool> UpdateAsync(TEntity entity)
+        public virtual async Task<TEntity?> UpdateAsync(TEntity entity)
         {
             try
             {
                 _dbSet.Update(entity);
-                return await _context.SaveChangesAsync() > 0;
+                var saved = await _context.SaveChangesAsync() > 0;
+
+                if (!saved)
+                    return null;
+
+                return entity; // ← AQUÍ
             }
             catch (Exception ex)
             {
@@ -240,5 +245,54 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
                 throw;
             }
         }
+
+        public virtual async Task<bool> RestoreSoftDeleteAsync(int id)
+        {
+            try
+            {
+                if (!typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
+                    return false;
+
+                var entity = await GetByIdAsync(id, false);
+                if (entity == null) return false;
+
+                typeof(TEntity).GetProperty("Estado")!.SetValue(entity, true);
+
+                _dbSet.Update(entity);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                await Log(nameof(RestoreSoftDeleteAsync), ex);
+                throw;
+            }
+        }
+
+        public virtual async Task<bool> ToggleEstadoAsync(int id)
+        {
+            try
+            {
+                if (!typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
+                    return false;
+
+                var entity = await GetByIdAsync(id, false);
+                if (entity == null) return false;
+
+                var prop = typeof(TEntity).GetProperty("Estado")!;
+                bool current = (bool)prop.GetValue(entity)!;
+
+                prop.SetValue(entity, !current);
+
+                _dbSet.Update(entity);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch (Exception ex)
+            {
+                await Log(nameof(ToggleEstadoAsync), ex);
+                throw;
+            }
+        }
+
+
     }
 }

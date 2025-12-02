@@ -10,6 +10,7 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories.EntrenadorAtleta
 {
     public interface IEntrenadorAtletaRepository : IGenericRepository<EntrenadorAtletaEnt>
     {
+        Task<EntrenadorAtletaEnt?> AsignarRelacionAsync(EntrenadorAtletaEnt relacion);
         Task<List<EntrenadorAtletaEnt>> GetByEntrenadorAsync(int entrenadorId, bool incluirInactivos = false);
         Task<List<EntrenadorAtletaEnt>> GetByAtletaAsync(int atletaId, bool incluirInactivos = false);
 

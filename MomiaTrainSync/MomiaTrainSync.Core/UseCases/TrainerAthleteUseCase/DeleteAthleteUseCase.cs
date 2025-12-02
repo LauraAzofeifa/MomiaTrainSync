@@ -32,7 +32,7 @@ namespace MomiaTrainSync.Core.UseCases.TrainerAthleteUseCase
                     return Response<bool>.Fail("La relación ya se encuentra desactivada.");
 
                 // Realizar la eliminación lógica
-                await _entrenadorAtletaRepository.DeleteAsync(idRelacion);
+                await _entrenadorAtletaRepository.SoftDeleteAsync(idRelacion);
 
                 return Response<bool>.Success(true, "El atleta fue desvinculado exitosamente del entrenador.");
             }

@@ -4,11 +4,13 @@ using MomiaTrainSync.Core.DTOs.UsuariosRoles;
 using MomiaTrainSync.Core.UseCases.RolesPermisos.Permiso;
 using MomiaTrainSync.Core.UseCases.RolesPermisos.Rol;
 using MomiaTrainSync.Core.UseCases.RolesPermisos.RolPermiso;
+using MomiaTrainSync.Web.Security;
 using MomiaTrainSync.Web.ViewModels.UsuariosRoles;
 
 namespace MomiaTrainSync.Web.Controllers
 {
     [Authorize]
+    [Permiso]
     public class RolPermisoController : Controller
     {
         #region Dependencias
@@ -24,6 +26,8 @@ namespace MomiaTrainSync.Web.Controllers
         private readonly AsignarPermisosUseCase _asignarPermisosUseCase;
         #endregion
 
+
+        #region Constructor
         public RolPermisoController(
             AddRolUseCase addRolUseCase,
             GetRolesUseCase getRolesUseCase,
@@ -45,23 +49,23 @@ namespace MomiaTrainSync.Web.Controllers
             _getPermisosPorRolUseCase = getPermisosPorRolUseCase;
             _asignarPermisosUseCase = asignarPermisosUseCase;
         }
+        #endregion
+
 
         #region Métodos privados reutilizables
 
         private async Task LoadIndexDataAsync(RolPermisosViewModel vm, int? idRol)
         {
-            vm.Roles = (await _getRolesUseCase.ExecuteAsync()).Datos ?? new();
+            vm.Roles = (await _getRolesUseCase.ExecuteAsync(incluirInactivos:true)).Datos ?? new();
             vm.TodosPermisos = (await _getPermisosUseCase.ExecuteAsync(incluirInactivos: true)).Datos?.ToList() ?? new();
             vm.RolSeleccionadoId = idRol;
 
-            // Si no hay rol seleccionado → NO hay que cargar RolForm
             if (!idRol.HasValue)
             {
                 vm.PermisosAsignadosIds = new List<int>();
                 return;
             }
 
-            // Buscar el rol seleccionado en la lista cargada
             var rolSeleccionado = vm.Roles.FirstOrDefault(r => r.IdRol == idRol.Value);
 
             if (rolSeleccionado != null)
@@ -75,7 +79,6 @@ namespace MomiaTrainSync.Web.Controllers
                 };
             }
 
-            // Permisos asignados
             var permisosPorRol = await _getPermisosPorRolUseCase.ExecuteAsync(idRol.Value);
 
             if (permisosPorRol.Exito && permisosPorRol.Datos != null)
@@ -89,20 +92,21 @@ namespace MomiaTrainSync.Web.Controllers
 
         #endregion
 
+
         #region Vista principal
 
+        [HttpGet]
         public async Task<IActionResult> Index(int? idRol = null)
         {
             var vm = new RolPermisosViewModel();
             await LoadIndexDataAsync(vm, idRol);
-
             return View(vm);
         }
 
         #endregion
 
 
-        #region RolPermisos
+        #region RolPermisos (asignación de permisos)
 
         [HttpPost]
         public async Task<IActionResult> AssignPermissionToRole(RolPermisosViewModel model)
@@ -121,14 +125,14 @@ namespace MomiaTrainSync.Web.Controllers
                 return RedirectToAction("Index", new { idRol = model.RolSeleccionadoId });
             }
 
-            TempData["Mensaje"] = response.Mensaje;
+            TempData["SuccessMessage"] = response.Mensaje;
             return RedirectToAction("Index", new { idRol = model.RolSeleccionadoId });
         }
 
         #endregion
 
 
-        #region Rol
+        #region Rol (CRUD)
 
         [HttpPost]
         public async Task<IActionResult> AddRole(RolPermisosViewModel vm)
@@ -161,6 +165,7 @@ namespace MomiaTrainSync.Web.Controllers
             return RedirectToAction("Index");
         }
 
+
         [HttpPost]
         public async Task<IActionResult> EditRole(RolPermisosViewModel vm)
         {
@@ -192,29 +197,27 @@ namespace MomiaTrainSync.Web.Controllers
             return RedirectToAction("Index", new { idRol = vm.RolForm.IdRol });
         }
 
+
         [HttpPost]
         public async Task<IActionResult> ToggleEstadoRol(int id)
         {
             var response = await _updateRolUseCase.StatusExecuteAsync(id);
 
-            if (!response.Exito)
-                TempData["ErrorMessage"] = response.Mensaje;
-            else
-                TempData["SuccessMessage"] = response.Mensaje;
-
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] = response.Mensaje;
             return RedirectToAction("Index", new { idRol = id });
         }
 
         #endregion
 
 
-        #region Permiso
+        #region Permiso (CRUD)
+
         [HttpPost]
         public async Task<IActionResult> AddPermission(RolPermisosViewModel vm)
         {
             ModelState.Clear();
 
-            if (!TryValidateModel(vm.PermisoForm, nameof(vm.PermisoForm)))
+            if (!TryValidateModel(vm.PermisoFormAdd, nameof(vm.PermisoFormAdd)))
             {
                 TempData["ShowModal"] = "addPermisoModal";
                 await LoadIndexDataAsync(vm, null);
@@ -223,54 +226,45 @@ namespace MomiaTrainSync.Web.Controllers
 
             var permiso = new PermisoDto
             {
-                Codigo = vm.PermisoForm.Codigo,
-                Descripcion = vm.PermisoForm.Descripcion,
-                Categoria = vm.PermisoForm.Categoria,
-                Ruta = vm.PermisoForm.Ruta
+                Codigo = vm.PermisoFormAdd.Codigo,
+                Descripcion = vm.PermisoFormAdd.Descripcion,
+                Categoria = vm.PermisoFormAdd.Categoria,
+                Ruta = vm.PermisoFormAdd.Ruta
             };
 
             var response = await _addPermisoUseCase.ExecuteAsync(permiso);
 
-            if (!response.Exito)
-            {
-                TempData["ErrorMessage"] = response.Mensaje;
-                return RedirectToAction("Index");
-            }
-
-            TempData["SuccessMessage"] = response.Mensaje;
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] = response.Mensaje;
             return RedirectToAction("Index");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> EditPermission(RolPermisosViewModel vm)
-        {
-            ModelState.Clear();
 
-            if (!TryValidateModel(vm.PermisoForm, nameof(vm.PermisoForm)))
+        [HttpPost]
+        public async Task<IActionResult> EditPermission([Bind(Prefix = "PermisoFormEdit")] PermisoFormViewModel permisoVm)
+        {
+            if (!ModelState.IsValid)
             {
-                TempData["ShowModal"] = "addPermisoModal";
+                TempData["ShowModal"] = "editPermisoModal";
+
+                var vm = new RolPermisosViewModel();
                 await LoadIndexDataAsync(vm, null);
+
+                vm.PermisoFormEdit = permisoVm;
                 return View("Index", vm);
             }
 
             var permiso = new PermisoDto
             {
-                IdPermiso = vm.PermisoForm.IdPermiso,
-                Codigo = vm.PermisoForm.Codigo,
-                Descripcion = vm.PermisoForm.Descripcion,
-                Categoria = vm.PermisoForm.Categoria,
-                Ruta = vm.PermisoForm.Ruta
+                IdPermiso = permisoVm.IdPermiso,
+                Codigo = permisoVm.Codigo,
+                Descripcion = permisoVm.Descripcion,
+                Categoria = permisoVm.Categoria,
+                Ruta = permisoVm.Ruta
             };
 
             var response = await _updatePermisoUseCase.ExecuteAsync(permiso);
 
-            if (!response.Exito)
-            {
-                TempData["ErrorMessage"] = response.Mensaje;
-                return RedirectToAction("Index");
-            }
-
-            TempData["SuccessMessage"] = response.Mensaje;
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] = response.Mensaje;
             return RedirectToAction("Index");
         }
 
@@ -279,13 +273,10 @@ namespace MomiaTrainSync.Web.Controllers
         {
             var response = await _updatePermisoUseCase.StatusExecuteAsync(id);
 
-            if (!response.Exito)
-                TempData["ErrorMessage"] = response.Mensaje;
-            else
-                TempData["SuccessMessage"] = response.Mensaje;
-
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] = response.Mensaje;
             return RedirectToAction("Index");
         }
+
         #endregion
     }
 }

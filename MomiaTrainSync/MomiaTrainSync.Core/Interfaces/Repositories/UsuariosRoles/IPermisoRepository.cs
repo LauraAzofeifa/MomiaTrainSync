@@ -13,5 +13,6 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles
         Task<List<PermisoEnt>> GetByCategoriaAsync(string categoria);
         Task<bool> HasPermissionAsync(int userId, string route);
         Task<PermisoEnt?> GetByCodigoAsync(string codigo);
+        Task<PermisoEnt?> GetByRutaAsync(string ruta);
     }
 }
