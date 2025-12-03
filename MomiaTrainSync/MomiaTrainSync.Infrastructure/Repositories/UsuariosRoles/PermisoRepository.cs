@@ -78,12 +78,10 @@ public class PermisoRepository : GenericRepository<PermisoEnt>, IPermisoReposito
     {
         try
         {
-            ruta = NormalizeRoute(ruta);
-
             return await _context.Permisos
                 .AsNoTracking()
                 .Where(p => p.Estado)
-                .FirstOrDefaultAsync(p => NormalizeRoute(p.Ruta) == ruta);
+                .FirstOrDefaultAsync(p => p.Ruta == ruta);
         }
         catch (Exception ex)
         {
