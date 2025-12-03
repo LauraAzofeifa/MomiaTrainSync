@@ -93,9 +93,35 @@ namespace MomiaTrainSync.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> UpdateEntrenamiento()
+        public async Task<IActionResult> UpdateEntrenamiento(EntrenamientosViewModel vm)
         {
-            return View();
+            ModelState.Clear();
+
+            if (!TryValidateModel(vm.EntrenamientoFormUpdate, nameof(vm.EntrenamientoFormUpdate)))
+            {
+                TempData["ShowModal"] = "editEntrenamientoModal";
+                return await ReturnIndexViewWithData(vm.EntrenamientoFormUpdate.IdRutina, vm);
+            }
+
+            var dto = new EntrenamientoDto
+            {
+                IdEntrenamiento = vm.EntrenamientoFormUpdate.IdEntrenamiento!.Value,
+                IdRutina = vm.EntrenamientoFormUpdate.IdRutina,
+                Nombre = vm.EntrenamientoFormUpdate.Nombre,
+                TipoSesion = vm.EntrenamientoFormUpdate.TipoSesion,
+                Objetivo = vm.EntrenamientoFormUpdate.Objetivo,
+                DuracionEstimada = vm.EntrenamientoFormUpdate.DuracionEstimada,
+                NivelEsfuerzoEsperado = vm.EntrenamientoFormUpdate.NivelEsfuerzoEsperado,
+                FechaProgramada = vm.EntrenamientoFormUpdate.FechaProgramada,
+                Estado = vm.EntrenamientoFormUpdate.Estado
+            };
+
+            var response = await _updateEntrenamientoUseCase.ExecuteAsync(dto);
+
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] =
+                response.Mensaje ?? (response.Exito ? "Entrenamiento agregado." : "Error al agregar el entrenamiento.");
+
+            return RedirectToAction("Index", new { idRutina = vm.EntrenamientoFormUpdate.IdRutina });
         }
 
         [HttpPost]
