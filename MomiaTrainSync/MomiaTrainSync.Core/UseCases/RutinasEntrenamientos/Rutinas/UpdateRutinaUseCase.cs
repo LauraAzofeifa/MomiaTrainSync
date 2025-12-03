@@ -88,8 +88,11 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Rutinas
                     if (updated == null)
                         return Response<RutinaDto>.Fail("Error al obtener rutina actualizada.");
 
-                    if (updated.Estado)
+                    if (!updated.Estado) // false
                         await _entrenamientoRepository.ToggleEstadoByRutinaIdAsync(id, false);
+
+                    if (updated.Estado) // true
+                        await _entrenamientoRepository.ToggleEstadoByRutinaIdAsync(id, true);
 
                     var dto = _mapper!.Map<RutinaDto>(updated);
 
