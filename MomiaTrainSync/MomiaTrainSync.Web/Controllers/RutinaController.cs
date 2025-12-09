@@ -151,13 +151,13 @@ namespace MomiaTrainSync.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleEstadoRutina(RutinaViewModel vm)
         {
-            if (vm.IdRelacion == 0)
+            if (vm.IdRelacion <= 0)
             {
                 TempData["ErrorMessage"] = "La relación es inválida.";
                 return RedirectToAction("ManageAthletes", "Users");
             }
 
-            if (vm.IdRutina == 0)
+            if (vm.IdRutina <= 0)
             {
                 TempData["ErrorMessage"] = "La rutina es inválida.";
                 return RedirectToAction(nameof(Index), new { id = vm.RutinaFormUpdate.IdRelacion });

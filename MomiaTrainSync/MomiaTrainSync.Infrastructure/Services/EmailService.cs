@@ -1,9 +1,9 @@
-﻿using MailKit.Net.Smtp;
-using MailKit.Security;
+﻿using Azure;
+using Azure.Communication.Email;
 using Microsoft.Extensions.Options;
-using MimeKit;
 using MomiaTrainSync.Core.Common;
 using MomiaTrainSync.Core.Interfaces.Services;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Infrastructure.Services
@@ -11,37 +11,43 @@ namespace MomiaTrainSync.Infrastructure.Services
     public class EmailService : IEmailService
     {
         private readonly EmailSettings _settings;
+        private readonly EmailClient _client;
 
         public EmailService(IOptions<EmailSettings> settings)
         {
             _settings = settings.Value;
+            _client = new EmailClient(_settings.ConnectionString);
         }
 
         public async Task SendEmailAsync(string to, string subject, string body)
         {
-            // Crear el mensaje MIME
-            var message = new MimeMessage();
-            message.From.Add(new MailboxAddress(_settings.SenderName, _settings.FromAddress));
-            message.To.Add(MailboxAddress.Parse(to));
-            message.Subject = subject;
+            var emailMessage = new EmailMessage(
+                senderAddress: _settings.SenderAddress,
+                content: new EmailContent(subject)
+                {
+                    Html = body,
+                    PlainText = StripHtml(body) // opcional
+                },
+                recipients: new EmailRecipients(
+                    new List<EmailAddress>
+                    {
+                        new EmailAddress(to)
+                    }
+                )
+            );
 
-            // Cuerpo del correo (HTML)
-            var bodyBuilder = new BodyBuilder
-            {
-                HtmlBody = body
-            };
-            message.Body = bodyBuilder.ToMessageBody();
+            EmailSendOperation op = await _client.SendAsync(
+                WaitUntil.Completed,
+                emailMessage
+            );
 
-            // Enviar con MailKit SMTP client
-            using var smtp = new SmtpClient();
+            // Puedes revisar el estatus
+            var status = op.Value.Status;
+        }
 
-            await smtp.ConnectAsync(_settings.SmtpServer, _settings.Port, SecureSocketOptions.StartTls);
-
-            // Autenticación
-            await smtp.AuthenticateAsync(_settings.SenderEmail, _settings.SenderPassword);
-
-            await smtp.SendAsync(message);
-            await smtp.DisconnectAsync(true);
+        private string StripHtml(string html)
+        {
+            return System.Text.RegularExpressions.Regex.Replace(html, "<.*?>", string.Empty);
         }
     }
 }

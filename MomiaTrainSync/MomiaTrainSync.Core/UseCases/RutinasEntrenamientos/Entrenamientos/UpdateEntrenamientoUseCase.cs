@@ -36,7 +36,7 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Entrenamientos
 
                 var missing = ValidationHelper.ValidationRequired(
                     ("Nombre", dto.Nombre),
-                    ("Tipo Sesión", dto.TipoSesion),
+                    ("Tipo Sesión", dto.IdTipoSesion),
                     ("Objetivo", dto.Objetivo),
                     ("Duración Estimada", dto.DuracionEstimada),
                     ("Nivel de Esfuerzo", dto.NivelEsfuerzoEsperado),

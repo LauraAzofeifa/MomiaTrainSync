@@ -29,23 +29,33 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
         }
 
         // ============================================================
-        // GET BY ID (con soporte tracking y no-tracking)
+        // GET BY ID (con soporte include + tracking / no-tracking)
         // ============================================================
         public virtual async Task<TEntity?> GetByIdAsync(
-            int id, bool asNoTracking = true)
+            int id,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null,
+            bool asNoTracking = true)
         {
             try
             {
+                // Obtener nombre de la PK de la entidad
                 var key = _context.Model.FindEntityType(typeof(TEntity))!
                     .FindPrimaryKey()!
                     .Properties
                     .First()
                     .Name;
 
-                var query = asNoTracking
-                    ? _dbSet.AsNoTracking()
-                    : _dbSet;
+                IQueryable<TEntity> query = _dbSet;
 
+                // Apply Include (si aplica)
+                if (include != null)
+                    query = include(query);
+
+                // Tracking / No Tracking
+                if (asNoTracking)
+                    query = query.AsNoTracking();
+
+                // Buscar por ID
                 return await query
                     .FirstOrDefaultAsync(e => EF.Property<int>(e, key) == id);
             }
@@ -55,6 +65,7 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
                 return null;
             }
         }
+
 
         // ============================================================
         // FIRST/WHERE
@@ -113,6 +124,31 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
             {
                 await Log(nameof(GetAllAsync), ex);
                 return new List<TEntity>();
+            }
+        }
+
+        // ============================================================
+        // COUNT
+        // ============================================================
+        public virtual async Task<int> CountAsync(
+            Expression<Func<TEntity, bool>>? predicate = null,
+            bool includeInactive = false)
+        {
+            try
+            {
+                IQueryable<TEntity> query = _dbSet;
+                if (predicate != null)
+                    query = query.Where(predicate);
+                if (!includeInactive && typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
+                {
+                    query = query.Where(e => EF.Property<bool>(e, "Estado") == true);
+                }
+                return await query.CountAsync();
+            }
+            catch (Exception ex)
+            {
+                await Log(nameof(CountAsync), ex);
+                return 0;
             }
         }
 
@@ -203,7 +239,7 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
         {
             try
             {
-                var entity = await GetByIdAsync(id, false);
+                var entity = await GetByIdAsync(id, asNoTracking:false);
                 if (entity == null)
                     return false;
 
@@ -229,7 +265,7 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
                     return await DeleteAsync(id);
                 }
 
-                var entity = await GetByIdAsync(id, false);
+                var entity = await GetByIdAsync(id, asNoTracking: false);
                 if (entity == null)
                     return false;
 
@@ -253,7 +289,7 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
                 if (!typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
                     return false;
 
-                var entity = await GetByIdAsync(id, false);
+                var entity = await GetByIdAsync(id, asNoTracking: false);
                 if (entity == null) return false;
 
                 typeof(TEntity).GetProperty("Estado")!.SetValue(entity, true);
@@ -275,7 +311,7 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Base
                 if (!typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
                     return false;
 
-                var entity = await GetByIdAsync(id, false);
+                var entity = await GetByIdAsync(id, asNoTracking: false);
                 if (entity == null) return false;
 
                 var prop = typeof(TEntity).GetProperty("Estado")!;

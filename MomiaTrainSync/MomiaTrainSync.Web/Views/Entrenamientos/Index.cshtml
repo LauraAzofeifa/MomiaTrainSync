@@ -59,7 +59,7 @@
                             <tr data-entrenamientoid="@e.IdEntrenamiento"
                                 data-rutinaid="@e.IdRutina"
                                 data-nombre="@e.Nombre"
-                                data-tiposesion="@e.TipoSesion"
+                                data-tiposesionid="@e.TipoSesion!.IdTipoSesion"
                                 data-objetivo="@e.Objetivo"
                                 data-duracion="@e.DuracionEstimada"
                                 data-esfuerzo="@e.NivelEsfuerzoEsperado"
@@ -67,7 +67,7 @@
                                 data-estado="@e.Estado">
 
                                 <td>@e.Nombre</td>
-                                <td>@e.TipoSesion</td>
+                                <td>@e.TipoSesion!.Nombre</td>
                                 <td>@e.Objetivo</td>
                                 <td>@e.DuracionEstimada</td>
                                 <td>@e.NivelEsfuerzoEsperado</td>
@@ -95,7 +95,7 @@
                                     </button>
 
                                     <!-- Eliminar -->
-                                    <form asp-action="DeleteEntrenamiento" method="post" class="d-inline">
+                                    <form asp-action="ToggleEstadoEntrenamiento" method="post" class="d-inline">
                                         <input type="hidden" name="id" value="@e.IdEntrenamiento" />
                                         <input type="hidden" name="idRutina" value="@Model.IdRutina" />
 
@@ -151,8 +151,14 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Tipo Sesión</label>
-                            <input asp-for="EntrenamientoFormCreate.TipoSesion" class="form-control" />
-                            <span asp-validation-for="EntrenamientoFormCreate.TipoSesion" class="text-danger"></span>
+
+                            <select asp-for="EntrenamientoFormCreate.IdTipoSesion"
+                                    class="form-select"
+                                    asp-items="ViewBag.TiposSesion">
+                                <option value="">Seleccione...</option>
+                            </select>
+
+                            <span asp-validation-for="EntrenamientoFormCreate.IdTipoSesion" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -230,8 +236,13 @@
 
                         <div class="mb-3">
                             <label class="form-label fw-bold">Tipo Sesión</label>
-                            <input asp-for="EntrenamientoFormUpdate.TipoSesion" class="form-control" id="@($"editTipoSesion")" />
-                            <span asp-validation-for="EntrenamientoFormUpdate.TipoSesion" class="text-danger"></span>
+                            <select asp-for="EntrenamientoFormUpdate.IdTipoSesion"
+                                    class="form-select"
+                                    id="editTipoSesion"
+                                    asp-items="ViewBag.TiposSesion">
+                                <option value="">Seleccione...</option>
+                            </select>
+                            <span asp-validation-for="EntrenamientoFormUpdate.IdTipoSesion" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -315,7 +326,7 @@
                 if (btn.classList.contains("btn-edit")) {
                     fill("editId", data.entrenamientoid, true);
                     fill("editNombre", data.nombre, true);
-                    fill("editTipoSesion", data.tiposesion, true);
+                    fill("editTipoSesion", data.tiposesionid, true);
                     fill("editObjetivo",data.objetivo, true);
                     fill("editDuracion", data.duracion, true);
                     fill("editEsfuerzo", data.esfuerzo, true);

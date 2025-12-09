@@ -17,7 +17,7 @@ namespace MomiaTrainSync.Infrastructure.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.10")
+                .HasAnnotation("ProductVersion", "10.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -103,6 +103,9 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.Property<int>("IdRutina")
                         .HasColumnType("int");
 
+                    b.Property<int>("IdTipoSesion")
+                        .HasColumnType("int");
+
                     b.Property<byte>("NivelEsfuerzoEsperado")
                         .HasColumnType("tinyint");
 
@@ -116,14 +119,11 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<string>("TipoSesion")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.HasKey("IdEntrenamiento");
 
                     b.HasIndex("IdRutina");
+
+                    b.HasIndex("IdTipoSesion");
 
                     b.ToTable("Entrenamiento", (string)null);
                 });
@@ -217,6 +217,27 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                     b.HasIndex("IdRelacion");
 
                     b.ToTable("Rutina", (string)null);
+                });
+
+            modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasEntrenamientos.TipoSesionEnt", b =>
+                {
+                    b.Property<int>("IdTipoSesion")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdTipoSesion"));
+
+                    b.Property<bool>("Estado")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("IdTipoSesion");
+
+                    b.ToTable("TipoSesion", (string)null);
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.SesionesEntrenamiento.DetalleZonaSesionEnt", b =>
@@ -371,6 +392,10 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Biografia")
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
                     b.Property<string>("ContrasennaHash")
                         .IsRequired()
                         .HasMaxLength(255)
@@ -461,7 +486,15 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MomiaTrainSync.Domain.Entities.RutinasEntrenamientos.TipoSesionEnt", "TipoSesion")
+                        .WithMany("Entrenamientos")
+                        .HasForeignKey("IdTipoSesion")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Rutina");
+
+                    b.Navigation("TipoSesion");
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.RutinaEnt", b =>
@@ -555,6 +588,11 @@ namespace MomiaTrainSync.Infrastructure.Migrations
                 });
 
             modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasAsignaciones.RutinaEnt", b =>
+                {
+                    b.Navigation("Entrenamientos");
+                });
+
+            modelBuilder.Entity("MomiaTrainSync.Domain.Entities.RutinasEntrenamientos.TipoSesionEnt", b =>
                 {
                     b.Navigation("Entrenamientos");
                 });

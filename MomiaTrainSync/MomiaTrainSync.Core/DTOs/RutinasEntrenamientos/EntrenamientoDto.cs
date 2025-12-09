@@ -1,4 +1,6 @@
-﻿using MomiaTrainSync.Core.DTOs.UsuariosRoles;
+﻿using MomiaTrainSync.Core.DTOs.RutinasEntrenamientos;
+using MomiaTrainSync.Core.DTOs.UsuariosRoles;
+using MomiaTrainSync.Domain.Entities.RutinasEntrenamientos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +14,7 @@ namespace MomiaTrainSync.Core.DTOs.EntrenamientoZonas
         public int IdEntrenamiento { get; set; }
         public int IdRutina { get; set; } // FK
         public string Nombre { get; set; } = string.Empty;
-        public string TipoSesion { get; set; } = string.Empty;
+        public int IdTipoSesion { get; set; } // Fk
         public string Objetivo { get; set; } = string.Empty;
         public int DuracionEstimada { get; set; }
         public byte NivelEsfuerzoEsperado { get; set; }
@@ -22,6 +24,7 @@ namespace MomiaTrainSync.Core.DTOs.EntrenamientoZonas
         public bool Estado { get; set; }
 
         public UsuarioDto? Entrenador { get; set; }
+        public TipoSesionDto? TipoSesion { get; set; }
         public List<DetalleZonaPlanDto> ZonasPlan { get; set; } = new();
     }
 }

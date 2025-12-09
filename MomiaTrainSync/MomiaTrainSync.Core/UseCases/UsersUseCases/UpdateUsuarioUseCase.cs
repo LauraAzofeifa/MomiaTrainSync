@@ -39,6 +39,7 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
                     existingUser.Correo = _usuarioDto.Correo;
                     existingUser.Telefono = _usuarioDto.Telefono;
                     existingUser.FechaCumpleannos = _usuarioDto.FechaCumpleannos;
+                    existingUser.Biografia = _usuarioDto.Biografia;
 
                     // 3️⃣ Guardar cambios
                     var result = await _usuarioRepository.UpdateAsync(existingUser);

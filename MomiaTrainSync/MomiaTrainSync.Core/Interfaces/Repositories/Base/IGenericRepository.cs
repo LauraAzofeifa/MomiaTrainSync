@@ -8,7 +8,9 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories.Base
     public interface IGenericRepository<TEntity>
         where TEntity : class
     {
-        Task<TEntity?> GetByIdAsync(int id, bool asNoTracking = true);
+        Task<TEntity?> GetByIdAsync(int id,
+            Func<IQueryable<TEntity>, IQueryable<TEntity>>? include = null,
+            bool asNoTracking = true);
 
         Task<TEntity?> FirstAsync(
             Expression<Func<TEntity, bool>> predicate,

@@ -33,7 +33,7 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Entrenamientos
                 {
                     var missing = ValidationHelper.ValidationRequired(
                         ("Nombre", dto.Nombre),
-                        ("Tipo Sesion", dto.TipoSesion),
+                        ("Tipo Sesion", dto.IdTipoSesion),
                         ("Objetivo", dto.Objetivo)
                     );
 

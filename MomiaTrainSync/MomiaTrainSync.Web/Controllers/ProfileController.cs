@@ -57,6 +57,7 @@ namespace MomiaTrainSync.Web.Controllers
                     Apellido = usuario.Apellido,
                     Correo = usuario.Correo,
                     Telefono = usuario.Telefono,
+                    Biografia = usuario.Biografia!,
                     FechaCumpleannos = usuario.FechaCumpleannos
                 }
             };
@@ -92,6 +93,7 @@ namespace MomiaTrainSync.Web.Controllers
                 Apellido = vm.Update.Apellido,
                 Correo = vm.Update.Correo,
                 Telefono = vm.Update.Telefono,
+                Biografia = vm.Update.Biografia,
                 FechaCumpleannos = vm.Update.FechaCumpleannos
             };
 

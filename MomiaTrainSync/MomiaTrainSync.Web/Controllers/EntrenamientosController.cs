@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MomiaTrainSync.Core.DTOs.EntrenamientoZonas;
 using MomiaTrainSync.Core.DTOs.RutinasEntrenamientos;
 using MomiaTrainSync.Core.Interfaces.Repositories.RutinasEntrenamientos;
 using MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Entrenamientos;
 using MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Rutinas;
+using MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.TipoSesion;
 using MomiaTrainSync.Web.ViewModels.RutinasEntrenamientos;
 using System.Collections.ObjectModel;
 
@@ -11,29 +13,52 @@ namespace MomiaTrainSync.Web.Controllers
 {
     public class EntrenamientosController : Controller
     {
+        private readonly GetTipoSesionUseCase _getTipoSesionUseCase;
+
         private readonly GetEntrenamientoUseCase _getEntrenamientosUseCase;
         private readonly AddEntrenamientoUseCase _addEntrenamientoUseCase;
         private readonly UpdateEntrenamientoUseCase _updateEntrenamientoUseCase;
 
         public EntrenamientosController(
+            GetTipoSesionUseCase getTipoSesionUseCase,
             GetEntrenamientoUseCase getEntrenamientosUseCase,
             AddEntrenamientoUseCase addEntrenamientoUseCase,
             UpdateEntrenamientoUseCase updateEntrenamientoUseCase
         )
         {
+            _getTipoSesionUseCase = getTipoSesionUseCase;
             _getEntrenamientosUseCase = getEntrenamientosUseCase;
             _addEntrenamientoUseCase = addEntrenamientoUseCase;
             _updateEntrenamientoUseCase = updateEntrenamientoUseCase;
         }
 
         #region Private Methods
+        // Cargamos el Dropdown
+        private async Task LoadTipoSesionDropdown()
+        {
+            var result = await _getTipoSesionUseCase.ExecuteAsync(
+                incluirInactivos: false
+            );
+
+            var lista = result.Exito && result.Datos != null
+                ? result.Datos
+                : new List<TipoSesionDto>();
+
+            ViewBag.TiposSesion = new SelectList(lista, "IdTipoSesion", "Nombre");
+        }
+
         // Construye el viewmodel del Index (con rutinas y id relación)
         private async Task<EntrenamientosViewModel> BuildRutinasViewModel(int idRutina)
         {
+            await LoadTipoSesionDropdown();
+
             var result = await _getEntrenamientosUseCase.ExecuteAsync(
                 IdRutina: idRutina,
                 incluirInactivos: true
             );
+
+            TempData[result.Exito ? "SuccessMessage" : "ErrorMessage"] =
+                result.Mensaje ?? (result.Exito ? "Estado de la rutina actualizado." : "Error al actualizar el estado de la rutina.");
 
             return new EntrenamientosViewModel
             {
@@ -45,6 +70,8 @@ namespace MomiaTrainSync.Web.Controllers
         // Retorna la vista Index cuando hay errores, cargando nuevamente rutinas
         private async Task<IActionResult> ReturnIndexViewWithData(int idRutina, EntrenamientosViewModel vm)
         {
+            await LoadTipoSesionDropdown();
+
             var recargado = await BuildRutinasViewModel(idRutina);
 
             vm.Entrenamientos = recargado.Entrenamientos;
@@ -76,7 +103,7 @@ namespace MomiaTrainSync.Web.Controllers
             {
                 IdRutina = vm.EntrenamientoFormCreate.IdRutina,
                 Nombre = vm.EntrenamientoFormCreate.Nombre,
-                TipoSesion = vm.EntrenamientoFormCreate.TipoSesion,
+                IdTipoSesion = vm.EntrenamientoFormCreate.IdTipoSesion,
                 Objetivo = vm.EntrenamientoFormCreate.Objetivo,
                 DuracionEstimada = vm.EntrenamientoFormCreate.DuracionEstimada,
                 NivelEsfuerzoEsperado = vm.EntrenamientoFormCreate.NivelEsfuerzoEsperado,
@@ -108,7 +135,7 @@ namespace MomiaTrainSync.Web.Controllers
                 IdEntrenamiento = vm.EntrenamientoFormUpdate.IdEntrenamiento!.Value,
                 IdRutina = vm.EntrenamientoFormUpdate.IdRutina,
                 Nombre = vm.EntrenamientoFormUpdate.Nombre,
-                TipoSesion = vm.EntrenamientoFormUpdate.TipoSesion,
+                IdTipoSesion = vm.EntrenamientoFormUpdate.IdTipoSesion,
                 Objetivo = vm.EntrenamientoFormUpdate.Objetivo,
                 DuracionEstimada = vm.EntrenamientoFormUpdate.DuracionEstimada,
                 NivelEsfuerzoEsperado = vm.EntrenamientoFormUpdate.NivelEsfuerzoEsperado,
@@ -125,9 +152,26 @@ namespace MomiaTrainSync.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteEntrenamiento(int id)
+        public async Task<IActionResult> ToggleEstadoEntrenamiento(int id, int idRutina)
         {
-            return View();
+            if (id <= 0)
+            {
+                TempData["ErrorMessage"] = "Entrenamiento no encontrado.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            if (idRutina <= 0)
+            {
+                TempData["ErrorMessage"] = "Rutina no encontrada.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            var response = await _updateEntrenamientoUseCase.StatusExecuteAsync(id);
+
+            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] =
+                response.Mensaje ?? (response.Exito ? "Estado del entrenamiento actualizado." : "Error al actualizar el estado del entrenamiento.");
+
+            return RedirectToAction(nameof(Index), new { idRutina = idRutina });
         }
     }
 }

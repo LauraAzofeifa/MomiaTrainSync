@@ -18,6 +18,16 @@ namespace MomiaTrainSync.Infrastructure.Repositories.EntrenadorAtleta
         {
         }
 
+        public override Task<EntrenadorAtletaEnt?> GetByIdAsync(int id, Func<IQueryable<EntrenadorAtletaEnt>, IQueryable<EntrenadorAtletaEnt>>? include = null, bool asNoTracking = true)
+        {
+            include ??= q => q
+                .Include(ea => ea.Entrenador)
+                    .ThenInclude(u => u!.Rol)
+                .Include(ea => ea.Atleta)
+                    .ThenInclude(u => u!.Rol);
+            return base.GetByIdAsync(id, include, asNoTracking);
+        }
+
         public async Task<EntrenadorAtletaEnt?> AsignarRelacionAsync(EntrenadorAtletaEnt relacion)
         {
             // 1️⃣ Verificar si ya existe una relación activa con otro entrenador

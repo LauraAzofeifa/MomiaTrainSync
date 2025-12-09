@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@functions {
+    bool IsActive(string controller, string action = null)
+    {
+        var currentController = ViewContext.RouteData.Values["controller"]?.ToString();
+        var currentAction = ViewContext.RouteData.Values["action"]?.ToString();
+
+        if (action == null)
+            return currentController == controller;
+
+        return currentController == controller && currentAction == action;
+    }
+}
+
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -32,13 +45,13 @@
             <ul class="list-unstyled components">
                 @if (User.IsInRole("Administrador"))    
                 {
-                    <li class="active">
+                    <li class="@(IsActive("Home", "Index") ? "active" : "")">
                         <a asp-controller="Home" asp-action="Index">
                             <i class="bi bi-speedometer2"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    <li>
+                    @* <li>
                         <a href="athletes.html">
                             <i class="bi bi-people"></i>
                             <span>Atletas</span>
@@ -49,20 +62,46 @@
                             <i class="bi bi-calendar-event"></i>
                             <span>Calendario</span>
                         </a>
-                    </li>
+                    </li> *@
                     <li>
-                        <a href="#routinesSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                        <a href="#routinesSubmenu"
+                           class="@(IsActive("Users") || IsActive("RolPermiso") || IsActive("Admin") ? "" : "")"
+                           data-bs-toggle="collapse"
+                           aria-expanded="@(IsActive("Users") || IsActive("RolPermiso") || IsActive("Admin") ? "true" : "false")">
                             <i class="bi bi-shield"></i>
                             <span>Administración</span>
                             <i class="bi bi-chevron-down ms-auto"></i>
                         </a>
-                        <ul class="collapse list-unstyled" id="routinesSubmenu">
-                            <li><a asp-controller="Users" asp-action="ManageUsers"><i class="bi bi-people"></i>Usuarios</a></li>
-                            <li><a asp-controller="RolPermiso" asp-action="Index"><i class="bi bi-key"></i>Permisos</a></li>
-                            <li><a asp-controller="Admin" asp-action="Metrics"><i class="bi bi-people"></i>Métricas</a></li>
+
+                        <ul class="collapse list-unstyled @(IsActive("Users") || IsActive("RolPermiso") || IsActive("Admin") ? "show" : "")"
+                            id="routinesSubmenu">
+
+                            <li class="@(IsActive("Users", "ManageUsers") ? "active" : "")">
+                                <a asp-controller="Users" asp-action="ManageUsers"><i class="bi bi-people"></i>Usuarios</a>
+                            </li>
+
+                            <li class="@(IsActive("RolPermiso", "Index") ? "active" : "")">
+                                <a asp-controller="RolPermiso" asp-action="Index"><i class="bi bi-key"></i>Permisos</a>
+                            </li>
+
+                            @* <li class="@(IsActive("Admin", "Metrics") ? "active" : "")">
+                                <a asp-controller="Admin" asp-action="Metrics"><i class="bi bi-people"></i>Métricas</a>
+                            </li> *@
+
+                            @* <li class="@(IsActive("TipoSesion", "Index") ? "active" : "")">
+                                <a asp-controller="TipoSesion" asp-action="Index">
+                                    <i class="bi bi-collection"></i>Tipos de Sesión
+                                </a>
+                            </li> *@
+
+                            <li class="@(IsActive("ZonaEntrenamiento", "Index") ? "active" : "")">
+                                <a asp-controller="ZonaEntrenamiento" asp-action="Index">
+                                    <i class="bi bi-bullseye"></i>Zonas de Entrenamiento
+                                </a>
+                            </li>
                         </ul>
                     </li>
-                    <li>
+                    @* <li>
                         <a href="#">
                             <i class="bi bi-graph-up"></i>
                             <span>Reportes</span>
@@ -73,30 +112,32 @@
                             <i class="bi bi-gear"></i>
                             <span>Configuración</span>
                         </a>
-                    </li>
+                    </li> *@
                 }
 
                 @if (User.IsInRole("Entrenador"))
                 {
-                    <li class="active">
+                    <li class="@(IsActive("Home", "Index") ? "active" : "")">
                         <a asp-controller="Home" asp-action="Index">
                             <i class="bi bi-speedometer2"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
-                    <li>
+
+                    <li class="@(IsActive("Users", "ManageAthletes") ? "active" : "")">
                         <a href="@Url.Action("ManageAthletes", "Users")">
                             <i class="bi bi-people"></i>
                             <span>Mis Atletas</span>
                         </a>
                     </li>
-                    <li>
+
+                    <li class="@(IsActive("Calendar", "Index") ? "active" : "")">
                         <a href="@Url.Action("Index", "Calendar")">
                             <i class="bi bi-calendar-event"></i>
                             <span>Calendario</span>
                         </a>
                     </li>
-                    <li>
+                    @* <li>
                         <a href="#routinesSubmenu" data-bs-toggle="collapse" aria-expanded="false">
                             <i class="bi bi-clipboard-check"></i>
                             <span>Rutinas</span>
@@ -119,37 +160,47 @@
                             <i class="bi bi-gear"></i>
                             <span>Configuración</span>
                         </a>
-                    </li>
+                    </li> *@
                 }
                 @if (User.IsInRole("Atleta"))
                 {
-                    <li class="active">
+                    <li class="@(IsActive("Home", "Index") ? "active" : "")">
                         <a asp-controller="Home" asp-action="Index">
                             <i class="bi bi-speedometer2"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
 
-                    <li>
-                        <a asp-controller="Calendar" asp-action="Index">
+                    <li class="@(IsActive("Calendar", "MyCalendar") ? "active" : "")">
+                        <a asp-controller="Calendar" asp-action="MyCalendar">
                             <i class="bi bi-calendar-event"></i>
                             <span>Mi Calendario</span>
                         </a>
                     </li>
 
-                    <li>
-                        <a href="#routinesSubmenu" data-bs-toggle="collapse" aria-expanded="false">
+                    @* <li>
+                        <a href="#routinesSubmenu"
+                           data-bs-toggle="collapse"
+                           aria-expanded="@(IsActive("Rutinas") ? "true" : "false")"
+                           class="">
                             <i class="bi bi-clipboard-check"></i>
                             <span>Mis Rutinas</span>
                             <i class="bi bi-chevron-down ms-auto"></i>
                         </a>
-                        <ul class="collapse list-unstyled" id="routinesSubmenu">
-                            <li><a asp-controller="Rutinas" asp-action="MisRutinas">Ver Rutinas</a></li>
-                            <li><a asp-controller="Rutinas" asp-action="SesionesDia">Sesiones del Día</a></li>
-                        </ul>
-                    </li>
 
-                    <li>
+                        <ul class="collapse list-unstyled @(IsActive("Rutinas") ? "show" : "")" id="routinesSubmenu">
+
+                            <li class="@(IsActive("Rutinas", "MisRutinas") ? "active" : "")">
+                                <a asp-controller="Rutinas" asp-action="MisRutinas">Ver Rutinas</a>
+                            </li>
+
+                            <li class="@(IsActive("Rutinas", "SesionesDia") ? "active" : "")">
+                                <a asp-controller="Rutinas" asp-action="SesionesDia">Sesiones del Día</a>
+                            </li>
+                        </ul>
+                    </li> *@
+
+                    @* <li>
                         <a asp-controller="Atleta" asp-action="Progreso">
                             <i class="bi bi-graph-up"></i>
                             <span>Estadísticas</span>
@@ -161,7 +212,7 @@
                             <i class="bi bi-gear"></i>
                             <span>Configuración</span>
                         </a>
-                    </li>
+                    </li> *@
                 }
 
             </ul>
@@ -178,7 +229,7 @@
 
                     <div class="ms-auto d-flex align-items-center">
                         <!-- Notifications -->
-                        <div class="dropdown me-3">
+                        @* <div class="dropdown me-3">
                             <button class="btn btn-light position-relative" type="button" data-bs-toggle="dropdown">
                                 <i class="bi bi-bell"></i>
                                 <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
@@ -193,7 +244,7 @@
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-center" href="#">Ver todas</a></li>
                             </ul>
-                        </div>
+                        </div> *@
 
                         <!-- User Dropdown -->
                         <div class="dropdown">
@@ -204,7 +255,7 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end">
                                 <li><a class="dropdown-item" href="@Url.Action("MyProfile","Profile")"><i class="bi bi-person me-2"></i>Mi Perfil</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li>
+                                @* <li><a class="dropdown-item" href="#"><i class="bi bi-gear me-2"></i>Configuración</a></li> *@
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <form method="post" asp-controller="Authentication" asp-action="Logout">
@@ -297,8 +348,9 @@
     </script>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/dist/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+
 
 
     <!-- Sección para modales -->

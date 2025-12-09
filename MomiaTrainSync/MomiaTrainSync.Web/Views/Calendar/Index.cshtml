@@ -10,7 +10,7 @@
 
 @section Scripts {
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
-    <script src="~/js/schedule.js"></script>
+    <script src="~/js/trainerCalendar.js"></script>
 }
 
 <div class="row mb-4">
@@ -18,11 +18,11 @@
         <h2 class="fw-bold">Calendario de Entrenamientos</h2>
         <p class="text-muted">Programa y gestiona las rutinas de los atletas</p>
     </div>
-    <div class="col-auto">
+    @* <div class="col-auto">
         <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEventModal">
             <i class="bi bi-plus-circle me-2"></i>Agendar Rutina
         </button>
-    </div>
+    </div> *@
 </div>
 
 <div class="row">
@@ -39,89 +39,43 @@
             <div class="card-header bg-white">
                 <h6 class="mb-0 fw-semibold">Filtros</h6>
             </div>
-            <div class="card-body">
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" id="filterStrength" checked>
-                    <label class="form-check-label" for="filterStrength">
-                        <span class="badge bg-primary me-2"></span>Fuerza
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" id="filterCardio" checked>
-                    <label class="form-check-label" for="filterCardio">
-                        <span class="badge bg-success me-2"></span>Cardio
-                    </label>
-                </div>
-                <div class="form-check mb-2">
-                    <input class="form-check-input" type="checkbox" id="filterTechnique" checked>
-                    <label class="form-check-label" for="filterTechnique">
-                        <span class="badge bg-warning me-2"></span>Técnica
-                    </label>
-                </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="filterRecovery" checked>
-                    <label class="form-check-label" for="filterRecovery">
-                        <span class="badge bg-info me-2"></span>Recuperación
-                    </label>
-                </div>
+            <div class="card-body" id="contenedorFiltrosTipo">
+                <!-- JS insertará filtros aquí -->
             </div>
         </div>
+
 
         <div class="card">
             <div class="card-header bg-white">
                 <h6 class="mb-0 fw-semibold">Eventos de Hoy</h6>
             </div>
-            <div class="card-body">
-                <div class="event-item mb-3">
-                    <div class="d-flex align-items-start">
-                        <div class="event-time">
-                            <small class="text-muted">09:00</small>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="mb-1">Entrenamiento de Fuerza</h6>
-                            <small class="text-muted">María González</small>
-                            <div class="mt-1">
-                                <span class="badge bg-primary">Fuerza</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="event-item mb-3">
-                    <div class="d-flex align-items-start">
-                        <div class="event-time">
-                            <small class="text-muted">14:00</small>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="mb-1">Sesión de Velocidad</h6>
-                            <small class="text-muted">Juan Martínez</small>
-                            <div class="mt-1">
-                                <span class="badge bg-success">Cardio</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="event-item">
-                    <div class="d-flex align-items-start">
-                        <div class="event-time">
-                            <small class="text-muted">16:00</small>
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="mb-1">Técnica de Carrera</h6>
-                            <small class="text-muted">Ana Torres</small>
-                            <div class="mt-1">
-                                <span class="badge bg-warning">Técnica</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="card-body" id="eventosHoyContainer">
+                <!-- Aquí se cargarán los eventos dinámicamente -->
             </div>
         </div>
     </div>
 </div>
 
 @section Modals {
+
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Evento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Aquí se inyecta la info del evento -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- Add Event Modal -->
     <div class="modal fade" id="addEventModal" tabindex="-1">
         <div class="modal-dialog">

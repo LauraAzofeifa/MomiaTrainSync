@@ -69,5 +69,29 @@ namespace MomiaTrainSync.Infrastructure.Repositories.RutinasEntrenamientos
                     (!ignorarId.HasValue || x.IdRutina != ignorarId.Value)
             ) != null;
         }
+
+        // Contamos las rutinas de una relación activas
+        public async Task<int> ContarRutinasActivasAsync(int? idRelacion, bool trainer = false, bool todas = false)
+        {
+            // Si se piden todas, las contamos sin filtro
+            if (todas)
+            {
+                return await CountAsync(
+                    x => x.Estado
+                );
+            }
+
+            // Si es trainer, contamos todas las rutinas activas de sus atletas
+            if (trainer)
+            {
+                return await CountAsync(
+                    x => x.Estado && x.Relacion != null && x.Relacion.Entrenador != null
+                );
+            }
+
+            return await CountAsync(
+                x => x.IdRelacion == idRelacion && x.Estado
+            );
+        }
     }
 }

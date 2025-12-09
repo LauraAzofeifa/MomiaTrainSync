@@ -40,26 +40,28 @@ namespace MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.Rutinas
                 if (idRelacion.HasValue)
                 {
                     var relacion = await _entrenadorAtletaRepository
-                        .GetByIdAsync(idRelacion.Value);
+                         .GetByIdAsync(idRelacion.Value);
 
                     if (relacion == null)
                     {
-                        return Response<IEnumerable<RutinaDto>>.Fail(
-                            "La relación entrenador–atleta no existe."
-                        );
+                        return Response<IEnumerable<RutinaDto>>.Fail("La relación entrenador–atleta no existe.");
                     }
 
-                    bool entrenadorInactivo = relacion.Entrenador?.Estado == true;
-                    bool atletaInactivo = relacion.Atleta?.Estado == true;
+                    // Estado == true -> activo. Estado == false -> inactivo (o eliminado lógico)
+                    bool entrenadorInactivo = relacion.Entrenador != null && relacion.Entrenador.Estado == false;
+                    bool atletaInactivo = relacion.Atleta != null && relacion.Atleta.Estado == false;
 
-                    if (!incluirInactivos && (entrenadorInactivo || atletaInactivo))
+                    if (incluirInactivos && (entrenadorInactivo || atletaInactivo))
                     {
+                        var partes = new List<string>();
+                        if (entrenadorInactivo) partes.Add("entrenador");
+                        if (atletaInactivo) partes.Add("atleta");
+
                         return Response<IEnumerable<RutinaDto>>.Fail(
-                            "La relación contiene usuarios inactivos y no se permite ver información inactiva."
+                            $"No se permiten resultados: el/los usuario(s) {string.Join(" y ", partes)} están inactivo(s)."
                         );
                     }
                 }
-
 
                 var data = await _repository.GetRutinasAsync(idRutina, idRelacion, incluirInactivos);
 

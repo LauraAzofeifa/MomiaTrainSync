@@ -36,11 +36,13 @@ namespace MomiaTrainSync.Infrastructure.Repositories.RutinasEntrenamientos
             return await GetAllAsync(
                 include: q =>
                 {
+                    q = q.Include(e => e.TipoSesion);
+
                     if (IdEntrenamiento.HasValue)
                         q = q.Where(e => e.IdEntrenamiento == IdEntrenamiento.Value);
                     if (IdRutina.HasValue)
                         q = q.Where(e => e.IdRutina == IdRutina.Value);
-                    if (!incluirInactivos)
+                    if (incluirInactivos)
                         q = q.Where(e => e.Estado);
                     return q;
                 }

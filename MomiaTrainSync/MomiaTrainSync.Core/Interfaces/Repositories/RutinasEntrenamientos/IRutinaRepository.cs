@@ -14,5 +14,6 @@ namespace MomiaTrainSync.Core.Interfaces.Repositories.RutinasEntrenamientos
             bool incluirInactivos);
         Task<List<RutinaEnt>> GetByRelacionAsync(int idRelacion, bool incluirInactivos = false);
         Task<bool> ExisteNombreAsync(int idRelacion, string nombre, int? ignorarId = null);
+        Task<int> ContarRutinasActivasAsync(int? idRelacion, bool trainer = false, bool todas = false);
     }
 }

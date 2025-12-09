@@ -21,10 +21,6 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.Entrenamiento
                 .IsRequired()
                 .HasMaxLength(150);
 
-            builder.Property(e => e.TipoSesion)
-                .IsRequired()
-                .HasMaxLength(100);
-
             builder.Property(e => e.Objetivo)
                 .HasMaxLength(255);
 
@@ -51,6 +47,11 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.Entrenamiento
                 .WithMany(r => r.Entrenamientos)
                 .HasForeignKey(e => e.IdRutina)
                 .OnDelete(DeleteBehavior.Cascade); // Si se elimina la rutina, se eliminan los entrenamientos
+
+            builder.HasOne(e => e.TipoSesion)
+                .WithMany(t => t.Entrenamientos)
+                .HasForeignKey(e => e.IdTipoSesion)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.HasMany(e => e.DetallesZonaPlan)
                 .WithOne(d => d.Entrenamiento)

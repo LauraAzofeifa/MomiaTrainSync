@@ -14,6 +14,7 @@ namespace MomiaTrainSync.Core.DTOs.UsuariosRoles
         public string Correo { get; set; } = string.Empty;
         public string Telefono { get; set; } = string.Empty;
         public DateTime? FechaCumpleannos { get; set; }
+        public string? Biografia { get; set; } = string.Empty;
         public string ContrasennaHash { get; set; } = string.Empty;
         public bool Estado { get; set; }
         public DateTime FechaCreacion { get; set; }

@@ -31,6 +31,10 @@ namespace MomiaTrainSync.Web.ViewModels
         [Phone(ErrorMessage = "Debe ingresar un número de teléfono válido")]
         public string Telefono { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "El telefono es requerido")]
+        [StringLength(255)]
+        public string Biografia { get; set; } = string.Empty;
+
         [DataType(DataType.Date)]
         public DateTime? FechaCumpleannos { get; set; }
     }

@@ -73,7 +73,7 @@
         </div>
 
         <!-- Stats Card -->
-        <div class="card mt-4">
+        @* <div class="card mt-4">
             <div class="card-header bg-white">
                 <h5 class="mb-0 fw-semibold">Estadísticas</h5>
             </div>
@@ -106,7 +106,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> *@
     </div>
 
     <!-- Profile Information -->
@@ -150,7 +150,8 @@
                         </div>
                         <div class="col-12">
                             <label for="bio" class="form-label">Biografía</label>
-                            <textarea class="form-control" rows="3" disabled>Entrenador certificado con más de 10 años de experiencia en entrenamiento deportivo y gestión de equipos. Especializado en desarrollo de atletas de alto rendimiento.</textarea>
+                            <textarea asp-for="Update.Biografia" class="form-control" rows="3" disabled></textarea>
+                            <span asp-validation-for="Update.Biografia" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="mt-3 d-none" id="saveButtons">
@@ -180,7 +181,7 @@
                         Cambiar
                     </button>
                 </div>
-                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                @* <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
                     <div>
                         <h6 class="mb-1">Autenticación de Dos Factores</h6>
                         <small class="text-muted">Añade una capa extra de seguridad</small>
@@ -197,7 +198,7 @@
                     <button class="btn btn-outline-danger btn-sm">
                         Ver Sesiones
                     </button>
-                </div>
+                </div> *@
             </div>
         </div>
 

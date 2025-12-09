@@ -25,7 +25,7 @@ namespace MomiaTrainSync.Web.ViewModels.RutinasEntrenamientos
         public string Nombre { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El tipo de sesión es requerido")]
-        public string TipoSesion { get; set; } = string.Empty;
+        public int IdTipoSesion { get; set; }
 
         [Required(ErrorMessage = "El objetivo es requerido")]
         public string Objetivo { get; set; } = string.Empty;
