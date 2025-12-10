@@ -85,6 +85,8 @@ namespace MomiaTrainSync.Infrastructure.Repositories.Calendario
             {
                 IdEntrenamiento = e.IdEntrenamiento,
                 NombreEntrenamiento = e.Nombre,
+                ObjetivoEntrenamiento = e.Objetivo!,
+                DuracionEstimada = e.DuracionEstimada,
                 TipoSesionNombre = e.TipoSesion!.Nombre,
                 FechaProgramada = e.FechaProgramada,
 

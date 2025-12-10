@@ -166,6 +166,8 @@
                                 tipoSesion: tipo,
                                 descripcionRutina: e.descripcionRutina,
                                 entrenador: e.nombreEntrenador,
+                                objetivo: e.objetivoEntrenamiento,
+                                duracion: e.duracionEstimada,
                                 atleta: e.nombreAtleta
                             }
                         };
@@ -186,6 +188,8 @@
             modalBody.innerHTML = `
             <p><strong>Entrenador:</strong> ${info.event.extendedProps.entrenador}</p>
             <p><strong>Atleta:</strong> ${info.event.extendedProps.atleta}</p>
+            <p><strong>Objetivo:</strong> ${info.event.extendedProps.objetivo}</p>
+            <p><strong>Duración Estimada:</strong> ${info.event.extendedProps.duracion} minutos</p>
             <p><strong>Tipo de sesión:</strong> ${info.event.extendedProps.tipoSesion}</p>
             <p><strong>Descripción:</strong> ${info.event.extendedProps.descripcionRutina}</p>
             <p><strong>Fecha:</strong> ${info.event.start.toLocaleDateString()}</p>
