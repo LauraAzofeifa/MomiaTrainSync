@@ -113,35 +113,62 @@ namespace MomiaTrainSync.Web.Controllers
         public async Task<IActionResult> ChangePassword(ProfileViewModel vm)
         {
             ModelState.Clear();
+
             if (!TryValidateModel(vm.ChangePassword, nameof(vm.ChangePassword)))
             {
+                var userId = GetCurrentUserId();
+                if (userId is null)
+                    return Unauthorized();
+
+                var model = await BuildProfileViewModel(userId.Value);
+
                 TempData["ShowModal"] = "changePasswordModal";
-                return View(nameof(MyProfile), vm);
+                return View(nameof(MyProfile), model); // ✅ ahora viene completo
             }
 
-            var userId = GetCurrentUserId();
-            if (userId is null)
+            var currentUserId = GetCurrentUserId();
+            if (currentUserId is null)
                 return Unauthorized();
 
             var response = await _changePasswordUsuarioUseCase.ExecuteAsync(
-                usuarioId: userId.Value,
+                usuarioId: currentUserId.Value,
                 oldPassword: vm.ChangePassword.CurrentPassword,
                 newPassword: vm.ChangePassword.NewPassword
             );
 
             if (!response.Exito)
             {
+                var model = await BuildProfileViewModel(currentUserId.Value);
+
                 TempData["ErrorMessage"] = response.Mensaje ?? "Error al cambiar la contraseña.";
-                TempData["ShowModal"] = "changePasswordModal"; // <--- vuelve a abrir modal
-                return View(nameof(MyProfile), vm);
+                TempData["ShowModal"] = "changePasswordModal";
+                return View(nameof(MyProfile), model);
             }
 
-            TempData[response.Exito ? "SuccessMessage" : "ErrorMessage"] =
-                response.Mensaje ?? (response.Exito
-                    ? "Contraseña actualizada correctamente."
-                    : "Error al actualizar la contraseña.");
-
+            TempData["SuccessMessage"] = response.Mensaje ?? "Contraseña actualizada correctamente.";
             return RedirectToAction(nameof(MyProfile));
+        }
+
+        private async Task<ProfileViewModel> BuildProfileViewModel(int userId)
+        {
+            var response = await _getUsuariosUseCase.ExecuteAsync(id: userId);
+            var usuario = response.Datos!.First();
+
+            return new ProfileViewModel
+            {
+                Details = usuario,
+                Update = new UpdateProfileViewModel
+                {
+                    Id = usuario.Id,
+                    Nombre = usuario.Nombre,
+                    Apellido = usuario.Apellido,
+                    Correo = usuario.Correo,
+                    Telefono = usuario.Telefono,
+                    Biografia = usuario.Biografia!,
+                    FechaCumpleannos = usuario.FechaCumpleannos
+                },
+                ChangePassword = new ChangePasswordViewModel()
+            };
         }
     }
 }

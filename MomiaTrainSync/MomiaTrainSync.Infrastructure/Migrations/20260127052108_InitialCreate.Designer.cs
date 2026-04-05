@@ -12,15 +12,15 @@ using MomiaTrainSync.Infrastructure.Persistence;
 namespace MomiaTrainSync.Infrastructure.Migrations
 {
     [DbContext(typeof(MomiaTrainSyncDbContext))]
-    [Migration("20251209080226_InitialSync")]
-    partial class InitialSync
+    [Migration("20260127052108_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.0")
+                .HasAnnotation("ProductVersion", "10.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

@@ -5,13 +5,14 @@ namespace MomiaTrainSync.Web.ViewModels
     public class RegisterViewModel
     {
         [Required(ErrorMessage = "El nombre es requerido")]
-        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$",
-            ErrorMessage = "El nombre solo puede contener letras y espacios")]
+        [RegularExpression(@"^(?=.{2,50}$)(?!.*\s{2,})[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:\s[A-Za-zÁÉÍÓÚáéíóúÑñ]+)*$",
+    ErrorMessage = "El nombre solo puede contener letras y espacios, sin espacios dobles y mínimo 2 caracteres.")]
         public string Nombre { get; set; } = string.Empty;
 
+
         [Required(ErrorMessage = "El apellido es requerido")]
-        [RegularExpression(@"^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$",
-            ErrorMessage = "El apellido solo puede contener letras y espacios")]
+        [RegularExpression(@"^(?=.{2,50}$)(?!.*\s{2,})[A-Za-zÁÉÍÓÚáéíóúÑñ]+(?:\s[A-Za-zÁÉÍÓÚáéíóúÑñ]+)*$",
+            ErrorMessage = "El apellido solo puede contener letras y espacios, sin espacios dobles y mínimo 2 caracteres.")]
         public string Apellido { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El correo es requerido")]
@@ -20,9 +21,8 @@ namespace MomiaTrainSync.Web.ViewModels
         public string Correo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es requerida")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).+$",
-            ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "La contraseña debe tener entre 6 y 100 caracteres")]
+        [RegularExpression(@"^(?=\S+$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).{6,100}$",
+            ErrorMessage = "La contraseña debe tener entre 6 y 100 caracteres, incluir mayúscula, minúscula, número, carácter especial y no contener espacios.")]
         public string Contrasenna { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es requerida")]

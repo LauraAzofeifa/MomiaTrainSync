@@ -53,7 +53,7 @@ body {
    ============================================ */
 .auth-page {
     height: 100vh;
-    overflow: hidden;
+/*    overflow: hidden;*/
     position: relative;
     min-height: 100vh;
     padding-bottom: 60px;
@@ -507,7 +507,7 @@ body {
 
 /* Auth page footer */
 .auth-footer {
-    position: fixed;
+    position: relative;
     bottom: auto;
     width: 100%;
     background-color: transparent;

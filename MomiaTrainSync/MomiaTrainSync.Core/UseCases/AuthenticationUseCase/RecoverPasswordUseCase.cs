@@ -49,12 +49,14 @@ namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
                 // Generar una nueva contraseña temporal
                 var tempPassword = Guid.NewGuid().ToString().Substring(0, 8);
                 user.ContrasennaHash = _passwordHasherService.HashPassword(tempPassword);
-                await _usuarioRepository.UpdateAsync(user);
 
                 // Enviar la nueva contraseña por correo electrónico
                 var subject = "Recuperación de Contraseña";
                 var body = $"Su nueva contraseña temporal es: {tempPassword}. Por favor, cambie su contraseña después de iniciar sesión.";
                 await _emailService.SendEmailAsync(email, subject, body);
+
+                // Guardamos la nueva contrasenna temporal
+                await _usuarioRepository.UpdateAsync(user); 
 
                 return Response<bool>.Success(true, "Correo de Recuperación enviado");
             }

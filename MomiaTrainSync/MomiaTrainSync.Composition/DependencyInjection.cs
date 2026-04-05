@@ -43,7 +43,7 @@ namespace MomiaTrainSync.Composition
             (this IServiceCollection services,
              IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("ServerConnection");
+            var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<MomiaTrainSyncDbContext> (options =>
             options.UseSqlServer(connectionString));
@@ -145,7 +145,8 @@ namespace MomiaTrainSync.Composition
             services.AddScoped<GetZonaEntrenamientoUseCase>();
             #endregion
             // AutoMapper
-            services.AddAutoMapper(typeof(MappingProfile));
+            services.AddAutoMapper(cfg => { cfg.LicenseKey = "eyJhbGciOiJSUzI1NiIsImtpZCI6Ikx1Y2t5UGVubnlTb2Z0d2FyZUxpY2Vuc2VLZXkvYmJiMTNhY2I1OTkwNGQ4OWI0Y2IxYzg1ZjA4OGNjZjkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2x1Y2t5cGVubnlzb2Z0d2FyZS5jb20iLCJhdWQiOiJMdWNreVBlbm55U29mdHdhcmUiLCJleHAiOiIxNzkzMTQ1NjAwIiwiaWF0IjoiMTc2MTY3NjIwNCIsImFjY291bnRfaWQiOiIwMTlhMmMxM2YyZDM3ODIyOTg2NDdkMTUwNmMzNWI5OCIsImN1c3RvbWVyX2lkIjoiY3RtXzAxazhwMWI2YmJuYmJ2YXc1M25jZGZhZjZwIiwic3ViX2lkIjoiLSIsImVkaXRpb24iOiIwIiwidHlwZSI6IjIifQ.JnCO3esdM9K9Wh3nSfwHsZcVeHc_2wYKStqrHpNpm0Lh9jHhmm7s8ij1WqVtEHaJ10kseYQMHqaZQBMa6mJuyRbQlNOuqv_RzYtGx1Gp9SwiN5oanJKEyW4BNhuiLrgAQPuAiGESN9-YHnbSLIrZZcwrmdVbtPJGLN18oYSwlt7W-flhWG3yZpbp4TOggz5Wx1gamLEhIHGycZLTqF7oGV9xZQ5hZ_1lhEd8Wr6l1D1bBq-ZtN2OaUccN7Y5vOauQvxVwDSPDpEkIubGTdabSWZf2aHRyEwcTFqfebb5EZaoKp108HP9g1dq39IJd9H_MOdS3QrRZk4bU_Yjm2Ycag"; }
+            ,typeof(MappingProfile));
 
             return services;
         }

@@ -1,0 +1,44 @@
+services:
+  momiatrainsync.web:
+    image: momiatrainsyncweb
+    build:
+      context: .
+      dockerfile: MomiaTrainSync.Web/Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - sqlserver
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: >
+        Server=sqlserver,1433;
+        Database=MomiaDB;
+        User Id=sa;
+        Password=${SA_PASSWORD};
+        TrustServerCertificate=True;
+    restart: on-failure
+    networks:
+      - momiatrainsync-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: momiatrainsync-sql
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Developer"
+      MSSQL_SA_PASSWORD: ${SA_PASSWORD}
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlvolume:/var/opt/mssql
+    networks:
+      - momiatrainsync-network
+
+networks:
+  momiatrainsync-network:
+    driver: bridge
+
+volumes:
+  sqlvolume:

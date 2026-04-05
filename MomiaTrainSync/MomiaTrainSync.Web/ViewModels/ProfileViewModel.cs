@@ -16,11 +16,14 @@ namespace MomiaTrainSync.Web.ViewModels
         public int Id { get; set; }
 
         [Required(ErrorMessage = "El nombre es requerido")]
-        [StringLength(50, ErrorMessage = "El nombre no puede exceder los 50 caracteres")]
+        [RegularExpression(@"^(?=.{2,50}$)(?!.*\s{2,})([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
+    ErrorMessage = "El nombre solo puede contener letras y espacios, debe de iniciar con mayúscula.")]
         public string Nombre { get; set; } = string.Empty;
 
+
         [Required(ErrorMessage = "El apellido es requerido")]
-        [StringLength(50)]
+        [RegularExpression(@"^(?=.{2,50}$)(?!.*\s{2,})([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
+            ErrorMessage = "El apellido solo puede contener letras y espacios, debe de iniciar con mayúscula.")]
         public string Apellido { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El correo es requerido")]
@@ -29,9 +32,10 @@ namespace MomiaTrainSync.Web.ViewModels
 
         [Required(ErrorMessage = "El telefono es requerido")]
         [Phone(ErrorMessage = "Debe ingresar un número de teléfono válido")]
+        [RegularExpression(@"^[0-9]{8}$", ErrorMessage = "El formato es inválido, debe ser XXXXXXXX")]
         public string Telefono { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "El telefono es requerido")]
+        [Required(ErrorMessage = "La biografía es requerida")]
         [StringLength(255)]
         public string Biografia { get; set; } = string.Empty;
 
@@ -46,9 +50,8 @@ namespace MomiaTrainSync.Web.ViewModels
         public string CurrentPassword { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es requerida")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).+$",
-            ErrorMessage = "La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial.")]
-        [StringLength(100, MinimumLength = 6, ErrorMessage = "La contraseña debe tener entre 6 y 100 caracteres")]
+        [RegularExpression(@"^(?=\S+$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).{6,100}$",
+            ErrorMessage = "La contraseña debe tener entre 6 y 100 caracteres, incluir mayúscula, minúscula, número, carácter especial y no contener espacios.")]
         [DisplayName("Nueva Contraseña")]
         public string NewPassword { get; set; } = string.Empty;
 

@@ -17,8 +17,9 @@
 </head>
 <body class="auth-page">
 
-    <div class="container-fluid h-100">
-        <div class="row h-100">
+    <div class="container-fluid min-vh-100 d-flex flex-column">
+
+        <div class="row flex-grow-1">
             <!-- Left side - Image/Branding -->
             <div class="col-lg-6 d-none d-lg-flex auth-hero">
                 <div class="animated-bg">
@@ -28,22 +29,28 @@
                 </div>
                 <div class="auth-hero-content">
                     <h1 class="display-4 fw-bold text-white mb-3">MomiaTrain</h1>
-                    <p class="lead text-white-50">Sistema de gestión de entrenamiento para atletas y entrenadores</p>
+                    <p class="lead text-white-50">
+                        Sistema de gestión de entrenamiento para atletas y entrenadores
+                    </p>
                 </div>
             </div>
+
             @RenderBody()
         </div>
 
-        <!-- Added footer for auth pages -->
+        <!-- Footer -->
         <footer class="auth-footer">
             <div class="container">
                 <div class="row py-3">
                     <div class="col-12 text-center">
-                        <p class="mb-0 text-muted small">&copy; @DateTime.Now.Year MomiaTrain Admin. Todos los derechos reservados.</p>
+                        <p class="mb-0 text-muted small">
+                            &copy; @DateTime.Now.Year MomiaTrain Admin. Todos los derechos reservados.
+                        </p>
                     </div>
                 </div>
             </div>
         </footer>
+
     </div>
 
     <!-- Toast container -->

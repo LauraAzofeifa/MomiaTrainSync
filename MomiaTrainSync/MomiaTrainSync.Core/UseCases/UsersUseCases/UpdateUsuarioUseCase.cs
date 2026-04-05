@@ -60,6 +60,10 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
             return await HandleAsync(
                 async () =>
                 {
+                    // Validar que el rol no este vacio
+                    if (nuevoRolId == 0)
+                        return Response<UsuarioDto>.Fail("Rol Invalido.");
+
                     // Obtener usuario
                     var existingUser = await _usuarioRepository.GetByIdAsync(userId);
                     if (existingUser == null)
