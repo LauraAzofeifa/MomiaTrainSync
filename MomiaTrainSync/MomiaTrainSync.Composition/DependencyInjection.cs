@@ -24,6 +24,8 @@ using MomiaTrainSync.Core.UseCases.RutinasEntrenamientos.TipoSesion;
 using MomiaTrainSync.Core.UseCases.TrainerAthleteUseCase;
 using MomiaTrainSync.Core.UseCases.UsersUseCases;
 using MomiaTrainSync.Core.UseCases.ZonaEntrenamiento;
+using MomiaTrainSync.Infrastructure.Email;
+using MomiaTrainSync.Infrastructure.Email.AzureEmail;
 using MomiaTrainSync.Infrastructure.Persistence;
 using MomiaTrainSync.Infrastructure.Repositories.Base;
 using MomiaTrainSync.Infrastructure.Repositories.Calendario;
@@ -43,7 +45,14 @@ namespace MomiaTrainSync.Composition
             (this IServiceCollection services,
              IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+            // Base Url
+            var connectionString = 
+                Environment.GetEnvironmentVariable("MomiaTrainSync_DB_Connection")
+                ?? configuration.GetConnectionString("DefaultConnection");
+
+            if (string.IsNullOrWhiteSpace(connectionString)) 
+                throw new InvalidOperationException("Database connection string is not configured.");
 
             services.AddDbContext<MomiaTrainSyncDbContext> (options =>
             options.UseSqlServer(connectionString));
@@ -85,7 +94,7 @@ namespace MomiaTrainSync.Composition
 
             // Services
             services.AddScoped<IPasswordHasherService, PasswordHasherService>();
-            services.AddTransient<IEmailService, EmailService>();
+            services.AddScoped<IEmailSender, AzureEmailSender>();
 
             // Use Cases
 

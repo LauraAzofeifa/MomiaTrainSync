@@ -2,15 +2,55 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using MomiaTrainSync.Composition;
 using MomiaTrainSync.Core.Common;
+using MomiaTrainSync.Infrastructure.Email.AzureEmail;
+using MomiaTrainSync.Infrastructure.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ======================================================
+// CONFIGURATIONS (Application Settings)
+// ======================================================
+
+DotNetEnv.Env.Load();
+
+builder.Configuration.AddEnvironmentVariables();
+
+// Azure Email ConnectionString
+var azureConnection =
+    builder.Configuration["MomiaTrainSync_AzureEmail_ConnectionString"]
+    ?? builder.Configuration["AzureEmail:ConnectionString"];
+
+if (string.IsNullOrWhiteSpace(azureConnection))
+    throw new InvalidOperationException(
+        "AzureEmail:ConnectionString is not configured.");
+
+builder.Configuration["AzureEmail:ConnectionString"] = azureConnection;
+
+var azureFrom =
+    builder.Configuration["MomiaTrainSync_AzureEmail_From"]
+    ?? builder.Configuration["AzureEmail:From"];
+
+if (string.IsNullOrWhiteSpace(azureFrom))
+    throw new InvalidOperationException(
+        "AzureEmail:From is not configured.");
+
+builder.Configuration["AzureEmail:From"] = azureFrom;
+
+// Bind Settings
+builder.Services.Configure<AzureEmailOptions>(
+    builder.Configuration.GetSection("AzureEmail"));
+
+
+// ======================================================
+// SERVICES
+// ======================================================
+
+// Dependency Injection (Composition Root)
 builder.Services.AddMomiaTrainSyncServices(builder.Configuration);
 
-// Configuracion de EmailSettings
-builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
-
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+// Authentication
+builder.Services
+    .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
     {
         options.LoginPath = "/Authentication/Login";
@@ -20,28 +60,57 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
     });
 
-// Add services to the container.
+// MVC
 builder.Services.AddControllersWithViews();
+
+
+// ======================================================
+// BUILD APP
+// ======================================================
 
 var app = builder.Build();
 
+
+// ======================================================
+// SEED DATA & MIGRATIONS
+// ======================================================
+
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<MomiaTrainSync.Infrastructure.Persistence.MomiaTrainSyncDbContext>();
-    db.Database.Migrate();
+    var provider = scope.ServiceProvider;
+    var db = provider.GetRequiredService<MomiaTrainSyncDbContext>();
+
+    try
+    {
+        await db.Database.MigrateAsync();
+
+        // await SeedData.EnsureRolesAsync(provider);
+    }
+    catch (Exception ex)
+    {
+        var scopedLogger =
+            provider.GetRequiredService<ILogger<Program>>();
+
+        scopedLogger.LogError(
+            ex,
+            "Error applying migrations or seeding database.");
+    }
 }
 
-// Configure the HTTP request pipeline.
+
+// ======================================================
+// MIDDLEWARE PIPELINE
+// ======================================================
+
 if (!app.Environment.IsDevelopment())
 {
-    // Captura errores globales (500, excepciones no controladas)
+    // Producción
     app.UseExceptionHandler("/Error");
-
     app.UseHsts();
 }
 else
 {
-    // En desarrollo muestra la página detallada de error
+    // Desarrollo
     app.UseDeveloperExceptionPage();
 }
 
@@ -55,6 +124,11 @@ app.UseAuthorization();
 
 app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
+
+// ======================================================
+// ENDPOINTS
+// ======================================================
+
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
@@ -62,5 +136,10 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+
+// ======================================================
+// RUN APP
+// ======================================================
 
 app.Run();

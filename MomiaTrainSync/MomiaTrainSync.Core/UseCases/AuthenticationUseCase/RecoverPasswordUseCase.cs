@@ -17,14 +17,14 @@ namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
         private readonly IPasswordHasherService _passwordHasherService;
         private readonly ILogErrorRepository _logErrorRepository;
         private readonly IMapper _mapper;
-        private readonly IEmailService _emailService;
+        private readonly IEmailSender _emailService;
 
         public RecoverPasswordUseCase(
             IUsuarioRepository usuarioRepository,
             IPasswordHasherService passwordHasherService,
             ILogErrorRepository logErrorRepository,
             IMapper mapper,
-            IEmailService emailService)
+            IEmailSender emailService)
         {
             _usuarioRepository = usuarioRepository;
             _passwordHasherService = passwordHasherService;
@@ -53,7 +53,7 @@ namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
                 // Enviar la nueva contraseña por correo electrónico
                 var subject = "Recuperación de Contraseña";
                 var body = $"Su nueva contraseña temporal es: {tempPassword}. Por favor, cambie su contraseña después de iniciar sesión.";
-                await _emailService.SendEmailAsync(email, subject, body);
+                await _emailService.SendAsync(email, subject, body);
 
                 // Guardamos la nueva contrasenna temporal
                 await _usuarioRepository.UpdateAsync(user); 

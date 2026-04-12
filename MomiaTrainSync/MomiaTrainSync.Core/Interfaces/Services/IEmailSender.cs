@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace MomiaTrainSync.Core.Interfaces.Services
 {
-    public interface IEmailService
+    public interface IEmailSender
     {
-        Task SendEmailAsync(string to, string subject, string body);
+        Task SendAsync(string to, string subject, string htmlBody);
     }
 }
