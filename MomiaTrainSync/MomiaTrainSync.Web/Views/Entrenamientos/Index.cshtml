@@ -13,6 +13,17 @@
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <!-- BOTÓN VOLVER -->
+        <a asp-controller="Rutina"
+               asp-action="Index"
+               asp-route-id="@Model.IdRutina"
+               class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Volver a Rutina
+        </a>
+
         <h3 class="fw-bold">
             <i class="bi bi-list-ul me-2"></i>Entrenamientos de la Rutina
         </h3>
