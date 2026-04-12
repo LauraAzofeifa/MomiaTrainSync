@@ -42,6 +42,17 @@
                     fill("viewAthleteName", data.nombre);
                     fill("viewAthleteEmail", data.correo);
                     fill("viewAthleteAssignDate", data.fecha);
+
+                    // ===== Avatar dinámico =====
+                    const avatar = document.getElementById("viewAvatar");
+
+                    if (avatar) {
+
+                        const fullName = `${data.nombre}+${data.apellido}`;
+
+                        avatar.src =
+                            `https://ui-avatars.com/api/?name=${fullName}&size=100&background=0D8ABC&color=fff`;
+                    }
                 }
 
                 if (btn.classList.contains("btn-edit")) {
@@ -203,8 +214,10 @@
                     <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <img src="https://avatar.iran.liara.run/public/24" id="viewAvatar" class="rounded-circle border mb-3"
-                         style="width:100px;height:100px;object-fit:cover;max-width:100%;">
+                    <img id="viewAvatar"
+                         src="https://ui-avatars.com/api/?name=User&size=100&background=0D8ABC&color=fff"
+                         class="rounded-circle border mb-3"
+                         style="width:100px;height:100px;object-fit:cover;">
                     <h5 id="viewAthleteName" class="fw-bold"></h5>
                     <span id="viewEstado" class="badge bg-success mb-3">Activo</span>
                     <ul class="list-group text-start">
