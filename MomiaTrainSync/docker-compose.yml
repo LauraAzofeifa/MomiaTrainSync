@@ -9,6 +9,8 @@ services:
       - "8081:8081"
     depends_on:
       - sqlserver
+    env_file:
+      - .env
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ASPNETCORE_URLS: http://+:8080

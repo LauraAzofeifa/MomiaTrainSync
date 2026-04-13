@@ -3,6 +3,7 @@ using MomiaTrainSync.Domain.Entities;
 using MomiaTrainSync.Domain.Entities.EntrenadorAtleta;
 using MomiaTrainSync.Domain.Entities.EntrenamientosZonas;
 using MomiaTrainSync.Domain.Entities.RutinasAsignaciones;
+using MomiaTrainSync.Domain.Entities.RutinasEntrenamientos;
 using MomiaTrainSync.Domain.Entities.SesionesEntrenamiento;
 using MomiaTrainSync.Domain.Entities.UsuariosRoles;
 using System;
@@ -31,6 +32,7 @@ namespace MomiaTrainSync.Infrastructure.Persistence
         #region RutinasEntrenamientos
         public DbSet<RutinaEnt> Rutinas { get; set; }
         public DbSet<EntrenamientoEnt> Entrenamientos { get; set; }
+        public DbSet<TipoSesionEnt> TiposSesion { get; set; }
         #endregion
 
         #region EntrenamientosZonas

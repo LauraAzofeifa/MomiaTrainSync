@@ -83,8 +83,19 @@ using (var scope = app.Services.CreateScope())
     try
     {
         await db.Database.MigrateAsync();
+        // Roles iniciales
+        await SeedData.EnsureRolesAsync(provider);
+        // Permisos iniciales
+        await SeedData.EnsurePermissionsAsync(provider);
+        // Relación Roles-Permisos iniciales
+        await SeedData.EnsureRolePermissionsAsync(provider);
+        // Usuario Inicial (si no existe)
+        await SeedData.EnsureUsuariosAsync(provider);
+        // Zonas iniciales
+        await SeedData.EnsureZonasAsync(provider);
+        // Tipos de sesión iniciales
+        await SeedData.EnsureTipoSesionAsync(provider);
 
-        // await SeedData.EnsureRolesAsync(provider);
     }
     catch (Exception ex)
     {
