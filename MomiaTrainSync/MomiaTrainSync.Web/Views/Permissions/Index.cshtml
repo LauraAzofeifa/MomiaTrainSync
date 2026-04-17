@@ -1,0 +1,283 @@
+﻿@model IEnumerable<PermisoDto>
+
+@{
+    ViewData["Title"] = "Administrar Permisos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="~/js/users.js"></script>
+    <link rel="stylesheet" href="~/css/custom_style_tables.css" />
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // $("#permissionsTable").DataTable();
+
+            document.querySelectorAll("#permissionsTable tbody tr").forEach(row => {
+                const data = {
+                    id: row.dataset.id,
+                    codigo: row.dataset.codigo,
+                    descripcion: row.dataset.descripcion,
+                    categoria: row.dataset.categoria,
+                    ruta: row.dataset.ruta,
+                    estado: row.dataset.estado === "True"
+                };
+
+                // Ver Permiso
+                row.querySelector(".btn-view")?.addEventListener("click", () => {
+                    document.getElementById("viewPermisoCodigo").textContent = data.codigo;
+                    document.getElementById("viewPermisoDescripcion").textContent = data.descripcion;
+                    document.getElementById("viewPermisoCategoria").textContent = data.categoria;
+                    document.getElementById("viewPermisoRuta").textContent = data.ruta;
+                    const estadoEl = document.getElementById("viewPermisoEstado");
+                    estadoEl.textContent = data.estado ? "Activo" : "Inactivo";
+                    estadoEl.className = data.estado ? "badge bg-success" : "badge bg-warning text-dark";
+                });
+
+                // Editar Permiso
+                row.querySelector(".btn-edit")?.addEventListener("click", () => {
+                    document.getElementById("editId").value = data.id;
+                    document.getElementById("editCodigo").value = data.codigo;
+                    document.getElementById("editDescripcion").value = data.descripcion;
+                    document.getElementById("editCategoria").value = data.categoria;
+                    document.getElementById("editRuta").value = data.ruta;
+                    document.getElementById("editEstado").checked = data.estado;
+                });
+
+                // Eliminar Permiso
+                row.querySelector(".btn-delete")?.addEventListener("click", () => {
+                    document.getElementById("deletePermisoId").value = data.id;
+                    document.getElementById("deletePermisoCodigo").textContent = data.codigo;
+                });
+            });
+        });
+    </script>
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold">Gestión de Permisos</h2>
+        <p class="text-muted">Administra y monitorea todos los permisos del sistema</p>
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPermisoModal">
+            <i class="bi bi-plus-circle me-2"></i>Agregar Permiso
+        </button>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body table-responsive">
+        <table id="permissionsTable" class="my-table-custom table table-hover align-middle mb-0">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Código</th>
+                    <th>Descripción</th>
+                    <th>Categoría</th>
+                    <th>Ruta</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var permiso in Model)
+                    {
+                        <tr data-id="@permiso.IdPermiso"
+                            data-codigo="@permiso.Codigo"
+                            data-descripcion="@permiso.Descripcion"
+                            data-categoria="@permiso.Categoria"
+                            data-ruta="@permiso.Ruta"
+                            data-estado="@permiso.Estado">
+                            <td class="fw-medium text-muted">@permiso.IdPermiso</td>
+                            <td>@permiso.Codigo</td>
+                            <td>@permiso.Descripcion</td>
+                            <td>@permiso.Categoria</td>
+                            <td>@permiso.Ruta</td>
+                            <td>
+                                <span class="@(permiso.Estado ? "badge bg-success" : "badge bg-warning text-dark")">
+                                    @(permiso.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <button class="btn btn-sm btn-outline-primary table-action-btn btn-view" title="Ver"
+                                        data-bs-toggle="modal" data-bs-target="#viewPermisoModal">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-secondary table-action-btn btn-edit" title="Editar"
+                                        data-bs-toggle="modal" data-bs-target="#editPermisoModal">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger table-action-btn btn-delete" title="Eliminar"
+                                        data-bs-toggle="modal" data-bs-target="#deletePermisoModal">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-slash-circle fs-4 d-block mb-2"></i>
+                            No hay permisos disponibles.
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Modals {
+    <!-- Add Permiso Modal -->
+    <div class="modal fade" id="addPermisoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agregar Nuevo Permiso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-controller="Permissions" asp-action="AddPermiso" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="Codigo" class="form-label">Código</label>
+                            <input type="text" class="form-control" name="Codigo" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Descripcion" class="form-label">Descripción</label>
+                            <input type="text" class="form-control" name="Descripcion" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Categoria" class="form-label">Categoría</label>
+                            <input type="text" class="form-control" name="Categoria" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="Ruta" class="form-label">Ruta</label>
+                            <input type="text" class="form-control" name="Ruta" />
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="Estado" checked>
+                            <label class="form-check-label">Activo</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar Permiso</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Permiso Modal -->
+    <div class="modal fade" id="viewPermisoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-white">
+                    <h5 class="modal-title"><i class="bi bi-eye me-2"></i>Detalles del Permiso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Código</label>
+                        <p id="viewPermisoCodigo" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Descripción</label>
+                        <p id="viewPermisoDescripcion" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Categoría</label>
+                        <p id="viewPermisoCategoria" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Ruta</label>
+                        <p id="viewPermisoRuta" class="form-control-plaintext"></p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Estado</label>
+                        <p id="viewPermisoEstado" class="form-control-plaintext"></p>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Permiso Modal -->
+    <div class="modal fade" id="editPermisoModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title"><i class="bi bi-pencil me-2"></i>Editar Permiso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-controller="Permissions" asp-action="EditPermiso" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" id="editId" name="IdPermiso" />
+                        <div class="mb-3">
+                            <label for="editCodigo" class="form-label">Código</label>
+                            <input type="text" class="form-control" id="editCodigo" name="Codigo" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDescripcion" class="form-label">Descripción</label>
+                            <input type="text" class="form-control" id="editDescripcion" name="Descripcion" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editCategoria" class="form-label">Categoría</label>
+                            <input type="text" class="form-control" id="editCategoria" name="Categoria" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="editRuta" class="form-label">Ruta</label>
+                            <input type="text" class="form-control" id="editRuta" name="Ruta" />
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="editEstado" name="Estado">
+                            <label class="form-check-label">Activo</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning">Actualizar Permiso</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Permiso Modal -->
+    <div class="modal fade" id="deletePermisoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-danger">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Eliminar Permiso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-controller="Permissions" asp-action="DeletePermiso" method="post">
+                    <div class="modal-body text-center">
+                        <p>¿Estás seguro de que deseas eliminar el permiso <strong id="deletePermisoCodigo"></strong>?</p>
+                        <input type="hidden" id="deletePermisoId" name="IdPermiso" />
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">Eliminar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}

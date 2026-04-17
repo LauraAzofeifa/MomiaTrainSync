@@ -1,0 +1,366 @@
+﻿@model EntrenamientosViewModel
+
+@{
+    ViewData["Title"] = "Entrenamientos de la Rutina";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" />
+    <link rel="stylesheet" href="~/css/custom_style_tables.css" />
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+
+        <!-- BOTÓN VOLVER -->
+        <a asp-controller="Rutina"
+               asp-action="Index"
+               asp-route-id="@Model.IdRutina"
+               class="btn btn-outline-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Volver a Rutina
+        </a>
+
+        <h3 class="fw-bold">
+            <i class="bi bi-list-ul me-2"></i>Entrenamientos de la Rutina
+        </h3>
+
+        <button data-bs-toggle="modal"
+                data-bs-target="#addEntrenamientoModal"
+                class="btn btn-primary btn-add"
+                data-rutinaid="@Model.IdRutina">
+            <i class="bi bi-plus-circle me-1"></i> Nuevo Entrenamiento
+        </button>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body table-responsive">
+
+            <table id="entrenamientosTable" class="my-table-custom table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo Sesión</th>
+                        <th>Objetivo</th>
+                        <th>Duración</th>
+                        <th>Nivel Esfuerzo</th>
+                        <th>Fecha Programada</th>
+                        <th>Estado</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (Model.Entrenamientos == null || !Model.Entrenamientos.Any())
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-3 d-block mb-2"></i>
+                                No hay entrenamientos disponibles.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        foreach (var e in Model.Entrenamientos)
+                        {
+                            <tr data-entrenamientoid="@e.IdEntrenamiento"
+                                data-rutinaid="@e.IdRutina"
+                                data-nombre="@e.Nombre"
+                                data-tiposesionid="@e.TipoSesion!.IdTipoSesion"
+                                data-objetivo="@e.Objetivo"
+                                data-duracion="@e.DuracionEstimada"
+                                data-esfuerzo="@e.NivelEsfuerzoEsperado"
+                                data-fecha="@e.FechaProgramada.ToString("yyyy-MM-dd")"
+                                data-estado="@e.Estado">
+
+                                <td>@e.Nombre</td>
+                                <td>@e.TipoSesion!.Nombre</td>
+                                <td>@e.Objetivo</td>
+                                <td>@e.DuracionEstimada</td>
+                                <td>@e.NivelEsfuerzoEsperado</td>
+                                <td>@e.FechaProgramada.ToString("dd/MM/yyyy")</td>
+
+                                <td>
+                                    @if (e.Estado)
+                                    {
+                                        <span class="badge bg-success">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">Inactivo</span>
+                                    }
+                                </td>
+
+                                <td class="text-center">
+
+                                    <!-- Editar -->
+                                    <button class="btn btn-sm btn-outline-primary btn-edit me-1"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#editEntrenamientoModal"
+                                            title="Editar">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+
+                                    <!-- Eliminar -->
+                                    <form asp-action="ToggleEstadoEntrenamiento" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@e.IdEntrenamiento" />
+                                        <input type="hidden" name="idRutina" value="@Model.IdRutina" />
+
+                                        <button class="btn btn-sm btn-outline-danger btn-delete"
+                                                type="submit"
+                                                title="Eliminar Entrenamiento">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+
+@section Modals {
+    <!-- ========================================================= -->
+    <!-- 🔹 MODAL CREAR ENTRENAMIENTO -->
+    <!-- ========================================================= -->
+    <div class="modal fade" id="addEntrenamientoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Nuevo Entrenamiento</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form asp-action="AddEntrenamiento" method="post">
+                    <div class="modal-body">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                        <input asp-for="EntrenamientoFormCreate.IdRutina"
+                               id="addIdRutina"
+                               type="hidden"
+                               value="@Model.IdRutina" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre</label>
+                            <input asp-for="EntrenamientoFormCreate.Nombre" class="form-control" />
+                            <span asp-validation-for="EntrenamientoFormCreate.Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tipo Sesión</label>
+
+                            <select asp-for="EntrenamientoFormCreate.IdTipoSesion"
+                                    class="form-select"
+                                    asp-items="ViewBag.TiposSesion">
+                                <option value="">Seleccione...</option>
+                            </select>
+
+                            <span asp-validation-for="EntrenamientoFormCreate.IdTipoSesion" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Objetivo</label>
+                            <textarea asp-for="EntrenamientoFormCreate.Objetivo" class="form-control"></textarea>
+                            <span asp-validation-for="EntrenamientoFormCreate.Objetivo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Duración Estimada</label>
+                            <input asp-for="EntrenamientoFormCreate.DuracionEstimada" class="form-control" />
+                            <span asp-validation-for="EntrenamientoFormCreate.DuracionEstimada" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nivel de Esfuerzo</label>
+                            <input asp-for="EntrenamientoFormCreate.NivelEsfuerzoEsperado" class="form-control" />
+                            <span asp-validation-for="EntrenamientoFormCreate.NivelEsfuerzoEsperado" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fecha Programada</label>
+                            <input asp-for="EntrenamientoFormCreate.FechaProgramada" type="date" class="form-control" />
+                            <span asp-validation-for="EntrenamientoFormCreate.FechaProgramada" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="EntrenamientoFormCreate.Estado" class="form-check-input" />
+                            <label asp-for="EntrenamientoFormCreate.Estado" class="form-check-label fw-bold">Activo</label>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-check2"></i> Guardar</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================= -->
+    <!-- 🔹 MODAL EDITAR ENTRENAMIENTO -->
+    <!-- ========================================================= -->
+    <div class="modal fade" id="editEntrenamientoModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar Entrenamiento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <form asp-action="UpdateEntrenamiento" method="post">
+                    <div class="modal-body">
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger mb-2"></div>
+
+                        <input asp-for="EntrenamientoFormUpdate.IdEntrenamiento"
+                               id="editId"
+                               type="hidden" />
+
+                        <input asp-for="EntrenamientoFormUpdate.IdRutina"
+                               id="editIdRutina"
+                               type="hidden"
+                               value="@Model.IdRutina" />
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nombre</label>
+                            <input asp-for="EntrenamientoFormUpdate.Nombre" class="form-control" id="@($"editNombre")" />
+                            <span asp-validation-for="EntrenamientoFormUpdate.Nombre" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Tipo Sesión</label>
+                            <select asp-for="EntrenamientoFormUpdate.IdTipoSesion"
+                                    class="form-select"
+                                    id="editTipoSesion"
+                                    asp-items="ViewBag.TiposSesion">
+                                <option value="">Seleccione...</option>
+                            </select>
+                            <span asp-validation-for="EntrenamientoFormUpdate.IdTipoSesion" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Objetivo</label>
+                            <textarea asp-for="EntrenamientoFormUpdate.Objetivo" class="form-control" id="@($"editObjetivo")"></textarea>
+                            <span asp-validation-for="EntrenamientoFormUpdate.Objetivo" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Duración Estimada</label>
+                            <input asp-for="EntrenamientoFormUpdate.DuracionEstimada" class="form-control" id="@($"editDuracion")" />
+                            <span asp-validation-for="EntrenamientoFormUpdate.DuracionEstimada" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Nivel de Esfuerzo</label>
+                            <input asp-for="EntrenamientoFormUpdate.NivelEsfuerzoEsperado" class="form-control" id="@($"editEsfuerzo")" />
+                            <span asp-validation-for="EntrenamientoFormUpdate.NivelEsfuerzoEsperado" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Fecha Programada</label>
+                            <input asp-for="EntrenamientoFormUpdate.FechaProgramada" type="date" class="form-control" id="@($"editFecha")" />
+                            <span asp-validation-for="EntrenamientoFormUpdate.FechaProgramada" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="EntrenamientoFormUpdate.Estado" class="form-check-input" />
+                            <label asp-for="EntrenamientoFormUpdate.Estado" class="form-check-label fw-bold">Activo</label>
+                        </div>
+
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-warning text-white"><i class="bi bi-save"></i> Guardar Cambios</button>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="~/js/DataTable.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const modalToShow = '@TempData["ShowModal"]';
+            if (modalToShow) {
+                const modalElement = document.getElementById(modalToShow);
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+
+            $("#entrenamientosTable").DataTable();
+
+            const tableBody = document.querySelector("#entrenamientosTable tbody");
+
+            const fill = (id, value, isInput = false) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                if (isInput) el.value = value;
+                else el.textContent = value;
+            };
+
+            document.addEventListener("click", (e) =>
+            {
+                const btn = e.target.closest("button");
+                if (!btn) return;
+
+                const data = { ...btn.dataset };
+                const row = btn.closest("tr");
+                if (row) Object.assign(data, row.dataset);
+
+                // ===== Editar =====
+                if (btn.classList.contains("btn-edit")) {
+                    fill("editId", data.entrenamientoid, true);
+                    fill("editNombre", data.nombre, true);
+                    fill("editTipoSesion", data.tiposesionid, true);
+                    fill("editObjetivo",data.objetivo, true);
+                    fill("editDuracion", data.duracion, true);
+                    fill("editEsfuerzo", data.esfuerzo, true);
+                    fill("editFecha", data.fecha, true);
+                }
+
+                // ===== Activar / Desactivar =====
+                if (btn.classList.contains("toggle-estado-btn")) {
+                    e.preventDefault(); // Evita submit inmediato
+
+                    // Determinar si la rutina está activa por el color del botón
+                    const isActive = btn.classList.contains("btn-outline-danger");
+                    const msg = isActive
+                        ? "¿Seguro que quieres desactivar esta rutina? No se eliminará, solo quedará inactiva."
+                        : "¿Deseas activar esta rutina?";
+
+                    if (confirm(msg)) {
+                        btn.closest("form").submit();
+                    }
+                }
+
+            });
+
+        });
+    </script>
+}

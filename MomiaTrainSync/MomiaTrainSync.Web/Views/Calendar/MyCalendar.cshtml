@@ -1,0 +1,142 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "Mi Calendario de Entrenamientos";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css' rel='stylesheet' />
+}
+
+@section Scripts {
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js'></script>
+    <script src="~/js/personalCalendar.js"></script>
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold">Calendario de Entrenamientos</h2>
+        <p class="text-muted">Programa y gestiona las rutinas de los atletas</p>
+    </div>
+    @* <div class="col-auto">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEventModal">
+            <i class="bi bi-plus-circle me-2"></i>Agendar Rutina
+        </button>
+    </div> *@
+</div>
+
+<div class="row">
+    <div class="col-12 col-md-8 col-lg-9">
+        <div class="card">
+            <div class="card-body">
+                <div id="calendar"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-md-4 col-lg-3 mt-4 mt-md-0">
+        <div class="card mb-3">
+            <div class="card-header bg-white">
+                <h6 class="mb-0 fw-semibold">Filtros</h6>
+            </div>
+            <div class="card-body" id="contenedorFiltrosTipo">
+                <!-- JS insertará filtros aquí -->
+            </div>
+        </div>
+
+
+        <div class="card">
+            <div class="card-header bg-white">
+                <h6 class="mb-0 fw-semibold">Eventos de Hoy</h6>
+            </div>
+            <div class="card-body" id="eventosHoyContainer">
+                <!-- Aquí se cargarán los eventos dinámicamente -->
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Modals {
+
+    <div class="modal fade" id="eventModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Evento</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Aquí se inyecta la info del evento -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Event Modal -->
+    <div class="modal fade" id="addEventModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Agendar Nueva Rutina</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="addEventForm">
+                        <div class="mb-3">
+                            <label for="eventTitle" class="form-label">Título de la Rutina</label>
+                            <input type="text" class="form-control" id="eventTitle" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventAthlete" class="form-label">Atleta</label>
+                            <select class="form-select" id="eventAthlete" required>
+                                <option value="">Seleccionar atleta</option>
+                                <option value="maria">María González</option>
+                                <option value="juan">Juan Martínez</option>
+                                <option value="laura">Laura Fernández</option>
+                                <option value="carlos">Carlos Ruiz</option>
+                                <option value="ana">Ana Torres</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventType" class="form-label">Tipo de Entrenamiento</label>
+                            <select class="form-select" id="eventType" required>
+                                <option value="">Seleccionar tipo</option>
+                                <option value="strength">Fuerza</option>
+                                <option value="cardio">Cardio</option>
+                                <option value="technique">Técnica</option>
+                                <option value="recovery">Recuperación</option>
+                            </select>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="eventDate" class="form-label">Fecha</label>
+                                <input type="date" class="form-control" id="eventDate" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="eventTime" class="form-label">Hora</label>
+                                <input type="time" class="form-control" id="eventTime" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventDuration" class="form-label">Duración (minutos)</label>
+                            <input type="number" class="form-control" id="eventDuration" value="60" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="eventNotes" class="form-label">Notas</label>
+                            <textarea class="form-control" id="eventNotes" rows="3"></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary">Guardar Evento</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}

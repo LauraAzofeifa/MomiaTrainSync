@@ -1,0 +1,90 @@
+﻿@model RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registrarse";
+    Layout = "~/Views/Shared/_LayoutAuth.cshtml";
+}
+
+@section Styles {
+}
+
+<!-- Right side - Register Form -->
+<div class="col-lg-6 d-flex align-items-center justify-content-center">
+    <div class="auth-form-container">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold mb-2">Crear Cuenta</h2>
+            <p class="text-muted">Completa el formulario para registrarte</p>
+        </div>
+
+        <form asp-action="Register" method="post">
+            <div class="mb-3">
+                <label asp-for="Nombre" class="form-label">Nombre</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input asp-for="Nombre" type="text" class="form-control" placeholder="Juan">
+                </div>
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Apellido" class="form-label">Apellido</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-person"></i></span>
+                    <input asp-for="Apellido" type="text" class="form-control" placeholder="Pérez">
+                </div>
+                <span asp-validation-for="Apellido" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Correo" class="form-label">Correo Electrónico</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                    <input asp-for="Correo" type="email" class="form-control" placeholder="tu@email.com">
+                </div>
+                <span asp-validation-for="Correo" class="text-danger"></span>
+            </div>
+
+            @* <div class="mb-3">
+                <label for="role" class="form-label">Rol</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-shield-check"></i></span>
+                    <select class="form-select" id="role" required>
+                        <option value="">Selecciona un rol</option>
+                        <option value="admin">Administrador</option>
+                        <option value="coach">Entrenador</option>
+                        <option value="athlete">Atleta</option>
+                    </select>
+                </div>
+            </div> *@
+
+            <div class="mb-3">
+                <label asp-for="Contrasenna" class="form-label">Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                    <input asp-for="Contrasenna" type="password" class="form-control" placeholder="••••••••">
+                </div>
+                <span asp-validation-for="Contrasenna" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="ConfirmarContrasenna" class="form-label">Confirmar Contraseña</label>
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                    <input asp-for="ConfirmarContrasenna" type="password" class="form-control" placeholder="••••••••">
+                </div>
+                <span asp-validation-for="ConfirmarContrasenna" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="terms" required>
+                <label class="form-check-label" for="terms">Acepto los términos y condiciones</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mb-3">Crear Cuenta</button>
+
+            <div class="text-center">
+                <p class="mb-0">¿Ya tienes cuenta? <a href="@Url.Action("Login", "Authentication")" class="text-decoration-none fw-semibold">Inicia Sesión</a></p>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,103 @@
+MomiaTrainSync.sln
+│
+├─ MomiaTrainSync.Domain                # 🧠 Capa del dominio puro
+│   ├─ Entities                         # Athlete, Trainer, WorkoutPlan, Session
+│   ├─ ValueObjects                     # Email, Weight, TrainingGoal
+│   ├─ Enums                            # TrainingLevel, PlanType
+│   └─ (sin referencias)
+│
+├─ MomiaTrainSync.Core                  # ⚙️ Lógica de aplicación / Casos de uso
+│   ├─ Interfaces                       # Puertos (Repos, Services)
+│   ├─ DTOs                             # Data Transfer Objects
+│   ├─ UseCases                         # Registrar atleta, asignar plan, etc.
+│   └─ referencia -> MomiaTrainSync.Domain
+│
+├─ MomiaTrainSync.Infrastructure        # 💾 Implementaciones concretas
+│   ├─ Persistence                      # DbContext, Migrations
+│   ├─ Repositories                     # AthleteRepository, TrainerRepository
+│   ├─ Services                         # EmailService, FileStorageService, LoggingService
+│   └─ referencia -> MomiaTrainSync.Core
+│
+├─ MomiaTrainSync.Composition            # 🧩 Registro de dependencias (DI)
+│   ├─ DependencyInjection.cs            # Extensión AddMomiaTrainSyncServices()
+│   └─ referencia -> MomiaTrainSync.Infrastructure, MomiaTrainSync.Core
+│
+└─ MomiaTrainSync.WebMVC                # 🌐 ASP.NET Core MVC (presentación)
+    ├─ Program.cs                        # Punto de entrada principal
+    ├─ Controllers                       # MVC Controllers
+    ├─ ViewModels                        # Modelos para vistas
+    ├─ Views                             # Razor (.cshtml)
+    ├─ wwwroot                           # Archivos estáticos (CSS, JS, imágenes)
+    └─ referencia -> MomiaTrainSync.Composition
+
+	
+Estructura:
+
+MomiaTrainSync.sln
+│
+├─ MomiaTrainSync.Domain                     # 🧠 Capa del dominio puro
+│   ├─ Entities                              # Todas terminan con “Ent”
+│   │   ├─ UsuarioEnt.cs
+│   │   ├─ RolEnt.cs
+│   │   ├─ PermisoEnt.cs
+│   │   ├─ RolPermisoEnt.cs
+│   │   ├─ EntrenamientoEnt.cs
+│   │   ├─ AsignacionRutinaEnt.cs
+│   │   ├─ SesionEntrenamientoEnt.cs
+│   │   ├─ ZonaEntrenamientoEnt.cs
+│   │   ├─ DetalleZonaPlanEnt.cs
+│   │   ├─ DetalleZonaSesionEnt.cs
+│   │   └─ ComentarioEntrenadorEnt.cs
+│   ├─ ValueObjects
+│   ├─ Enums
+│   └─ (sin referencias)
+│
+├─ MomiaTrainSync.Core                # ⚙️ Casos de uso y lógica de aplicación
+│   ├─ Interfaces
+│   │   ├─ Repositories
+│   │   │   ├─ IUsuarioRepository.cs
+│   │   │   ├─ IEntrenamientoRepository.cs
+│   │   │   └─ ISesionRepository.cs
+│   │   ├─ Services
+│   │   │   ├─ ICorreoService.cs
+│   │   │   ├─ IAlmacenamientoArchivoService.cs
+│   │   │   └─ INotificacionService.cs
+│   ├─ DTOs
+│   ├─ UseCases
+│   │   ├─ RegistrarAtletaUseCase.cs
+│   │   ├─ RegisterUseCase.cs
+│   │   ├─ LoginUseCase.cs
+│   │   ├─ AsignarRutinaUseCase.cs
+│   │   └─ EnviarInformeProgresoUseCase.cs
+│   └─ referencia → MomiaTrainSync.Domain
+│
+├─ MomiaTrainSync.Infrastructure             # 💾 Implementaciones concretas
+│   ├─ Persistence
+│   │   ├─ Configurations                    # Configuraciones FluentAPI
+│   │   │   ├─ UsuarioConfiguration.cs
+│   │   │   ├─ RolConfiguration.cs
+│   │   │   ├─ EntrenamientoConfiguration.cs
+│   │   │   └─ (más entidades)
+│   │   ├─ MomiaTrainSyncDbContext.cs
+│   │   └─ DesignTimeDbContextFactory.cs
+│   ├─ Repositories
+│   │   ├─ UsuarioRepository.cs
+│   │   ├─ EntrenamientoRepository.cs
+│   │   └─ SesionRepository.cs
+│   ├─ Services
+│   │   ├─ CorreoService.cs                 # Implementa ICorreoService
+│   │   ├─ AlmacenamientoArchivoService.cs  # Implementa IAlmacenamientoArchivoService
+│   │   └─ NotificacionService.cs           # Implementa INotificacionService
+│   └─ referencia → MomiaTrainSync.Core
+│
+├─ MomiaTrainSync.Composition                # 🧩 Registro de dependencias (Dependency Injection)
+│   ├─ DependencyInjection.cs                # Método AddMomiaTrainSyncServices()
+│   └─ referencia → MomiaTrainSync.Infrastructure, MomiaTrainSync.Core
+│
+└─ MomiaTrainSync.Web                        # 🌐 ASP.NET Core MVC
+    ├─ Program.cs                            # Punto de entrada principal
+    ├─ Controllers                           # Controladores MVC
+    ├─ ViewModels                            # Modelos de Vista (ViewModels)
+    ├─ Views                                 # Archivos .cshtml
+    ├─ wwwroot                               # CSS, JS, imágenes
+    └─ referencia → MomiaTrainSync.Composition

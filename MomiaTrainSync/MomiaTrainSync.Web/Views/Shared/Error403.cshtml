@@ -1,0 +1,23 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewBag.Title = "403 - Acceso No Autorizado | MomiaTrain Admin";
+    Layout = "~/Views/Shared/_ErrorLayout.cshtml";
+}
+
+<div class="error-code">403</div>
+<h1 class="error-title">Acceso No Autorizado</h1>
+<p class="error-description">
+    Lo sentimos, no tienes permiso para acceder a esta página.
+</p>
+<div class="error-actions">
+    <a href="@Url.Action("Index", "Home")" class="btn-solid-custom">
+        <i class="bi bi-house-door"></i>
+        Volver al Inicio
+    </a>
+    <a href="javascript:history.back()" class="btn-light-custom">
+        <i class="bi bi-arrow-left"></i>
+        Página Anterior
+    </a>
+</div>

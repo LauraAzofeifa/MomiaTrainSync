@@ -1,0 +1,351 @@
+﻿@model ProfileViewModel
+@{
+    ViewData["Title"] = "Mi Perfil";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section Styles {
+}
+
+@section Scripts {
+    <script src="~/js/Profile.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modalToShow = '@TempData["ShowModal"]';
+            if (modalToShow) {
+                const modalElement = document.getElementById(modalToShow);
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+            }
+
+            // Mostrar mensajes si existen
+            const success = '@TempData["SuccessMessage"]';
+            const error = '@TempData["ErrorMessage"]';
+            if (success)
+                toastr.success(success);
+            else if (error)
+                toastr.error(error);
+        });
+    </script>
+}
+
+@functions {
+    public string TiempoTranscurrido(DateTime? fecha)
+    {
+        if (fecha == null)
+            return "Nunca";
+
+        var diferencia = DateTime.UtcNow - fecha.Value;
+
+        if (diferencia.TotalMinutes < 1)
+            return "hace unos segundos";
+
+        if (diferencia.TotalMinutes < 60)
+            return $"hace {(int)diferencia.TotalMinutes} minutos";
+
+        if (diferencia.TotalHours < 24)
+            return $"hace {(int)diferencia.TotalHours} horas";
+
+        if (diferencia.TotalDays < 30)
+            return $"hace {(int)diferencia.TotalDays} días";
+
+        if (diferencia.TotalDays < 365)
+            return $"hace {(int)(diferencia.TotalDays / 30)} meses";
+
+        return $"hace {(int)(diferencia.TotalDays / 365)} años";
+    }
+}
+
+<div class="row mb-4">
+    <div class="col">
+        <h2 class="fw-bold">Mi Perfil</h2>
+        <p class="text-muted">Administra tu información personal y preferencias</p>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Profile Card -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <div class="position-relative d-inline-block mb-3">
+                    <img src="https://ui-avatars.com/api/?name=@($"{User.Identity!.Name}")&size=40&background=0D8ABC&color=fff" alt="Profile" class="rounded-circle" width="120" height="120">
+                    <button class="btn btn-primary btn-sm rounded-circle position-absolute bottom-0 end-0" style="width: 36px; height: 36px;">
+                        <i class="bi bi-camera"></i>
+                    </button>
+                </div>
+                <h4 class="fw-bold mb-1">@Model.Details.Nombre @Model.Details.Apellido</h4>
+                @* <p class="text-muted mb-3">@Model.Details.Rol!.Nombre</p> *@
+                <div class="d-flex justify-content-center gap-2 mb-3">
+                    <span class="badge bg-primary-subtle text-primary">@Model.Details.Rol!.Nombre</span>
+                    <span class="badge @(Model.Details.Estado ? "bg-success-subtle text-success" : "bg-danger-subtle text-danger")">
+                        @(Model.Details.Estado ? "Activo" : "Inactivo")
+                    </span>
+                </div>
+                <hr>
+                <div class="text-start">
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-envelope text-muted me-2"></i>
+                        <small class="text-muted">@Model.Details.Correo</small>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <i class="bi bi-telephone text-muted me-2"></i>
+                        <small class="text-muted">@Model.Details.Telefono</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-calendar text-muted me-2"></i>
+                        <small class="text-muted">Miembro desde @Model.Details.FechaCreacion.ToString("MMMM yyyy", new System.Globalization.CultureInfo("es-ES"))</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Card -->
+        @* <div class="card mt-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-semibold">Estadísticas</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted mb-0 small">Atletas Gestionados</p>
+                        <h4 class="fw-bold mb-0">156</h4>
+                    </div>
+                    <div class="stat-icon bg-primary-subtle">
+                        <i class="bi bi-people text-primary"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <p class="text-muted mb-0 small">Sesiones Creadas</p>
+                        <h4 class="fw-bold mb-0">342</h4>
+                    </div>
+                    <div class="stat-icon bg-success-subtle">
+                        <i class="bi bi-calendar-check text-success"></i>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="text-muted mb-0 small">Rutinas Activas</p>
+                        <h4 class="fw-bold mb-0">89</h4>
+                    </div>
+                    <div class="stat-icon bg-warning-subtle">
+                        <i class="bi bi-clipboard-data text-warning"></i>
+                    </div>
+                </div>
+            </div>
+        </div> *@
+    </div>
+
+    <!-- Profile Information -->
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0 fw-semibold">Información Personal</h5>
+                <button class="btn btn-sm btn-primary" id="editProfileBtn">
+                    <i class="bi bi-pencil me-1"></i>Editar
+                </button>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-controller="Profile" asp-action="EditProfile" id="profileForm">
+                    @Html.AntiForgeryToken()
+                    <div class="row g-3">
+                        @Html.HiddenFor(up => up.Update.Id)
+                        <div class="col-md-6">
+                            <label class="form-label">Nombre</label>
+                            <input asp-for="Details.Nombre"
+                                   type="text"
+                                   class="form-control"
+                                   disabled>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Apellidos</label>
+                            <input asp-for="Details.Apellido"
+                                   type="text"
+                                   class="form-control"
+                                   disabled>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input asp-for="Details.Correo"
+                                   type="email"
+                                   class="form-control"
+                                   disabled>
+                        </div>
+
+                        <!-- ✅ EDITABLES -->
+
+                        <div class="col-md-6">
+                            <label class="form-label">Teléfono</label>
+                            <input asp-for="Update.Telefono"
+                                   type="tel"
+                                   class="form-control editable-field"
+                                   disabled>
+                            <span asp-validation-for="Update.Telefono" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label">Fecha de Nacimiento</label>
+                            <input asp-for="Update.FechaNacimiento"
+                                   type="date"
+                                   class="form-control editable-field"
+                                   disabled>
+                            <span asp-validation-for="Update.FechaNacimiento" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Biografía</label>
+                            <textarea asp-for="Update.Biografia"
+                                      class="form-control editable-field"
+                                      rows="3"
+                                      disabled></textarea>
+                            <span asp-validation-for="Update.Biografia" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mt-3 d-none" id="saveButtons">
+                        <button type="submit" class="btn btn-primary me-2">
+                            <i class="bi bi-check-lg me-1"></i>Guardar Cambios
+                        </button>
+                        <button type="button" class="btn btn-secondary" id="cancelEditBtn">
+                            <i class="bi bi-x-lg me-1"></i>Cancelar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div class="card mb-4">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-semibold">Seguridad</h5>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Contraseña</h6>
+                        <small class="text-muted">
+                            Última actualización @TiempoTranscurrido(Model.Details.FechaUltimoCambioContrasenna)
+                        </small>
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                        Cambiar
+                    </button>
+                </div>
+                @* <div class="d-flex justify-content-between align-items-center mb-3 pb-3 border-bottom">
+                    <div>
+                        <h6 class="mb-1">Autenticación de Dos Factores</h6>
+                        <small class="text-muted">Añade una capa extra de seguridad</small>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" id="twoFactorSwitch">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-1">Sesiones Activas</h6>
+                        <small class="text-muted">2 dispositivos conectados</small>
+                    </div>
+                    <button class="btn btn-outline-danger btn-sm">
+                        Ver Sesiones
+                    </button>
+                </div> *@
+            </div>
+        </div>
+
+        <!-- Preferences -->
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-semibold">Preferencias</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="language" class="form-label">Idioma</label>
+                        <select class="form-select" id="language">
+                            <option value="es" selected>Español</option>
+                            <option value="en">English</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="timezone" class="form-label">Zona Horaria</label>
+                        <select class="form-select" id="timezone">
+                            <option value="europe/madrid" selected>Europa/Madrid (GMT+1)</option>
+                            <option value="europe/london">Europa/Londres (GMT)</option>
+                            <option value="america/new_york">América/Nueva York (GMT-5)</option>
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications">
+                                Recibir notificaciones por email
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                            <label class="form-check-label" for="pushNotifications">
+                                Recibir notificaciones push
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary">
+                            <i class="bi bi-check-lg me-1"></i>Guardar Preferencias
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Modals {
+    <!-- Change Password Modal -->
+    <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="changePasswordModalLabel">Cambiar Contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="ChangePassword" asp-controller="Profile" method="post" id="changePasswordForm">
+                        @Html.AntiForgeryToken()
+
+                        <!-- 🔸 Resumen de validaciones globales -->
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <div class="mb-3">
+                            <label asp-for="ChangePassword.CurrentPassword" class="form-label"></label>
+                            <input asp-for="ChangePassword.CurrentPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ChangePassword.CurrentPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ChangePassword.NewPassword" class="form-label"></label>
+                            <input asp-for="ChangePassword.NewPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ChangePassword.NewPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ChangePassword.ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ChangePassword.ConfirmPassword" type="password" class="form-control" />
+                            <span asp-validation-for="ChangePassword.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Cambiar Contraseña</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
