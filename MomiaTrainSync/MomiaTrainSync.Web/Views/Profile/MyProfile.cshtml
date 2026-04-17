@@ -184,6 +184,7 @@
                                    type="tel"
                                    class="form-control editable-field"
                                    disabled>
+                            <span asp-validation-for="Update.Telefono" class="text-danger"></span>
                         </div>
 
                         <div class="col-md-12">
@@ -192,6 +193,7 @@
                                    type="date"
                                    class="form-control editable-field"
                                    disabled>
+                            <span asp-validation-for="Update.FechaNacimiento" class="text-danger"></span>
                         </div>
 
                         <div class="col-12">
@@ -200,6 +202,7 @@
                                       class="form-control editable-field"
                                       rows="3"
                                       disabled></textarea>
+                            <span asp-validation-for="Update.Biografia" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="mt-3 d-none" id="saveButtons">
