@@ -35,72 +35,72 @@ namespace MomiaTrainSync.Infrastructure.Persistence
         };
 
         private static readonly List<PermisoEnt> DefaultPermissions = new()
-{
-    new PermisoEnt
-    {
-        Codigo = "GESTIONAR_USUARIOS",
-        Descripcion = "Permite administrar usuarios del sistema",
-        Categoria = "Users",
-        Ruta = "/Users/ManageUsers",
-        Estado = true
-    },
-    new PermisoEnt
-    {
-        Codigo = "GESTIONAR_ATLETAS",
-        Descripcion = "Permite gestionar atletas",
-        Categoria = "Athletes",
-        Ruta = "/Trainer/ManageAthletes",
-        Estado = true
-    },
-    new PermisoEnt
-    {
-        Codigo = "VER_PERFIL",
-        Descripcion = "Permite ver el perfil del usuario",
-        Categoria = "Profile",
-        Ruta = "/Profile/MyProfile",
-        Estado = true
-    },
-    new PermisoEnt
-    {
-        Codigo = "EDITAR_PERFIL",
-        Descripcion = "Permite editar el perfil del usuario",
-        Categoria = "Profile",
-        Ruta = "/Profile/EditProfile",
-        Estado = true
-    },
-    new PermisoEnt
-    {
-        Codigo = "CAMBIAR_CONTRASENNA_PERFIL",
-        Descripcion = "Permite cambiar la contraseña del usuario",
-        Categoria = "Profile",
-        Ruta = "/Profile/ChangePassword",
-        Estado = true
-    },
-    new PermisoEnt
-    {
-        Codigo = "AGREGAR_ATLETA_ENTRENADOR",
-        Descripcion = "Permite al entrenador agregar atletas a su lista asignada",
-        Categoria = "Usuarios",
-        Ruta = "/Trainer/AddAthlete",
-        Estado = true
-    },
-    new PermisoEnt
-    {
-        Codigo = "ELIMINAR_ATLETA_ENTRENADOR",
-        Descripcion = "Permite al entrenador eliminar atletas de su lista",
-        Categoria = "Usuarios",
-        Ruta = "/Trainer/DeleteAthlete",
-        Estado = true
-    },
-    new PermisoEnt
-    {
-        Codigo = "VER_PERMISOS",
-        Descripcion = "Permite ver la lista de permisos",
-        Categoria = "Security",
-        Ruta = "/Permissions/Index",
-        Estado = true
-    }
-};
+        {
+            new PermisoEnt
+            {
+                Codigo = "GESTIONAR_USUARIOS",
+                Descripcion = "Permite administrar usuarios del sistema",
+                Categoria = "Users",
+                Ruta = "/Users/ManageUsers",
+                Estado = true
+            },
+            new PermisoEnt
+            {
+                Codigo = "GESTIONAR_ATLETAS",
+                Descripcion = "Permite gestionar atletas",
+                Categoria = "Athletes",
+                Ruta = "/Trainer/ManageAthletes",
+                Estado = true
+            },
+            new PermisoEnt
+            {
+                Codigo = "VER_PERFIL",
+                Descripcion = "Permite ver el perfil del usuario",
+                Categoria = "Profile",
+                Ruta = "/Profile/MyProfile",
+                Estado = true
+            },
+            new PermisoEnt
+            {
+                Codigo = "EDITAR_PERFIL",
+                Descripcion = "Permite editar el perfil del usuario",
+                Categoria = "Profile",
+                Ruta = "/Profile/EditProfile",
+                Estado = true
+            },
+            new PermisoEnt
+            {
+                Codigo = "CAMBIAR_CONTRASENNA_PERFIL",
+                Descripcion = "Permite cambiar la contraseña del usuario",
+                Categoria = "Profile",
+                Ruta = "/Profile/ChangePassword",
+                Estado = true
+            },
+            new PermisoEnt
+            {
+                Codigo = "AGREGAR_ATLETA_ENTRENADOR",
+                Descripcion = "Permite al entrenador agregar atletas a su lista asignada",
+                Categoria = "Usuarios",
+                Ruta = "/Trainer/AddAthlete",
+                Estado = true
+            },
+            new PermisoEnt
+            {
+                Codigo = "ELIMINAR_ATLETA_ENTRENADOR",
+                Descripcion = "Permite al entrenador eliminar atletas de su lista",
+                Categoria = "Usuarios",
+                Ruta = "/Trainer/DeleteAthlete",
+                Estado = true
+            },
+            new PermisoEnt
+            {
+                Codigo = "VER_PERMISOS",
+                Descripcion = "Permite ver la lista de permisos",
+                Categoria = "Security",
+                Ruta = "/Permissions/Index",
+                Estado = true
+            }
+        };
 
         private static readonly List<ZonaEntrenamientoEnt> DefaultZonas = new()
         {
@@ -372,7 +372,7 @@ namespace MomiaTrainSync.Infrastructure.Persistence
                     Apellido = "Rojas",
                     Correo = "d1234avid@gmail.com",
                     Telefono = "123456789",
-                    FechaCumpleannos = new DateTime(1994, 7, 19),
+                    FechaNacimiento = new DateTime(1994, 7, 19),
                     Biografia = "Administrador del sistema",
 
                     ContrasennaHash =

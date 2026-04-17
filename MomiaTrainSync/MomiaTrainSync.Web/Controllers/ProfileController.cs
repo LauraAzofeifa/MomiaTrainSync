@@ -53,12 +53,9 @@ namespace MomiaTrainSync.Web.Controllers
                 Update = new UpdateProfileViewModel
                 {
                     Id = usuario.Id,
-                    Nombre = usuario.Nombre,
-                    Apellido = usuario.Apellido,
-                    Correo = usuario.Correo,
                     Telefono = usuario.Telefono,
                     Biografia = usuario.Biografia!,
-                    FechaCumpleannos = usuario.FechaCumpleannos
+                    FechaNacimiento = usuario.FechaNacimiento
                 }
             };
 
@@ -80,6 +77,7 @@ namespace MomiaTrainSync.Web.Controllers
             {
                 // Recargar el usuario completo (incluye Rol)
                 var userResponse = await _getUsuariosUseCase.ExecuteAsync(id: userId.Value);
+                
                 vm.Details = userResponse.Datos!.First();
 
                 return View(nameof(MyProfile), vm);
@@ -89,12 +87,9 @@ namespace MomiaTrainSync.Web.Controllers
             var dto = new UsuarioDto
             {
                 Id = vm.Update.Id,
-                Nombre = vm.Update.Nombre,
-                Apellido = vm.Update.Apellido,
-                Correo = vm.Update.Correo,
                 Telefono = vm.Update.Telefono,
                 Biografia = vm.Update.Biografia,
-                FechaCumpleannos = vm.Update.FechaCumpleannos
+                FechaNacimiento = vm.Update.FechaNacimiento
             };
 
             var response = await _updateUsuarioUseCase.ExecuteAsync(dto);
@@ -160,12 +155,9 @@ namespace MomiaTrainSync.Web.Controllers
                 Update = new UpdateProfileViewModel
                 {
                     Id = usuario.Id,
-                    Nombre = usuario.Nombre,
-                    Apellido = usuario.Apellido,
-                    Correo = usuario.Correo,
                     Telefono = usuario.Telefono,
                     Biografia = usuario.Biografia!,
-                    FechaCumpleannos = usuario.FechaCumpleannos
+                    FechaNacimiento = usuario.FechaNacimiento
                 },
                 ChangePassword = new ChangePasswordViewModel()
             };

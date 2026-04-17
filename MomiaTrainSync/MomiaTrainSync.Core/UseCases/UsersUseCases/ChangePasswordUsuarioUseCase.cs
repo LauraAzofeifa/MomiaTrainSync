@@ -24,18 +24,31 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
             _passwordHasherService = passwordHasherService;
         }
 
-        public async Task<Response<bool>> ExecuteAsync(int usuarioId, string oldPassword, string newPassword)
+        public async Task<Response<bool>> ExecuteAsync(
+            int usuarioId,
+            string oldPassword,
+            string newPassword)
         {
             return await HandleAsync(async () =>
             {
                 var usuario = await _usuarioRepository.GetByIdAsync(usuarioId);
+
                 if (usuario == null)
                     return Response<bool>.Fail("Usuario no encontrado");
 
-                if (!_passwordHasherService.VerifyPassword(usuario.ContrasennaHash, oldPassword))
+                // Validar contraseña actual
+                if (!_passwordHasherService.VerifyPassword(
+                        usuario.ContrasennaHash,
+                        oldPassword))
+                {
                     return Response<bool>.Fail("La contraseña antigua es incorrecta");
+                }
 
-                usuario.ContrasennaHash = _passwordHasherService.HashPassword(newPassword);
+                // Generar hash
+                var nuevoHash = _passwordHasherService.HashPassword(newPassword);
+
+                // 🔹 Usar método de la entidad
+                usuario.CambiarContrasenna(nuevoHash);
 
                 var updated = await _usuarioRepository.UpdateAsync(usuario);
 

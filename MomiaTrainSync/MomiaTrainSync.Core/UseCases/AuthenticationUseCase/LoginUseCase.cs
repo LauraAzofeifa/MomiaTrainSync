@@ -5,7 +5,6 @@ using MomiaTrainSync.Core.Interfaces.Repositories.Logging;
 using MomiaTrainSync.Core.Interfaces.Repositories.UsuariosRoles;
 using MomiaTrainSync.Core.Interfaces.Services;
 using MomiaTrainSync.Core.UseCases.Base;
-using System;
 
 namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
 {
@@ -25,24 +24,47 @@ namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
             _passwordHasherService = passwordHasherService;
         }
 
-        public async Task<Response<UsuarioDto>> ExecuteAsync(string correo, string contrasena)
+        public async Task<Response<UsuarioDto>> ExecuteAsync(
+            string correo,
+            string contrasena)
         {
             return await HandleAsync(async () =>
             {
-                var usuario = await _usuarioRepository.GetByEmailAsync(correo);
+                // Normalizar correo
+                correo = correo.Trim().ToLower();
+
+                var usuario =
+                    await _usuarioRepository.GetByEmailAsync(correo);
 
                 if (usuario == null ||
-                    !_passwordHasherService.VerifyPassword(usuario.ContrasennaHash, contrasena))
+                    !_passwordHasherService.VerifyPassword(
+                        usuario.ContrasennaHash,
+                        contrasena))
                 {
-                    return Response<UsuarioDto>.Fail("Correo o contraseña incorrectos.");
+                    return Response<UsuarioDto>.Fail(
+                        "Correo o contraseña incorrectos."
+                    );
                 }
 
+                // Verificar estado
                 if (!usuario.Estado)
-                    return Response<UsuarioDto>.Fail("Acceso denegado.");
+                    return Response<UsuarioDto>.Fail(
+                        "Acceso denegado."
+                    );
 
-                var usuarioDto = _mapper.Map<UsuarioDto>(usuario);
+                // Registrar login
+                usuario.RegistrarLogin();
 
-                return Response<UsuarioDto>.Success(usuarioDto, "Inicio de sesión exitoso.");
+                await _usuarioRepository.UpdateAsync(usuario);
+
+                // Mapear DTO
+                var usuarioDto =
+                    _mapper.Map<UsuarioDto>(usuario);
+
+                return Response<UsuarioDto>.Success(
+                    usuarioDto,
+                    "Inicio de sesión exitoso."
+                );
             });
         }
     }

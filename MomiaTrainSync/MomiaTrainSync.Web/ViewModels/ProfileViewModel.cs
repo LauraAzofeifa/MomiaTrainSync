@@ -15,20 +15,20 @@ namespace MomiaTrainSync.Web.ViewModels
     {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "El nombre es requerido")]
-        [RegularExpression(@"^(?=.{2,50}$)(?!.*\s{2,})([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
-    ErrorMessage = "El nombre solo puede contener letras y espacios, debe de iniciar con mayúscula.")]
-        public string Nombre { get; set; } = string.Empty;
+    //    [Required(ErrorMessage = "El nombre es requerido")]
+    //    [RegularExpression(@"^(?=.{2,50}$)(?!.*\s{2,})([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
+    //ErrorMessage = "El nombre solo puede contener letras y espacios, debe de iniciar con mayúscula.")]
+    //    public string Nombre { get; set; } = string.Empty;
 
 
-        [Required(ErrorMessage = "El apellido es requerido")]
-        [RegularExpression(@"^(?=.{2,50}$)(?!.*\s{2,})([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
-            ErrorMessage = "El apellido solo puede contener letras y espacios, debe de iniciar con mayúscula.")]
-        public string Apellido { get; set; } = string.Empty;
+    //    [Required(ErrorMessage = "El apellido es requerido")]
+    //    [RegularExpression(@"^(?=.{2,50}$)(?!.*\s{2,})([A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)(\s[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)*$",
+    //        ErrorMessage = "El apellido solo puede contener letras y espacios, debe de iniciar con mayúscula.")]
+    //    public string Apellido { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "El correo es requerido")]
-        [EmailAddress(ErrorMessage = "Debe ingresar un correo válido")]
-        public string Correo { get; set; } = string.Empty;
+    //    [Required(ErrorMessage = "El correo es requerido")]
+    //    [EmailAddress(ErrorMessage = "Debe ingresar un correo válido")]
+    //    public string Correo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "El telefono es requerido")]
         [Phone(ErrorMessage = "Debe ingresar un número de teléfono válido")]
@@ -40,7 +40,7 @@ namespace MomiaTrainSync.Web.ViewModels
         public string Biografia { get; set; } = string.Empty;
 
         [DataType(DataType.Date)]
-        public DateTime? FechaCumpleannos { get; set; }
+        public DateTime? FechaNacimiento { get; set; }
     }
 
     public class ChangePasswordViewModel

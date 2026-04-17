@@ -35,7 +35,13 @@ namespace MomiaTrainSync.Infrastructure.Persistence.Configurations.UsuariosRoles
             builder.Property(u => u.Biografia)
                 .HasMaxLength(255);
 
-            builder.Property(u => u.FechaCumpleannos)
+            builder.Property(u => u.FechaNacimiento)
+                .HasColumnType("datetime");
+            
+            builder.Property(u => u.FechaUltimoCambioContrasenna)
+                .HasColumnType("datetime");
+
+            builder.Property(u => u.FechaUltimoLogin)
                 .HasColumnType("datetime");
 
             builder.Property(u => u.ContrasennaHash)

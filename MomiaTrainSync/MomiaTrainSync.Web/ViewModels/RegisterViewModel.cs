@@ -21,11 +21,13 @@ namespace MomiaTrainSync.Web.ViewModels
         public string Correo { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es requerida")]
+        [DataType(DataType.Password)]
         [RegularExpression(@"^(?=\S+$)(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':""\\|,.<>\/?]).{6,100}$",
             ErrorMessage = "La contraseña debe tener entre 6 y 100 caracteres, incluir mayúscula, minúscula, número, carácter especial y no contener espacios.")]
         public string Contrasenna { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "La contraseña es requerida")]
+        [DataType(DataType.Password)]
         [Compare("Contrasenna", ErrorMessage = "Las contraseñas no coinciden")]
         public string ConfirmarContrasenna { get; set; } = string.Empty;
     }

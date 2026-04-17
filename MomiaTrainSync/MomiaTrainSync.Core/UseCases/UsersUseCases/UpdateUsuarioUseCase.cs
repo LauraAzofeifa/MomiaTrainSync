@@ -33,15 +33,12 @@ namespace MomiaTrainSync.Core.UseCases.UsersUseCases
                         return Response<UsuarioDto>.Fail("Usuario no encontrado.");
                     }
 
-                    // 2️⃣ Actualizar solo los campos que el usuario puede modificar
-                    existingUser.Nombre = _usuarioDto.Nombre;
-                    existingUser.Apellido = _usuarioDto.Apellido;
-                    existingUser.Correo = _usuarioDto.Correo;
-                    existingUser.Telefono = _usuarioDto.Telefono;
-                    existingUser.FechaCumpleannos = _usuarioDto.FechaCumpleannos;
-                    existingUser.Biografia = _usuarioDto.Biografia;
+                    existingUser.ActualizarPerfil(
+                        _usuarioDto.Telefono,
+                        _usuarioDto.FechaNacimiento,
+                        _usuarioDto.Biografia);
 
-                    // 3️⃣ Guardar cambios
+                    // Guardar cambios
                     var result = await _usuarioRepository.UpdateAsync(existingUser);
 
                     if (result == null)

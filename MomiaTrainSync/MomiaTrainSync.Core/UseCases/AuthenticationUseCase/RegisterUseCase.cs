@@ -31,47 +31,71 @@ namespace MomiaTrainSync.Core.UseCases.AuthenticationUseCase
             _mapper = mapper;
         }
 
-        public async Task<Response<UsuarioDto>> ExecuteAsync(string nombre, string apellido, string correo, string contrasena)
+        public async Task<Response<UsuarioDto>> ExecuteAsync(
+            string nombre,
+            string apellido,
+            string correo,
+            string contrasena)
         {
             try
             {
+                // Normalizar correo
+                correo = correo.Trim().ToLower();
+
                 // Verificar si el correo ya existe
-                var existingUser = await _usuarioRepository.GetByEmailAsync(correo);
+                var existingUser = await _usuarioRepository
+                    .GetByEmailAsync(correo);
+
                 if (existingUser != null)
-                    return Response<UsuarioDto>.Fail("El correo ya está registrado. Intenta con otro.");
+                    return Response<UsuarioDto>.Fail(
+                        "El correo ya está registrado. Intenta con otro."
+                    );
 
-                // Obtener el rol predeterminado (Atleta)
-                var defaultRole = await _rolRepository.GetByNombreAsync("Atleta");
+                // Obtener rol predeterminado
+                var defaultRole = await _rolRepository
+                    .GetByNombreAsync("Atleta");
+
                 if (defaultRole == null)
-                    return Response<UsuarioDto>.Fail("El rol predeterminado no está configurado. Contacta al administrador.");
+                    return Response<UsuarioDto>.Fail(
+                        "El rol predeterminado no está configurado."
+                    );
 
-                // Hashear la contraseña
-                var hash = _passwordHasherService.HashPassword(contrasena);
+                // Hashear contraseña
+                var hash = _passwordHasherService
+                    .HashPassword(contrasena);
 
-                // Crear la entidad
-                var usuario = new UsuarioEnt
-                {
-                    Nombre = nombre,
-                    Apellido = apellido,
-                    Correo = correo,
-                    ContrasennaHash = hash,
-                    Estado = true,
-                    FechaCreacion = DateTime.UtcNow,
-                    RolId = defaultRole.IdRol
-                };
+                // Crear entidad usando constructor
+                var usuario = new UsuarioEnt(
+                    nombre.Trim(),
+                    apellido.Trim(),
+                    correo,
+                    hash,
+                    defaultRole.IdRol
+                );
 
-                // Guardar en base de datos
-                var createdUser = await _usuarioRepository.AddAsync(usuario);
+                // Guardar
+                var createdUser =
+                    await _usuarioRepository.AddAsync(usuario);
 
-                // Mapear a DTO
-                var usuarioDto = _mapper.Map<UsuarioDto>(createdUser);
+                // Mapear
+                var usuarioDto =
+                    _mapper.Map<UsuarioDto>(createdUser);
 
-                return Response<UsuarioDto>.Success(usuarioDto, "Usuario registrado exitosamente.");
+                return Response<UsuarioDto>.Success(
+                    usuarioDto,
+                    "Usuario registrado exitosamente."
+                );
             }
             catch (Exception ex)
             {
-                await _logErrorRepository.AddLogAsync($"{nameof(RegisterUseCase)}.{nameof(ExecuteAsync)}", ex);
-                return Response<UsuarioDto>.Fail("Ocurrió un error al registrar el usuario. Intenta más tarde.");
+                await _logErrorRepository.AddLogAsync(
+                    $"{nameof(RegisterUseCase)}.{nameof(ExecuteAsync)}",
+                    ex
+                );
+
+                return Response<UsuarioDto>.Fail(
+                    "Ocurrió un error al registrar el usuario."
+                );
             }
         }
     }
